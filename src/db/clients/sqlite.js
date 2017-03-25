@@ -103,6 +103,16 @@ export async function executeQuery(conn, queryText) {
   return result.map(parseRowQueryResult);
 }
 
+export async function getTableKeys(conn, table, tableName) {
+  const sql = `
+    SELECT *
+    FROM '${tableName}';
+  `;
+
+  const { data } = await driverExecuteQuery(conn, { query: sql });
+
+  return data;
+}
 
 export async function listTables(conn) {
   const sql = `
@@ -176,10 +186,6 @@ export async function listDatabases(conn) {
 }
 
 export function getTableReferences() {
-  return Promise.resolve([]); // TODO: not implemented yet
-}
-
-export function getTableKeys() {
   return Promise.resolve([]); // TODO: not implemented yet
 }
 
