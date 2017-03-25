@@ -25,15 +25,16 @@ env:
   - MYSQL_PATH=C:\Program Files\MySql\MySQL Server 5.7
   - MYSQL_PWD=Password12!
   # sql server
-  - SQLSERVER_ENV_SQLSERVER_HOST=localhost
-  - SQLSERVER_ENV_SQLSERVER_PORT=1433
-  - SQLSERVER_ENV_SQLSERVER_USER=sa
-  - SQLSERVER_ENV_SQLSERVER_PASSWORD=Password12!
-  - SQLSERVER_ENV_SQLSERVER_DATABASE=sqlectron
+  # - SQLSERVER_ENV_SQLSERVER_HOST=localhost
+  # - SQLSERVER_ENV_SQLSERVER_PORT=1433
+  # - SQLSERVER_ENV_SQLSERVER_USER=sa
+  # - SQLSERVER_ENV_SQLSERVER_PASSWORD=Password12!
+  # - SQLSERVER_ENV_SQLSERVER_DATABASE=sqlectron
 
 services:
   - mysql
   - postgresql
+  # - sqlserver
 
 before_install:
   - npm -v
