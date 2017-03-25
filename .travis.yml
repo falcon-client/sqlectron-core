@@ -1,4 +1,4 @@
-language: node
+language: node_js
 
 env:
   # TODO: test cassandra with docker on travis
@@ -30,8 +30,7 @@ env:
 
 services:
   - mysql
-  - postgresql94
-  - mssql2008r2sp2
+  - postgresql
 
 before_install:
   - npm -v
@@ -49,8 +48,8 @@ before_script:
   - mysql -e "create database sqlectron;" --user=root
   - mysql sqlectron < spec/databases/mysql/schema/schema.sql --user=root
   # sqlserver
-  - ./appveyor-sqlserver.ps1 SQL2008R2SP2
-  - sql -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
-  - sql -S localhost,1433 -U sa -P Password12! -i spec/databases/sqlserver/schema/schema.sql -d "sqlectron"
-  - sql -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
+  # - ./appveyor-sqlserver.ps1 SQL2008R2SP2
+  # - sql -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
+  # - sql -S localhost,1433 -U sa -P Password12! -i spec/databases/sqlserver/schema/schema.sql -d "sqlectron"
+  # - sql -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
   - npm test
