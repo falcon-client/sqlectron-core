@@ -17,12 +17,12 @@ const SUPPORTED_DB_CLIENTS = [
   'postgresql',
   'sqlserver',
   'sqlite',
-  'cassandra',
+  'cassandra'
 ];
 
 const dbSchemas = {
   postgresql: 'public',
-  sqlserver: 'dbo',
+  sqlserver: 'dbo'
 };
 
 
@@ -53,7 +53,7 @@ describe('db', () => {
           const serverInfo = {
             ...config[dbClient],
             name: dbClient,
-            client: dbClient,
+            client: dbClient
           };
 
           const serverSession = db.createServer(serverInfo);
@@ -67,7 +67,7 @@ describe('db', () => {
             ...config[dbClient],
             database: db.CLIENTS.find((c) => c.key === dbClient).defaultDatabase,
             name: dbClient,
-            client: dbClient,
+            client: dbClient
           };
 
           const serverSession = db.createServer(serverInfo);
@@ -81,7 +81,7 @@ describe('db', () => {
         const serverInfo = {
           ...config[dbClient],
           name: dbClient,
-          client: dbClient,
+          client: dbClient
         };
 
         let serverSession;
@@ -115,12 +115,12 @@ describe('db', () => {
             if (dbClient === 'postgresql' || dbClient === 'sqlserver') {
               expect(tables).to.eql([
                 { schema: dbSchema, name: 'roles' },
-                { schema: dbSchema, name: 'users' },
+                { schema: dbSchema, name: 'users' }
               ]);
             } else {
               expect(tables).to.eql([
                 { name: 'roles' },
-                { name: 'users' },
+                { name: 'users' }
               ]);
             }
           });
@@ -132,11 +132,11 @@ describe('db', () => {
               const views = await dbConn.listViews({ schema: dbSchema });
               if (dbClient === 'postgresql' || dbClient === 'sqlserver') {
                 expect(views).to.eql([
-                  { schema: dbSchema, name: 'email_view' },
+                  { schema: dbSchema, name: 'email_view' }
                 ]);
               } else {
                 expect(views).to.eql([
-                  { name: 'email_view' },
+                  { name: 'email_view' }
                 ]);
               }
             });
@@ -144,7 +144,7 @@ describe('db', () => {
         }
 
         describe('.listRoutines', () => {
-          it('should list all routines with their type', async() => {
+          it('should list all routines with their type', async () => {
             const routines = await dbConn.listRoutines({ schema: dbSchema });
             const routine = dbClient === 'postgresql' ? routines[1] : routines[0];
 
@@ -172,7 +172,7 @@ describe('db', () => {
         });
 
         describe('.listTableColumns', () => {
-          it('should list all columns and their type from users table', async() => {
+          it('should list all columns and their type from users table', async () => {
             const columns = await dbConn.listTableColumns('users');
             expect(columns).to.have.length(6);
 
@@ -222,7 +222,7 @@ describe('db', () => {
         });
 
         describe('.listTableTriggers', () => {
-          it('should list all table related triggers', async() => {
+          it('should list all table related triggers', async () => {
             const triggers = await dbConn.listTableTriggers('users');
             if (dbClient === 'cassandra') {
               expect(triggers).to.have.length(0);
@@ -234,7 +234,7 @@ describe('db', () => {
         });
 
         describe('.listTableIndexes', () => {
-          it('should list all indexes', async() => {
+          it('should list all indexes', async () => {
             const indexes = await dbConn.listTableIndexes('users', dbSchema);
             if (dbClient === 'cassandra') {
               expect(indexes).to.have.length(0);
@@ -257,7 +257,7 @@ describe('db', () => {
         });
 
         describe('.listSchemas', () => {
-          it('should list all schema', async() => {
+          it('should list all schema', async () => {
             const schemas = await dbConn.listSchemas({ schema: { only: [dbSchema, 'dummy_schema'] } });
             if (dbClient === 'postgresql') {
               expect(schemas).to.have.length(2);
@@ -271,7 +271,7 @@ describe('db', () => {
         });
 
         describe('.getTableReferences', () => {
-          it('should list all tables that selected table has references to', async() => {
+          it('should list all tables that selected table has references to', async () => {
             const references = await dbConn.getTableReferences('users');
             if (dbClient === 'cassandra' || dbClient === 'sqlite') {
               expect(references).to.have.length(0);
@@ -283,7 +283,7 @@ describe('db', () => {
         });
 
         describe('.getTableKeys', () => {
-          it('should list all tables keys', async() => {
+          it('should list all tables keys', async () => {
             const tableKeys = await dbConn.getTableKeys('users');
             if (dbClient === 'cassandra') {
               expect(tableKeys).to.have.length(1);
@@ -307,7 +307,7 @@ describe('db', () => {
         });
 
         describe('.getTableCreateScript', () => {
-          it('should return table create script', async() => {
+          it('should return table create script', async () => {
             const [createScript] = await dbConn.getTableCreateScript('users');
 
             if (dbClient === 'mysql') {
@@ -365,7 +365,7 @@ describe('db', () => {
         });
 
         describe('.getTableSelectScript', () => {
-          it('should return SELECT table script', async() => {
+          it('should return SELECT table script', async () => {
             const selectQuery = await dbConn.getTableSelectScript('users');
             if (dbClient === 'mysql') {
               expect(selectQuery).to.eql('SELECT `id`, `username`, `email`, `password`, `role_id`, `createdat` FROM `users`;');
@@ -380,7 +380,7 @@ describe('db', () => {
             }
           });
 
-          it('should return SELECT table script with schema if defined', async() => {
+          it('should return SELECT table script with schema if defined', async () => {
             const selectQuery = await dbConn.getTableSelectScript('users', 'public');
             if (dbClient === 'sqlserver') {
               expect(selectQuery).to.eql('SELECT [id], [username], [email], [password], [role_id], [createdat] FROM [public].[users];');
@@ -392,101 +392,101 @@ describe('db', () => {
 
 
         describe('.getTableInsertScript', () => {
-          it('should return INSERT INTO table script', async() => {
+          it('should return INSERT INTO table script', async () => {
             const insertQuery = await dbConn.getTableInsertScript('users');
             if (dbClient === 'mysql') {
               expect(insertQuery).to.eql([
                 'INSERT INTO `users` (`id`, `username`, `email`, `password`, `role_id`, `createdat`)\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             } else if (dbClient === 'sqlserver') {
               expect(insertQuery).to.eql([
                 'INSERT INTO [users] ([id], [username], [email], [password], [role_id], [createdat])\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             } else if (dbClient === 'postgresql' || dbClient === 'sqlite') {
               expect(insertQuery).to.eql([
                 'INSERT INTO "users" ("id", "username", "email", "password", "role_id", "createdat")\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             } else if (dbClient === 'cassandra') {
               expect(insertQuery).to.eql([
                 'INSERT INTO "users" ("id", "createdat", "email", "password", "role_id", "username")\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             } else {
               throw new Error('Invalid db client');
             }
           });
 
-          it('should return INSERT INTO table script with schema if defined', async() => {
+          it('should return INSERT INTO table script with schema if defined', async () => {
             const insertQuery = await dbConn.getTableInsertScript('users', 'public');
             if (dbClient === 'sqlserver') {
               expect(insertQuery).to.eql([
                 'INSERT INTO [public].[users] ([id], [username], [email], [password], [role_id], [createdat])\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             } else if (dbClient === 'postgresql' || dbClient === 'sqlite') {
               expect(insertQuery).to.eql([
                 'INSERT INTO "public"."users" ("id", "username", "email", "password", "role_id", "createdat")\n',
-                'VALUES (?, ?, ?, ?, ?, ?);',
+                'VALUES (?, ?, ?, ?, ?, ?);'
               ].join(' '));
             }
           });
         });
 
         describe('.getTableUpdateScript', () => {
-          it('should return UPDATE table script', async() => {
+          it('should return UPDATE table script', async () => {
             const updateQuery = await dbConn.getTableUpdateScript('users');
             if (dbClient === 'mysql') {
               expect(updateQuery).to.eql([
                 'UPDATE `users`\n',
                 'SET `id`=?, `username`=?, `email`=?, `password`=?, `role_id`=?, `createdat`=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             } else if (dbClient === 'sqlserver') {
               expect(updateQuery).to.eql([
                 'UPDATE [users]\n',
                 'SET [id]=?, [username]=?, [email]=?, [password]=?, [role_id]=?, [createdat]=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             } else if (dbClient === 'postgresql' || dbClient === 'sqlite') {
               expect(updateQuery).to.eql([
                 'UPDATE "users"\n',
                 'SET "id"=?, "username"=?, "email"=?, "password"=?, "role_id"=?, "createdat"=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             } else if (dbClient === 'cassandra') {
               expect(updateQuery).to.eql([
                 'UPDATE "users"\n',
                 'SET "id"=?, "createdat"=?, "email"=?, "password"=?, "role_id"=?, "username"=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             } else {
               throw new Error('Invalid db client');
             }
           });
 
-          it('should return UPDATE table script with schema if defined', async() => {
+          it('should return UPDATE table script with schema if defined', async () => {
             const updateQuery = await dbConn.getTableUpdateScript('users', 'public');
             if (dbClient === 'sqlserver') {
               expect(updateQuery).to.eql([
                 'UPDATE [public].[users]\n',
                 'SET [id]=?, [username]=?, [email]=?, [password]=?, [role_id]=?, [createdat]=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             } else if (dbClient === 'postgresql' || dbClient === 'sqlite') {
               expect(updateQuery).to.eql([
                 'UPDATE "public"."users"\n',
                 'SET "id"=?, "username"=?, "email"=?, "password"=?, "role_id"=?, "createdat"=?\n',
-                'WHERE <condition>;',
+                'WHERE <condition>;'
               ].join(' '));
             }
           });
         });
 
         describe('.getTableDeleteScript', () => {
-          it('should return table DELETE script', async() => {
+          it('should return table DELETE script', async () => {
             const deleteQuery = await dbConn.getTableDeleteScript('roles');
             if (dbClient === 'mysql') {
               expect(deleteQuery).to.contain('DELETE FROM `roles` WHERE <condition>;');
@@ -501,7 +501,7 @@ describe('db', () => {
             }
           });
 
-          it('should return table DELETE script with schema if defined', async() => {
+          it('should return table DELETE script with schema if defined', async () => {
             const deleteQuery = await dbConn.getTableDeleteScript('roles', 'public');
             if (dbClient === 'sqlserver') {
               expect(deleteQuery).to.contain('DELETE FROM [public].[roles] WHERE <condition>;');
@@ -512,33 +512,33 @@ describe('db', () => {
         });
 
         describe('.getViewCreateScript', () => {
-          it('should return CREATE VIEW script', async() => {
+          it('should return CREATE VIEW script', async () => {
             const [createScript] = await dbConn.getViewCreateScript('email_view');
 
             if (dbClient === 'mysql') {
               expect(createScript).to.contain([
                 'VIEW `email_view`',
                 'AS select `users`.`email` AS `email`,`users`.`password` AS `password`',
-                'from `users`',
+                'from `users`'
               ].join(' '));
             } else if (dbClient === 'postgresql') {
               expect(createScript).to.eql([
                 'CREATE OR REPLACE VIEW "public".email_view AS',
                 ' SELECT users.email,',
                 '    users.password',
-                '   FROM users;',
+                '   FROM users;'
               ].join('\n'));
             } else if (dbClient === 'sqlserver') {
               expect(createScript).to.eql([
                 '\nCREATE VIEW dbo.email_view AS',
                 'SELECT dbo.users.email, dbo.users.password',
-                'FROM dbo.users;\n',
+                'FROM dbo.users;\n'
               ].join('\n'));
             } else if (dbClient === 'sqlite') {
               expect(createScript).to.eql([
                 'CREATE VIEW email_view AS',
                 '  SELECT users.email, users.password',
-                '  FROM users',
+                '  FROM users'
               ].join('\n'));
             } else if (dbClient === 'cassandra') {
               expect(createScript).to.eql(undefined);
@@ -549,7 +549,7 @@ describe('db', () => {
         });
 
         describe('.getRoutineCreateScript', () => {
-          it('should return CREATE PROCEDURE/FUNCTION script', async() => {
+          it('should return CREATE PROCEDURE/FUNCTION script', async () => {
             const [createScript] = await dbConn.getRoutineCreateScript('users_count', 'Procedure');
 
             if (dbClient === 'mysql') {
@@ -558,7 +558,7 @@ describe('db', () => {
                 'PROCEDURE `users_count`()',
                 'BEGIN',
                 '  SELECT COUNT(*) FROM users;',
-                'END',
+                'END'
               ].join('\n'));
             } else if (dbClient === 'postgresql') {
               expect(createScript).to.eql([
@@ -567,7 +567,7 @@ describe('db', () => {
                 ' LANGUAGE sql',
                 'AS $function$',
                 '  SELECT COUNT(*) FROM users AS total;',
-                '$function$\n',
+                '$function$\n'
               ].join('\n'));
             } else if (dbClient === 'sqlserver') {
               expect(createScript).to.contain('CREATE PROCEDURE dbo.users_count');
@@ -590,7 +590,7 @@ describe('db', () => {
                 postgresql: 'SELECT pg_sleep(10);',
                 mysql: 'SELECT SLEEP(10000);',
                 sqlserver: 'WAITFOR DELAY \'00:00:10\'; SELECT 1 AS number',
-                sqlite: '',
+                sqlite: ''
               };
 
               // Since sqlite does not has a query command to sleep
@@ -613,7 +613,7 @@ describe('db', () => {
                 try {
                   await Promise.all([
                     executing,
-                    query.cancel(),
+                    query.cancel()
                   ]);
                 } catch (err) {
                   error = err;

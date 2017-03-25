@@ -43,7 +43,7 @@ export default function (server, database) {
         getTableCreateScript: (table) => getTableCreateScript(client, table),
         getViewCreateScript: (view) => getViewCreateScript(client, view),
         getRoutineCreateScript: (routine) => getRoutineCreateScript(client, routine),
-        truncateAllTables: (db) => truncateAllTables(client, db),
+        truncateAllTables: (db) => truncateAllTables(client, db)
       });
     });
   });
@@ -88,7 +88,7 @@ export function listTableColumns(client, database, table) {
     `;
     const params = [
       database,
-      table,
+      table
     ];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
@@ -98,7 +98,7 @@ export function listTableColumns(client, database, table) {
         .sort((a, b) => b.position - a.position)
         .map((row) => ({
           columnName: row.column_name,
-          dataType: row.type,
+          dataType: row.type
         }))
       );
     });
@@ -132,7 +132,7 @@ export function getTableKeys(client, database, table) {
     `;
     const params = [
       database,
-      table,
+      table
     ];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
@@ -140,7 +140,7 @@ export function getTableKeys(client, database, table) {
         constraintName: null,
         columnName: row.column_name,
         referencedTable: null,
-        keyType: 'PRIMARY KEY',
+        keyType: 'PRIMARY KEY'
       })));
     });
   });
@@ -221,9 +221,9 @@ function configDatabase(server, database) {
   const config = {
     contactPoints: [server.config.host],
     protocolOptions: {
-      port: server.config.port,
+      port: server.config.port
     },
-    keyspace: database.database,
+    keyspace: database.database
   };
 
   if (server.sshTunnel) {
@@ -247,7 +247,7 @@ function parseRowQueryResult(data, command) {
     rows: data.rows || [],
     fields: data.columns || [],
     rowCount: isSelect ? (data.rowLength || 0) : undefined,
-    affectedRows: !isSelect && !isNaN(data.rowLength) ? data.rowLength : undefined,
+    affectedRows: !isSelect && !isNaN(data.rowLength) ? data.rowLength : undefined
   };
 }
 

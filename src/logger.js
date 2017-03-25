@@ -10,7 +10,7 @@ export default function createLogger(namespace) {
   const debugLogger = debug(`sqlectron-core:${namespace}`);
   loggers[namespace] = {
     debug: debugLogger.bind(debugLogger),
-    error: debugLogger.bind(debugLogger),
+    error: debugLogger.bind(debugLogger)
   };
 
   // The logger is load through a function

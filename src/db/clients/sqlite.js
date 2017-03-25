@@ -6,7 +6,7 @@ import createLogger from '../../logger';
 const logger = createLogger('db:clients:sqlite');
 
 const sqliteErrors = {
-  CANCELED: 'SQLITE_INTERRUPT',
+  CANCELED: 'SQLITE_INTERRUPT'
 };
 
 
@@ -38,7 +38,7 @@ export default async function (server, database) {
     getTableCreateScript: (table) => getTableCreateScript(conn, table),
     getViewCreateScript: (view) => getViewCreateScript(conn, view),
     getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
-    truncateAllTables: () => truncateAllTables(conn),
+    truncateAllTables: () => truncateAllTables(conn)
   };
 }
 
@@ -92,7 +92,7 @@ export function query(conn, queryText) {
       }
 
       queryConnection.interrupt();
-    },
+    }
   };
 }
 
@@ -150,7 +150,7 @@ export async function listTableColumns(conn, database, table) {
 
   return data.map((row) => ({
     columnName: row.name,
-    dataType: row.type,
+    dataType: row.type
   }));
 }
 
@@ -237,7 +237,7 @@ export async function truncateAllTables(conn) {
 
 function configDatabase(server, database) {
   return {
-    database: database.database,
+    database: database.database
   };
 }
 
@@ -251,7 +251,7 @@ function parseRowQueryResult({ data, statement, changes }) {
     rows,
     fields: Object.keys(rows[0] || {}).map((name) => ({ name })),
     rowCount: data && data.length,
-    affectedRows: changes || 0,
+    affectedRows: changes || 0
   };
 }
 
@@ -273,7 +273,7 @@ export function driverExecuteQuery(conn, queryArgs) {
       return resolve({
         data,
         lastID: this.lastID,
-        changes: this.changes,
+        changes: this.changes
       });
     });
   });
@@ -287,7 +287,7 @@ export function driverExecuteQuery(conn, queryArgs) {
 
         return {
           ...result,
-          statement,
+          statement
         };
       })
     );

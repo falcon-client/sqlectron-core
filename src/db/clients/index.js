@@ -15,8 +15,8 @@ export const CLIENTS = [
     defaultPort: 3306,
     disabledFeatures: [
       'server:schema',
-      'server:domain',
-    ],
+      'server:domain'
+    ]
   },
   {
     key: 'postgresql',
@@ -24,13 +24,13 @@ export const CLIENTS = [
     defaultDatabase: 'postgres',
     defaultPort: 5432,
     disabledFeatures: [
-      'server:domain',
-    ],
+      'server:domain'
+    ]
   },
   {
     key: 'sqlserver',
     name: 'Microsoft SQL Server',
-    defaultPort: 1433,
+    defaultPort: 1433
   },
   {
     key: 'sqlite',
@@ -47,8 +47,8 @@ export const CLIENTS = [
       'server:domain',
       'server:ssh',
       'scriptCreateTable',
-      'cancelQuery',
-    ],
+      'cancelQuery'
+    ]
   },
   {
     key: 'cassandra',
@@ -62,9 +62,9 @@ export const CLIENTS = [
       'server:schema',
       'server:domain',
       'scriptCreateTable',
-      'cancelQuery',
-    ],
-  },
+      'cancelQuery'
+    ]
+  }
 ];
 
 
@@ -73,5 +73,5 @@ export default {
   postgresql,
   sqlserver,
   sqlite,
-  cassandra,
+  cassandra
 };

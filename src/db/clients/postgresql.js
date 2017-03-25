@@ -9,7 +9,7 @@ import errors from '../../errors';
 const logger = createLogger('db:clients:postgresql');
 
 const pgErrors = {
-  CANCELED: '57014',
+  CANCELED: '57014'
 };
 
 /**
@@ -27,7 +27,7 @@ export default async function (server, database) {
   logger().debug('create driver client for postgres with config %j', dbConfig);
 
   const conn = {
-    pool: new pg.Pool(dbConfig),
+    pool: new pg.Pool(dbConfig)
   };
 
   logger().debug('connected');
@@ -53,7 +53,7 @@ export default async function (server, database) {
     getTableCreateScript: (table, schema = defaultSchema) => getTableCreateScript(conn, table, schema),
     getViewCreateScript: (view, schema = defaultSchema) => getViewCreateScript(conn, view, schema),
     getRoutineCreateScript: (routine, type, schema = defaultSchema) => getRoutineCreateScript(conn, routine, type, schema),
-    truncateAllTables: (_, schema = defaultSchema) => truncateAllTables(conn, schema),
+    truncateAllTables: (_, schema = defaultSchema) => truncateAllTables(conn, schema)
   };
 }
 
@@ -114,7 +114,7 @@ export async function listRoutines(conn, filter) {
   return data.rows.map((row) => ({
     schema: row.routine_schema,
     routineName: row.routine_name,
-    routineType: row.routine_type,
+    routineType: row.routine_type
   }));
 }
 
@@ -128,14 +128,14 @@ export async function listTableColumns(conn, database, table, schema) {
 
   const params = [
     schema,
-    table,
+    table
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
 
   return data.rows.map((row) => ({
     columnName: row.column_name,
-    dataType: row.data_type,
+    dataType: row.data_type
   }));
 }
 
@@ -149,7 +149,7 @@ export async function listTableTriggers(conn, table, schema) {
 
   const params = [
     schema,
-    table,
+    table
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -166,7 +166,7 @@ export async function listTableIndexes(conn, table, schema) {
 
   const params = [
     schema,
-    table,
+    table
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -200,7 +200,7 @@ export async function getTableReferences(conn, table, schema) {
 
   const params = [
     table,
-    schema,
+    schema
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -230,7 +230,7 @@ export async function getTableKeys(conn, database, table, schema) {
 
   const params = [
     table,
-    schema,
+    schema
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -239,7 +239,7 @@ export async function getTableKeys(conn, database, table, schema) {
     constraintName: row.constraint_name,
     columnName: row.column_name,
     referencedTable: row.referenced_table_name,
-    keyType: row.constraint_type,
+    keyType: row.constraint_type
   }));
 }
 
@@ -249,7 +249,7 @@ export function query(conn, queryText) {
   let canceling = false;
   const cancelable = createCancelablePromise({
     ...errors.CANCELED_BY_USER,
-    sqlectronError: 'CANCELED_BY_USER',
+    sqlectronError: 'CANCELED_BY_USER'
   });
 
   return {
@@ -258,7 +258,7 @@ export function query(conn, queryText) {
         const connClient = { connection };
 
         const dataPid = await driverExecuteQuery(connClient, {
-          query: 'SELECT pg_backend_pid() AS pid',
+          query: 'SELECT pg_backend_pid() AS pid'
         });
 
         pid = dataPid.rows[0].pid;
@@ -266,7 +266,7 @@ export function query(conn, queryText) {
         try {
           const data = await Promise.race([
             cancelable.wait(),
-            executeQuery(connClient, queryText),
+            executeQuery(connClient, queryText)
           ]);
 
           pid = null;
@@ -293,7 +293,7 @@ export function query(conn, queryText) {
       canceling = true;
       try {
         const data = await driverExecuteQuery(conn, {
-          query: `SELECT pg_cancel_backend(${pid});`,
+          query: `SELECT pg_cancel_backend(${pid});`
         });
 
         if (!data.rows[0].pg_cancel_backend) {
@@ -305,7 +305,7 @@ export function query(conn, queryText) {
         canceling = false;
         throw err;
       }
-    },
+    }
   };
 }
 
@@ -396,7 +396,7 @@ export async function getTableCreateScript(conn, table, schema) {
 
   const params = [
     table,
-    schema,
+    schema
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -427,7 +427,7 @@ export async function getRoutineCreateScript(conn, routine, _, schema) {
 
   const params = [
     routine,
-    schema,
+    schema
   ];
 
   const data = await driverExecuteQuery(conn, { query: sql, params });
@@ -463,7 +463,7 @@ export async function truncateAllTables(conn, schema) {
     `;
 
     const params = [
-      schema,
+      schema
     ];
 
     const data = await driverExecuteQuery(connClient, { query: sql, params });
@@ -484,7 +484,7 @@ function configDatabase(server, database) {
     user: server.config.user,
     password: server.config.password,
     database: database.database,
-    max: 5, // max idle connections per time (30 secs)
+    max: 5 // max idle connections per time (30 secs)
   };
 
   if (server.sshTunnel) {
@@ -507,7 +507,7 @@ function parseRowQueryResult(data, command) {
     rows: data.rows,
     fields: data.fields,
     rowCount: isSelect ? data.rowCount : undefined,
-    affectedRows: !isSelect && !isNaN(data.rowCount) ? data.rowCount : undefined,
+    affectedRows: !isSelect && !isNaN(data.rowCount) ? data.rowCount : undefined
   };
 }
 
@@ -525,7 +525,7 @@ function driverExecuteQuery(conn, queryArgs) {
     const args = {
       text: queryArgs.query,
       values: queryArgs.params,
-      multiResult: queryArgs.multiple,
+      multiResult: queryArgs.multiple
     };
 
     // node-postgres has support for Promise query

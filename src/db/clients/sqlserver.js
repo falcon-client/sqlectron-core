@@ -7,7 +7,7 @@ import createLogger from '../../logger';
 const logger = createLogger('db:clients:sqlserver');
 
 const mmsqlErrors = {
-  CANCELED: 'ECANCEL',
+  CANCELED: 'ECANCEL'
 };
 
 
@@ -39,7 +39,7 @@ export default async function (server, database) {
     getTableCreateScript: (table) => getTableCreateScript(conn, table),
     getViewCreateScript: (view) => getViewCreateScript(conn, view),
     getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
-    truncateAllTables: () => truncateAllTables(conn),
+    truncateAllTables: () => truncateAllTables(conn)
   };
 }
 
@@ -98,7 +98,7 @@ export function query(conn, queryText) {
       }
 
       queryRequest.cancel();
-    },
+    }
   };
 }
 
@@ -141,7 +141,7 @@ export async function listTables(conn, filter) {
 
   return data.map((item) => ({
     schema: item.table_schema,
-    name: item.table_name,
+    name: item.table_name
   }));
 }
 
@@ -160,7 +160,7 @@ export async function listViews(conn, filter) {
 
   return data.map((item) => ({
     schema: item.table_schema,
-    name: item.table_name,
+    name: item.table_name
   }));
 }
 
@@ -182,7 +182,7 @@ export async function listRoutines(conn, filter) {
   return data.map((row) => ({
     schema: row.routine_schema,
     routineName: row.routine_name,
-    routineType: row.routine_type,
+    routineType: row.routine_type
   }));
 }
 
@@ -197,7 +197,7 @@ export async function listTableColumns(conn, database, table) {
 
   return data.map((row) => ({
     columnName: row.column_name,
-    dataType: row.data_type,
+    dataType: row.data_type
   }));
 }
 
@@ -285,7 +285,7 @@ export async function getTableKeys(conn, database, table) {
     constraintName: row.constraint_name,
     columnName: row.column_name,
     referencedTable: row.referenced_table_name,
-    keyType: row.constraint_type,
+    keyType: row.constraint_type
   }));
 }
 
@@ -415,11 +415,11 @@ function configDatabase(server, database) {
     appName: server.config.applicationName || 'sqlectron',
     domain: server.config.domain,
     pool: {
-      max: 5,
+      max: 5
     },
     options: {
-      encrypt: server.config.ssl,
-    },
+      encrypt: server.config.ssl
+    }
   };
 
   if (server.sshTunnel) {
@@ -440,7 +440,7 @@ function parseRowQueryResult(data, request, command) {
     rows: data,
     fields: Object.keys(data[0] || {}).map((name) => ({ name })),
     rowCount: data.length,
-    affectedRows: request.rowsAffected,
+    affectedRows: request.rowsAffected
   };
 }
 
@@ -462,7 +462,7 @@ export async function driverExecuteQuery(conn, queryArgs) {
 
     return {
       request,
-      data: await request.query(queryArgs.query),
+      data: await request.query(queryArgs.query)
     };
   };
 

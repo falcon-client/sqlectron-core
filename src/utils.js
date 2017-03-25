@@ -119,6 +119,6 @@ export function createCancelablePromise(error, timeIdle = 100) {
     },
     discard() {
       discarded = true;
-    },
+    }
   };
 }

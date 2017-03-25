@@ -6,7 +6,7 @@ import cassandraDriver from 'cassandra-driver';
 export default function run(config) {
   before(async () => {
     const client = new cassandraDriver.Client({
-      contactPoints: [config.host],
+      contactPoints: [config.host]
     });
     const script = fs.readFileSync(path.join(__dirname, 'schema/schema.cql'), { encoding: 'utf8' });
     const queries = script.split(';').filter((query) => query.trim().length);

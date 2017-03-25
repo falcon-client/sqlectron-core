@@ -1,14 +1,14 @@
 {
   "name": "falcon-core",
   "version": "0.0.0",
-  "description": "falcon-core",
+  "description": "The cross-database ORM that powers falcon",
   "main": "lib/index.js",
   "author": "The Falcon Team",
   "scripts": {
     "compile": "babel -d lib/ src/",
     "watch": "babel --watch -d lib/ src/",
     "prepublish": "npm run compile",
-    "lint": "eslint src/ spec/",
+    "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
     "test:mysql": "DB_CLIENTS=mysql npm run test",
     "test:sqlite": "DB_CLIENTS=sqlite npm run test",
     "test:sqlserver": "DB_CLIENTS=sqlserver npm run test",
@@ -28,41 +28,43 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/sqlectron/falcon-core"
+    "url": "https://github.com/falcon-client/falcon-core"
   },
   "engines": {
     "node": ">=6",
     "npm": ">=3"
   },
   "dependencies": {
-    "cassandra-driver": "^3.1.1",
-    "debug": "^2.2.0",
-    "mssql": "^3.0.0",
-    "mysql": "^2.10.2",
+    "cassandra-driver": "^3.2.0",
+    "debug": "^2.6.3",
+    "mssql": "^3.3.0",
+    "mysql": "^2.13.0",
     "pg": "git+https://github.com/maxcnunes/node-postgres.git#multiple-statements-v6.1.0",
-    "portfinder": "^0.4.0",
+    "portfinder": "^1.0.13",
     "sql-query-identifier": "^1.1.0",
     "sqlite3": "^3.1.8",
-    "ssh2": "^0.5.0",
-    "uuid": "^3.0.0",
-    "valida": "^2.0.0"
+    "ssh2": "^0.5.4",
+    "uuid": "^3.0.1",
+    "valida": "^2.4.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
-    "babel-eslint": "^6.1.2",
+    "babel-cli": "^6.24.0",
+    "babel-eslint": "^7.2.1",
     "babel-plugin-syntax-object-rest-spread": "^6.13.0",
-    "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.9.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.14.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-plugin-transform-async-to-generator": "^6.22.0",
+    "babel-plugin-transform-es2015-destructuring": "^6.23.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
-    "eslint": "^3.5.0",
-    "eslint-config-airbnb-base": "^7.1.0",
-    "eslint-plugin-babel": "^3.3.0",
-    "eslint-plugin-import": "^1.15.0",
-    "mocha": "^3.0.2",
-    "sinon": "^1.17.2",
-    "sqlite3": "^3.1.0"
+    "chai-as-promised": "^6.0.0",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-config-bliss": "^1.0.2",
+    "eslint-formatter-pretty": "^1.1.0",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
+    "sinon": "^2.1.0",
+    "sqlite3": "^3.1.8"
   }
 }

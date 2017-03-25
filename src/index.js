@@ -8,5 +8,5 @@ export {
   config,
   servers,
   db,
-  setLogger,
+  setLogger
 };

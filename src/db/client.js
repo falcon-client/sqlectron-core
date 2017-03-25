@@ -38,7 +38,7 @@ export function createConnection(server, database) {
     getTableDeleteScript: getTableDeleteScript.bind(null, server, database),
     getViewCreateScript: getViewCreateScript.bind(null, server, database),
     getRoutineCreateScript: getRoutineCreateScript.bind(null, server, database),
-    truncateAllTables: truncateAllTables.bind(null, server, database),
+    truncateAllTables: truncateAllTables.bind(null, server, database)
   };
 }
 
@@ -77,7 +77,7 @@ async function connect(server, database) {
 
     const [connection] = await Promise.all([
       driver(server, database),
-      handleSSHError(server.sshTunnel),
+      handleSSHError(server.sshTunnel)
     ]);
 
     database.connection = connection;
@@ -201,7 +201,7 @@ async function getTableSelectScript(server, database, table, schema) {
   const schemaSelection = resolveSchema(database, schema);
   return [
     `SELECT ${wrap(database, columnNames).join(', ')}`,
-    `FROM ${schemaSelection}${wrap(database, table)};`,
+    `FROM ${schemaSelection}${wrap(database, table)};`
   ].join(' ');
 }
 
@@ -212,7 +212,7 @@ async function getTableInsertScript(server, database, table, schema) {
   return [
     `INSERT INTO ${schemaSelection}${wrap(database, table)}`,
     `(${wrap(database, columnNames).join(', ')})\n`,
-    `VALUES (${columnNames.fill('?').join(', ')});`,
+    `VALUES (${columnNames.fill('?').join(', ')});`
   ].join(' ');
 }
 
@@ -223,7 +223,7 @@ async function getTableUpdateScript(server, database, table, schema) {
   return [
     `UPDATE ${schemaSelection}${wrap(database, table)}\n`,
     `SET ${setColumnForm}\n`,
-    'WHERE <condition>;',
+    'WHERE <condition>;'
   ].join(' ');
 }
 
@@ -231,7 +231,7 @@ function getTableDeleteScript(server, database, table, schema) {
   const schemaSelection = resolveSchema(database, schema);
   return [
     `DELETE FROM ${schemaSelection}${wrap(database, table)}`,
-    'WHERE <condition>;',
+    'WHERE <condition>;'
   ].join(' ');
 }
 

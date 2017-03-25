@@ -19,8 +19,8 @@ export function createServer(serverConfig) {
 
     config: {
       ...serverConfig,
-      host: serverConfig.host || serverConfig.socketPath,
-    },
+      host: serverConfig.host || serverConfig.socketPath
+    }
   };
 
   /**
@@ -50,12 +50,12 @@ export function createServer(serverConfig) {
       const database = {
         database: dbName,
         connection: null,
-        connecting: false,
+        connecting: false
       };
 
       server.db[dbName] = createConnection(server, database);
 
       return server.db[dbName];
-    },
+    }
   };
 }

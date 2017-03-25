@@ -35,7 +35,7 @@ export async function update(server) {
   data.servers = [
     ...data.servers.slice(0, index),
     server,
-    ...data.servers.slice(index + 1),
+    ...data.servers.slice(index + 1)
   ];
 
   await config.save(data);
@@ -57,7 +57,7 @@ export async function removeById(id) {
   const index = data.servers.findIndex((srv) => srv.id === id);
   data.servers = [
     ...data.servers.slice(0, index),
-    ...data.servers.slice(index + 1),
+    ...data.servers.slice(index + 1)
   ];
 
   await config.save(data);

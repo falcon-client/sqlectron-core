@@ -81,7 +81,7 @@ async function configTunnel(serverInfo) {
     srcPort: 0,
     srcHost: 'localhost',
     localHost: 'localhost',
-    localPort: await getPort(),
+    localPort: await getPort()
   };
   if (serverInfo.ssh.password) config.password = serverInfo.ssh.password;
   if (serverInfo.ssh.passphrase) config.passphrase = serverInfo.ssh.passphrase;

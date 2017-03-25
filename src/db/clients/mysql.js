@@ -9,7 +9,7 @@ const logger = createLogger('db:clients:mysql');
 
 const mysqlErrors = {
   EMPTY_QUERY: 'ER_EMPTY_QUERY',
-  CONNECTION_LOST: 'PROTOCOL_CONNECTION_LOST',
+  CONNECTION_LOST: 'PROTOCOL_CONNECTION_LOST'
 };
 
 
@@ -18,7 +18,7 @@ export default async function (server, database) {
   logger().debug('create driver client for mysql with config %j', dbConfig);
 
   const conn = {
-    pool: mysql.createPool(dbConfig),
+    pool: mysql.createPool(dbConfig)
   };
 
   // light solution to test connection with with the server
@@ -43,7 +43,7 @@ export default async function (server, database) {
     getTableCreateScript: (table) => getTableCreateScript(conn, table),
     getViewCreateScript: (view) => getViewCreateScript(conn, view),
     getRoutineCreateScript: (routine, type) => getRoutineCreateScript(conn, routine, type),
-    truncateAllTables: () => truncateAllTables(conn),
+    truncateAllTables: () => truncateAllTables(conn)
   };
 }
 
@@ -92,7 +92,7 @@ export async function listRoutines(conn) {
 
   return data.map((row) => ({
     routineName: row.routine_name,
-    routineType: row.routine_type,
+    routineType: row.routine_type
   }));
 }
 
@@ -105,14 +105,14 @@ export async function listTableColumns(conn, database, table) {
   `;
 
   const params = [
-    table,
+    table
   ];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
   return data.map((row) => ({
     columnName: row.column_name,
-    dataType: row.data_type,
+    dataType: row.data_type
   }));
 }
 
@@ -125,7 +125,7 @@ export async function listTableTriggers(conn, table) {
   `;
 
   const params = [
-    table,
+    table
   ];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
@@ -138,7 +138,7 @@ export async function listTableIndexes(conn, database, table) {
 
   const params = [
     table,
-    database,
+    database
   ];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
@@ -160,7 +160,7 @@ export async function getTableReferences(conn, table) {
   `;
 
   const params = [
-    table,
+    table
   ];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
@@ -181,7 +181,7 @@ export async function getTableKeys(conn, database, table) {
   `;
 
   const params = [
-    table,
+    table
   ];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
@@ -190,7 +190,7 @@ export async function getTableKeys(conn, database, table) {
     constraintName: `${row.constraint_name} KEY`,
     columnName: row.column_name,
     referencedTable: row.referenced_table_name,
-    keyType: `${row.key_type} KEY`,
+    keyType: `${row.key_type} KEY`
   }));
 }
 
@@ -200,7 +200,7 @@ export function query(conn, queryText) {
   let canceling = false;
   const cancelable = createCancelablePromise({
     ...errors.CANCELED_BY_USER,
-    sqlectronError: 'CANCELED_BY_USER',
+    sqlectronError: 'CANCELED_BY_USER'
   });
 
   return {
@@ -209,7 +209,7 @@ export function query(conn, queryText) {
         const connClient = { connection };
 
         const { data: dataPid } = await driverExecuteQuery(connClient, {
-          query: 'SELECT connection_id() AS pid',
+          query: 'SELECT connection_id() AS pid'
         });
 
         pid = dataPid[0].pid;
@@ -217,7 +217,7 @@ export function query(conn, queryText) {
         try {
           const data = await Promise.race([
             cancelable.wait(),
-            executeQuery(connClient, queryText),
+            executeQuery(connClient, queryText)
           ]);
 
           pid = null;
@@ -244,14 +244,14 @@ export function query(conn, queryText) {
       canceling = true;
       try {
         await driverExecuteQuery(conn, {
-          query: `kill ${pid};`,
+          query: `kill ${pid};`
         });
         cancelable.cancel();
       } catch (err) {
         canceling = false;
         throw err;
       }
-    },
+    }
   };
 }
 
@@ -359,7 +359,7 @@ function configDatabase(server, database) {
     multipleStatements: true,
     dateStrings: true,
     supportBigNumbers: true,
-    bigNumberStrings: true,
+    bigNumberStrings: true
   };
 
   if (server.sshTunnel) {
@@ -372,7 +372,7 @@ function configDatabase(server, database) {
       // It is not the best recommend way to use SSL with node-mysql
       // https://github.com/felixge/node-mysql#ssl-options
       // But this way we have compatibility with all clients.
-      rejectUnauthorized: false,
+      rejectUnauthorized: false
     };
   }
 
@@ -397,7 +397,7 @@ function parseRowQueryResult(data, fields, command) {
     rows: isSelect ? data : [],
     fields: fields || [],
     rowCount: isSelect ? (data || []).length : undefined,
-    affectedRows: !isSelect ? data.affectedRows : undefined,
+    affectedRows: !isSelect ? data.affectedRows : undefined
   };
 }
 

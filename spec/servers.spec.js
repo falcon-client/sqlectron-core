@@ -26,7 +26,7 @@ describe('servers', () => {
         port: 3306,
         database: 'authentication',
         user: 'root',
-        password: 'password',
+        password: 'password'
       };
       const createdServer = await servers.add(newServer);
       expect(createdServer).to.have.property('id');
@@ -53,8 +53,8 @@ describe('servers', () => {
           port: 22,
           user: 'root',
           privateKey: '~/.ssh/id_rsa',
-          privateKeyWithPassphrase: true,
-        },
+          privateKeyWithPassphrase: true
+        }
       };
       const createdServer = await servers.add(newServer);
       expect(createdServer).to.have.property('id');
@@ -79,7 +79,7 @@ describe('servers', () => {
         port: 3306,
         database: 'mydb',
         user: 'usr',
-        password: 'pwd',
+        password: 'pwd'
       };
       const updatedServer = await servers.update(serverToUpdate);
       expect(updatedServer).to.eql(serverToUpdate);
@@ -102,7 +102,7 @@ describe('servers', () => {
           port: 3306,
           database: 'authentication',
           user: 'root',
-          password: 'password',
+          password: 'password'
         };
         const createdServer = await servers.addOrUpdate(newServer);
         expect(createdServer).to.have.property('id');
@@ -127,7 +127,7 @@ describe('servers', () => {
           port: 3306,
           database: 'mydb',
           user: 'usr',
-          password: 'pwd',
+          password: 'pwd'
         };
         const updatedServer = await servers.addOrUpdate(serverToUpdate);
         expect(updatedServer).to.eql(serverToUpdate);
