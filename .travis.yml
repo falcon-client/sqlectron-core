@@ -1,5 +1,8 @@
 language: node_js
 
+node_js:
+  - 7
+
 env:
   # TODO: test cassandra with docker on travis
   # While that is not configured we do not
