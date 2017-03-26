@@ -18,3 +18,7 @@ before_install:
 install:
   - npm install
   - docker-compose up
+
+test:
+  - docker-compose ps
+  - npm test
