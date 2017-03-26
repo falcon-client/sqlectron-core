@@ -4,6 +4,10 @@ import { readJSONFile } from './../src/utils';
 import utilsStub from './utils-stub';
 
 
+function loadConfig() {
+  return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
+}
+
 describe('servers', () => {
   utilsStub.getConfigPath.install({ copyFixtureToTemp: true });
 
@@ -149,8 +153,4 @@ describe('servers', () => {
       expect(configAfter.servers.find((srv) => srv.name === 'pg-vm')).to.eql(undefined);
     });
   });
-
-  function loadConfig() {
-    return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
-  }
 });

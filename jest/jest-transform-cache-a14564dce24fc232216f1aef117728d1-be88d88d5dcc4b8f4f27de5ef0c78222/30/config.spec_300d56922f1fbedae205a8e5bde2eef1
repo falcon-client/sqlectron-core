@@ -1,0 +1,26 @@
+'use strict';var _chai = require('chai');
+var _src = require('../src');
+var _utils = require('./../src/utils');
+var _utilsStub = require('./utils-stub');var _utilsStub2 = _interopRequireDefault(_utilsStub);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function _asyncToGenerator(fn) {return function () {var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {function step(key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {return Promise.resolve(value).then(function (value) {step("next", value);}, function (err) {step("throw", err);});}}return step("next");});};}
+
+
+function loadConfig() {
+  return (0, _utils.readJSONFile)(_utilsStub2.default.TMP_FIXTURE_PATH);
+}
+
+describe('config', () => {
+  _utilsStub2.default.getConfigPath.install({ copyFixtureToTemp: true });
+
+  describe('.prepare', () => {
+    it('should include id for those servers without it', _asyncToGenerator(function* () {
+      const findItem = function (data) {return data.servers.find(function (srv) {return srv.name === 'without-id';});};
+
+      const fixtureBefore = yield loadConfig();
+      yield _src.config.prepare();
+      const fixtureAfter = yield loadConfig();
+
+      (0, _chai.expect)(findItem(fixtureBefore)).to.not.have.property('id');
+      (0, _chai.expect)(findItem(fixtureAfter)).to.have.property('id');
+    }));
+  });
+});

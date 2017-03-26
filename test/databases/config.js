@@ -1,6 +1,8 @@
 import url from 'url';
 import path from 'path';
 
+require('dotenv').config();
+
 export default {
   postgresql: {
     host: url.parse(process.env.POSTGRES_PORT).hostname,

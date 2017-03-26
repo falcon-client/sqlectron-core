@@ -3,5 +3,5 @@ node_modules
 npm-debug.log
 *.bak
 lib
-spec/fixtures/.tmp.sqlectron.json
+test/fixtures/.tmp.sqlectron.json
 sqlectron.db
