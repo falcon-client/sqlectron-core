@@ -18,6 +18,9 @@ before_install:
   - npm cache clean
 
 before_script:
+  - sudo /etc/init.d/mysql stop
+  - sudo /etc/init.d/postgres stop
+  - sudo /etc/init.d/cassandra stop
   - docker-compose up
   - docker-compose ps
 
