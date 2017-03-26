@@ -19,10 +19,8 @@ before_install:
 
 before_script:
   - sudo /etc/init.d/mysql stop
-  - sudo /etc/init.d/postgres stop
-  - sudo /etc/init.d/cassandra stop
-  - docker-compose up
-  - docker-compose ps
+  - sudo pg_ctl stop
+  - sudo service cassandra stop
 
 after_script:
   - docker-compose down
