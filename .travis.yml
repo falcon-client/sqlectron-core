@@ -1,59 +1,20 @@
+sudo: required
+
 language: node_js
 
 node_js:
   - 7
 
-env:
-  # TODO: test cassandra with docker on travis
-  # While that is not configured we do not
-  # run automated test for cassandra client
-  - CASSANDRA_PORT=tcp://localhost:9042
-  - DB_CLIENTS=mysql,postgresql,sqlserver,sqlite
-  # postgres
-  - POSTGRES_PORT=tcp://localhost:5432
-  - POSTGRES_ENV_POSTGRES_USER=postgres
-  - POSTGRES_ENV_POSTGRES_PASSWORD=password
-  - POSTGRES_ENV_POSTGRES_DB=sqlectron
-  - POSTGRES_PATH=C:\Program Files\PostgreSQL\9.4
-  - PGUSER=postgres
-  - PGPASSWORD=password
-  # mysql
-  - MYSQL_PORT=tcp://localhost:3306
-  - MYSQL_ENV_MYSQL_USER=root
-  - MYSQL_ENV_MYSQL_PASSWORD=password
-  - MYSQL_ENV_MYSQL_DATABASE=sqlectron
-  - MYSQL_PATH=C:\Program Files\MySql\MySQL Server 5.7
-  - MYSQL_PWD=password
-  # sql server
-  - SQLSERVER_ENV_SQLSERVER_HOST=localhost
-  - SQLSERVER_ENV_SQLSERVER_PORT=1433
-  - SQLSERVER_ENV_SQLSERVER_USER=sa
-  - SQLSERVER_ENV_SQLSERVER_PASSWORD=password
-  - SQLSERVER_ENV_SQLSERVER_DATABASE=sqlectron
-
 services:
-  - mysql
-  - postgresql
-  # - sqlserver
+  - docker
 
 before_install:
   - npm -v
   - node -v
+  - docker version
+  - docker-compose version
   - npm cache clean
 
 install:
   - npm install
-
-before_script:
-  # postgres
-  - createdb sqlectron
-  - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
-  # mysql
-  - mysql -e "create database sqlectron;" --user=root
-  - mysql sqlectron < test/databases/mysql/schema/schema.sql --user=root
-  # sqlserver
-  # - ./appveyor-sqlserver.ps1 SQL2008R2SP2
-  # - sql -S localhost,1433 -U sa -P password -Q "CREATE DATABASE sqlectron" -d "master"
-  # - sql -S localhost,1433 -U sa -P password -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
-  # - sql -S localhost,1433 -U sa -P password -Q "select table_name from information_schema.tables" -d "sqlectron"
-  - npm test
+  - docker-compose up
