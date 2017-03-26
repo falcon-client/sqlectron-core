@@ -22,7 +22,7 @@ before_script:
   - sudo fuser -k 5432/tcp
   #- sudo fuser -k 7000/tcp
   #- sudo fuser -k 9042/tcp
-  - sudo service cassandra stop
+  #- sudo service cassandra stop
 
 after_script:
   - docker-compose down
