@@ -19,7 +19,9 @@ before_install:
 
 before_script:
   - sudo /etc/init.d/mysql stop
-  - sudo pg_ctl stop
+  - sudo fuser -k 5432/tcp
+  - sudo fuser -k 7000/tcp
+  - sudo fuser -k 9042/tcp
   - sudo service cassandra stop
 
 after_script:
