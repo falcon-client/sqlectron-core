@@ -49,13 +49,13 @@ install:
 build_script:
   # postgres
   - createdb sqlectron
-  - psql -d sqlectron -a -f spec/databases/postgresql/schema/schema.sql
+  - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
   # mysql
   - mysql -e "create database sqlectron;" --user=root
-  - mysql sqlectron < spec/databases/mysql/schema/schema.sql --user=root
+  - mysql sqlectron < test/databases/mysql/schema/schema.sql --user=root
   # sqlserver
   - ps: ./appveyor-sqlserver.ps1 SQL2008R2SP2
   - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
-  - sqlcmd -S localhost,1433 -U sa -P Password12! -i spec/databases/sqlserver/schema/schema.sql -d "sqlectron"
+  - sqlcmd -S localhost,1433 -U sa -P Password12! -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
   - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
   - npm test

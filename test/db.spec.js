@@ -5,6 +5,9 @@ import config from './databases/config';
 import setupSQLite from './databases/sqlite/setup';
 import setupCassandra from './databases/cassandra/setup';
 
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+
 chai.use(chaiAsPromised);
 
 /**
@@ -582,8 +585,8 @@ describe('db', () => {
         });
 
         if (dbClient !== 'cassandra') {
-          describe('.query', function () { // eslint-disable-line func-names
-            this.timeout(15000);
+          describe('.query', () => { // eslint-disable-line func-names
+            // this.timeout(15000);
 
             it('should be able to cancel the current query', (done) => {
               const sleepCommands = {

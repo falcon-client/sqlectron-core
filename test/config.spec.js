@@ -4,6 +4,10 @@ import { readJSONFile } from './../src/utils';
 import utilsStub from './utils-stub';
 
 
+function loadConfig() {
+  return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
+}
+
 describe('config', () => {
   utilsStub.getConfigPath.install({ copyFixtureToTemp: true });
 
@@ -19,8 +23,4 @@ describe('config', () => {
       expect(findItem(fixtureAfter)).to.have.property('id');
     });
   });
-
-  function loadConfig() {
-    return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
-  }
 });

@@ -1,0 +1,45 @@
+language: node_js
+
+node_js:
+  - 7
+
+services:
+  - mysql
+  - postgresql
+  - cassandra
+
+before_install:
+  - npm -v
+  - node -v
+  # postgres
+  - createdb sqlectron
+  - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
+  # mysql
+  - mysql -e "create database sqlectron;" --user=root
+  - mysql sqlectron < test/databases/mysql/schema/schema.sql --user=root
+  # sqlserver
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
+  - npm cache clean
+
+after_script:
+  - docker-compose down
+
+install:
+  - npm install
+
+script:
+  - npm test
+
+mysql:
+  adapter: mysql2
+  database: sqlectron
+  username: root
+  password: password
+  encoding: utf8
+postgres:
+  adapter: postgresql
+  database: sqlectron
+  password: password
+  username: user
