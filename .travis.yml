@@ -1,28 +1,27 @@
-sudo: required
-
-dist: trusty
-
 language: node_js
 
 node_js:
   - 7
 
 services:
-  - docker
+  - mysql
+  - postgresql
+  - cassandra
 
 before_install:
   - npm -v
   - node -v
-  - docker version
-  - docker-compose version
+  # postgres
+  - createdb sqlectron
+  - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
+  # mysql
+  - mysql -e "create database sqlectron;" --user=root
+  - mysql sqlectron < test/databases/mysql/schema/schema.sql --user=root
+  # sqlserver
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
+  # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
   - npm cache clean
-
-before_script:
-  - sudo /etc/init.d/mysql stop
-  - sudo fuser -k 5432/tcp
-  #- sudo fuser -k 7000/tcp
-  #- sudo fuser -k 9042/tcp
-  #- sudo service cassandra stop
 
 after_script:
   - docker-compose down
