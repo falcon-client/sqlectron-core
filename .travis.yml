@@ -31,3 +31,15 @@ install:
 
 script:
   - npm test
+
+mysql:
+  adapter: mysql2
+  database: sqlectron
+  username: root
+  password: password
+  encoding: utf8
+postgres:
+  adapter: postgresql
+  database: sqlectron
+  password: password
+  username: user
