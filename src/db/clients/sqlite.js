@@ -104,6 +104,10 @@ export async function executeQuery(conn, queryText) {
 }
 
 export async function getTableKeys(conn, table, tableName) {
+  return Promise.resolve([]); // TODO: not implemented yet
+}
+
+export async function getTableValues(conn, table, tableName) {
   const sql = `
     SELECT *
     FROM '${tableName}';

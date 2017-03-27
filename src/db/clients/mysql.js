@@ -36,6 +36,7 @@ export default async function (server, database) {
     listSchemas: () => listSchemas(conn),
     getTableReferences: (table) => getTableReferences(conn, table),
     getTableKeys: (db, table) => getTableKeys(conn, db, table),
+    getTableValues: (db, table) => getTableValues(conn, db, table),
     query: (queryText) => query(conn, queryText),
     executeQuery: (queryText) => executeQuery(conn, queryText),
     listDatabases: (filter) => listDatabases(conn, filter),
@@ -192,6 +193,16 @@ export async function getTableKeys(conn, database, table) {
     referencedTable: row.referenced_table_name,
     keyType: `${row.key_type} KEY`
   }));
+}
+
+export async function getTableValues(conn, table, tableName) {
+  const sql = `
+    SELECT * FROM ${tableName};
+  `;
+
+  const { data } = await driverExecuteQuery(conn, { query: sql });
+
+  return data;
 }
 
 
