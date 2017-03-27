@@ -1,9 +1,19 @@
 {
+  "presets": [["env", {
+    "targets": {
+      "node": 6
+    }
+  }]],
   "plugins": [
-    "transform-es2015-destructuring",
-    "transform-es2015-modules-commonjs",
-    "transform-async-to-generator",
+    ["flow-runtime", {
+      "assert": true,
+      "annotate": true
+    }],
+    "syntax-flow",
     "transform-object-rest-spread",
-    "syntax-object-rest-spread"
+    "transform-decorators-legacy",
+    "transform-runtime",
+    "add-module-exports",
+    "transform-flow-strip-types"
   ]
 }

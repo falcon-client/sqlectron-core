@@ -9,47 +9,6 @@ const logger = createLogger('db');
 const DEFAULT_LIMIT = 1000;
 let limitSelect = null;
 
-
-export function createConnection(server, database) {
-  /**
-   * Database public API
-   */
-  return {
-    connect: connect.bind(null, server, database),
-    disconnect: disconnect.bind(null, server, database),
-    listTables: listTables.bind(null, server, database),
-    listViews: listViews.bind(null, server, database),
-    listRoutines: listRoutines.bind(null, server, database),
-    listTableColumns: listTableColumns.bind(null, server, database),
-    listTableTriggers: listTableTriggers.bind(null, server, database),
-    listTableIndexes: listTableIndexes.bind(null, server, database),
-    listSchemas: listSchemas.bind(null, server, database),
-    getTableReferences: getTableReferences.bind(null, server, database),
-    getTableKeys: getTableKeys.bind(null, server, database),
-    /**
-     * @TODO: Needs testing
-     */
-    getTableValues: getTableValues.bind(null, server, database),
-    /**
-     * @TODO: Implement
-     */
-    // insert: insert.bind(null, server, database, objectToInsert),
-    query: query.bind(null, server, database),
-    executeQuery: executeQuery.bind(null, server, database),
-    listDatabases: listDatabases.bind(null, server, database),
-    getQuerySelectTop: getQuerySelectTop.bind(null, server, database),
-    getTableCreateScript: getTableCreateScript.bind(null, server, database),
-    getTableSelectScript: getTableSelectScript.bind(null, server, database),
-    getTableInsertScript: getTableInsertScript.bind(null, server, database),
-    getTableUpdateScript: getTableUpdateScript.bind(null, server, database),
-    getTableDeleteScript: getTableDeleteScript.bind(null, server, database),
-    getViewCreateScript: getViewCreateScript.bind(null, server, database),
-    getRoutineCreateScript: getRoutineCreateScript.bind(null, server, database),
-    truncateAllTables: truncateAllTables.bind(null, server, database)
-  };
-}
-
-
 async function connect(server, database) {
   /* eslint no-param-reassign: 0 */
   if (database.connecting) {
@@ -292,4 +251,43 @@ function checkIsConnected(server, database) {
   if (database.connecting || !database.connection) {
     throw new Error('There is no connection available.');
   }
+}
+
+export function createConnection(server, database) {
+  /**
+   * Database public API
+   */
+  return {
+    connect: connect.bind(null, server, database),
+    disconnect: disconnect.bind(null, server, database),
+    listTables: listTables.bind(null, server, database),
+    listViews: listViews.bind(null, server, database),
+    listRoutines: listRoutines.bind(null, server, database),
+    listTableColumns: listTableColumns.bind(null, server, database),
+    listTableTriggers: listTableTriggers.bind(null, server, database),
+    listTableIndexes: listTableIndexes.bind(null, server, database),
+    listSchemas: listSchemas.bind(null, server, database),
+    getTableReferences: getTableReferences.bind(null, server, database),
+    getTableKeys: getTableKeys.bind(null, server, database),
+    /**
+     * @TODO: Needs testing
+     */
+    getTableValues: getTableValues.bind(null, server, database),
+    /**
+     * @TODO: Implement
+     */
+    // insert: insert.bind(null, server, database, objectToInsert),
+    query: query.bind(null, server, database),
+    executeQuery: executeQuery.bind(null, server, database),
+    listDatabases: listDatabases.bind(null, server, database),
+    getQuerySelectTop: getQuerySelectTop.bind(null, server, database),
+    getTableCreateScript: getTableCreateScript.bind(null, server, database),
+    getTableSelectScript: getTableSelectScript.bind(null, server, database),
+    getTableInsertScript: getTableInsertScript.bind(null, server, database),
+    getTableUpdateScript: getTableUpdateScript.bind(null, server, database),
+    getTableDeleteScript: getTableDeleteScript.bind(null, server, database),
+    getViewCreateScript: getViewCreateScript.bind(null, server, database),
+    getRoutineCreateScript: getRoutineCreateScript.bind(null, server, database),
+    truncateAllTables: truncateAllTables.bind(null, server, database)
+  };
 }

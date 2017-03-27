@@ -1,3 +1,4 @@
+// @flow
 import uuid from 'uuid';
 import * as utils from './utils';
 

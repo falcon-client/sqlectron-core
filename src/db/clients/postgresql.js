@@ -1,10 +1,11 @@
+// @flow
 import pg from 'pg';
 import { identify } from 'sql-query-identifier';
-
 import { buildDatabseFilter, buildSchemaFilter } from './utils';
 import createLogger from '../../logger';
 import { createCancelablePromise } from '../../utils';
 import errors from '../../errors';
+
 
 const logger = createLogger('db:clients:postgresql');
 
@@ -20,43 +21,6 @@ const pgErrors = {
 pg.types.setTypeParser(1082, 'text', (val) => val); // date
 pg.types.setTypeParser(1114, 'text', (val) => val); // timestamp without timezone
 pg.types.setTypeParser(1184, 'text', (val) => val); // timestamp
-
-
-export default async function (server, database) {
-  const dbConfig = configDatabase(server, database);
-  logger().debug('create driver client for postgres with config %j', dbConfig);
-
-  const conn = {
-    pool: new pg.Pool(dbConfig)
-  };
-
-  logger().debug('connected');
-  const defaultSchema = await getSchema(conn);
-
-  return {
-    /* eslint max-len:0 */
-    wrapIdentifier,
-    disconnect: () => disconnect(conn),
-    listTables: (db, filter) => listTables(conn, filter),
-    listViews: (filter) => listViews(conn, filter),
-    listRoutines: (filter) => listRoutines(conn, filter),
-    listTableColumns: (db, table, schema = defaultSchema) => listTableColumns(conn, db, table, schema),
-    listTableTriggers: (table, schema = defaultSchema) => listTableTriggers(conn, table, schema),
-    listTableIndexes: (db, table, schema = defaultSchema) => listTableIndexes(conn, table, schema),
-    listSchemas: (db, filter) => listSchemas(conn, filter),
-    getTableReferences: (table, schema = defaultSchema) => getTableReferences(conn, table, schema),
-    getTableKeys: (db, table, schema = defaultSchema) => getTableKeys(conn, db, table, schema),
-    query: (queryText, schema = defaultSchema) => query(conn, queryText, schema),
-    executeQuery: (queryText, schema = defaultSchema) => executeQuery(conn, queryText, schema),
-    listDatabases: (filter) => listDatabases(conn, filter),
-    getQuerySelectTop: (table, limit, schema = defaultSchema) => getQuerySelectTop(conn, table, limit, schema),
-    getTableCreateScript: (table, schema = defaultSchema) => getTableCreateScript(conn, table, schema),
-    getViewCreateScript: (view, schema = defaultSchema) => getViewCreateScript(conn, view, schema),
-    getRoutineCreateScript: (routine, type, schema = defaultSchema) => getRoutineCreateScript(conn, routine, type, schema),
-    truncateAllTables: (_, schema = defaultSchema) => truncateAllTables(conn, schema)
-  };
-}
-
 
 export function disconnect(conn) {
   conn.pool.end();
@@ -551,4 +515,39 @@ async function runWithConnection({ pool }, run) {
   } finally {
     connection.release();
   }
+}
+
+export default async function (server, database) {
+  const dbConfig = configDatabase(server, database);
+  logger().debug('create driver client for postgres with config %j', dbConfig);
+
+  const conn = {
+    pool: new pg.Pool(dbConfig)
+  };
+
+  logger().debug('connected');
+  const defaultSchema = await getSchema(conn);
+
+  return {
+    /* eslint max-len:0 */
+    wrapIdentifier,
+    disconnect: () => disconnect(conn),
+    listTables: (db, filter) => listTables(conn, filter),
+    listViews: (filter) => listViews(conn, filter),
+    listRoutines: (filter) => listRoutines(conn, filter),
+    listTableColumns: (db, table, schema = defaultSchema) => listTableColumns(conn, db, table, schema),
+    listTableTriggers: (table, schema = defaultSchema) => listTableTriggers(conn, table, schema),
+    listTableIndexes: (db, table, schema = defaultSchema) => listTableIndexes(conn, table, schema),
+    listSchemas: (db, filter) => listSchemas(conn, filter),
+    getTableReferences: (table, schema = defaultSchema) => getTableReferences(conn, table, schema),
+    getTableKeys: (db, table, schema = defaultSchema) => getTableKeys(conn, db, table, schema),
+    query: (queryText, schema = defaultSchema) => query(conn, queryText, schema),
+    executeQuery: (queryText, schema = defaultSchema) => executeQuery(conn, queryText, schema),
+    listDatabases: (filter) => listDatabases(conn, filter),
+    getQuerySelectTop: (table, limit, schema = defaultSchema) => getQuerySelectTop(conn, table, limit, schema),
+    getTableCreateScript: (table, schema = defaultSchema) => getTableCreateScript(conn, table, schema),
+    getViewCreateScript: (view, schema = defaultSchema) => getViewCreateScript(conn, view, schema),
+    getRoutineCreateScript: (routine, type, schema = defaultSchema) => getRoutineCreateScript(conn, routine, type, schema),
+    truncateAllTables: (_, schema = defaultSchema) => truncateAllTables(conn, schema)
+  };
 }

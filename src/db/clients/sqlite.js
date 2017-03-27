@@ -1,47 +1,15 @@
+// @flow
 import sqlite3 from 'sqlite3';
 import { identify } from 'sql-query-identifier';
-
 import createLogger from '../../logger';
+import type { ClientType } from '../ClientType';
+
 
 const logger = createLogger('db:clients:sqlite');
 
 const sqliteErrors = {
   CANCELED: 'SQLITE_INTERRUPT'
 };
-
-
-export default async function (server, database) {
-  const dbConfig = configDatabase(server, database);
-  logger().debug('create driver client for sqlite3 with config %j', dbConfig);
-
-  const conn = { dbConfig };
-
-  // light solution to test connection with with the server
-  await driverExecuteQuery(conn, { query: 'SELECT sqlite_version()' });
-
-  return {
-    wrapIdentifier,
-    disconnect: () => disconnect(conn),
-    listTables: () => listTables(conn),
-    listViews: () => listViews(conn),
-    listRoutines: () => listRoutines(conn),
-    listTableColumns: (db, table) => listTableColumns(conn, db, table),
-    listTableTriggers: (table) => listTableTriggers(conn, table),
-    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
-    listSchemas: () => listSchemas(conn),
-    getTableReferences: (table) => getTableReferences(conn, table),
-    getTableKeys: (db, table) => getTableKeys(conn, db, table),
-    query: (queryText) => query(conn, queryText),
-    executeQuery: (queryText) => executeQuery(conn, queryText),
-    listDatabases: () => listDatabases(conn),
-    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
-    getTableCreateScript: (table) => getTableCreateScript(conn, table),
-    getViewCreateScript: (view) => getViewCreateScript(conn, view),
-    getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
-    truncateAllTables: () => truncateAllTables(conn)
-  };
-}
-
 
 export function disconnect() {
   // SQLite does not have connection poll. So we open and close connections
@@ -51,14 +19,19 @@ export function disconnect() {
   return Promise.resolve();
 }
 
-
 export function wrapIdentifier(value) {
-  if (value === '*') return value;
+  if (value === '*') {
+    return value;
+  }
+
   const matched = value.match(/(.*?)(\[[0-9]\])/); // eslint-disable-line no-useless-escape
-  if (matched) return wrapIdentifier(matched[1]) + matched[2];
+
+  if (matched) {
+    return wrapIdentifier(matched[1]) + matched[2];
+  }
+
   return `"${value.replace(/"/g, '""')}"`;
 }
-
 
 export function getQuerySelectTop(client, table, limit) {
   return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
@@ -95,7 +68,6 @@ export function query(conn, queryText) {
     }
   };
 }
-
 
 export async function executeQuery(conn, queryText) {
   const result = await driverExecuteQuery(conn, { query: queryText, multiple: true });
@@ -224,12 +196,13 @@ export function getRoutineCreateScript() {
 export async function truncateAllTables(conn) {
   await runWithConnection(conn, async (connection) => {
     const connClient = { connection };
-
     const tables = await listTables(connClient);
 
-    const truncateAll = tables.map((table) => `
-      DELETE FROM ${table.name};
-    `).join('');
+    const truncateAll = tables
+      .map((table) => `
+        DELETE FROM ${table.name};
+      `)
+      .join('');
 
     // TODO: Check if sqlite_sequence exists then execute:
     // DELETE FROM sqlite_sequence WHERE name='${table}';
@@ -238,21 +211,20 @@ export async function truncateAllTables(conn) {
   });
 }
 
-
 function configDatabase(server, database) {
   return {
     database: database.database
   };
 }
 
-
 function parseRowQueryResult({ data, statement, changes }) {
   // Fallback in case the identifier could not reconize the command
   const isSelect = Array.isArray(data);
   const rows = data || [];
+
   return {
-    command: statement.type || (isSelect && 'SELECT'),
     rows,
+    command: statement.type || (isSelect && 'SELECT'),
     fields: Object.keys(rows[0] || {}).map((name) => ({ name })),
     rowCount: data && data.length,
     affectedRows: changes || 0
@@ -330,4 +302,36 @@ function resolveExecutionType(executioType) {
     case 'MODIFICATION': return 'run';
     default: return 'all';
   }
+}
+
+export default async function (server, database): ClientType {
+  const dbConfig = configDatabase(server, database);
+  logger().debug('create driver client for sqlite3 with config %j', dbConfig);
+
+  const conn = { dbConfig };
+
+  // light solution to test connection with with the server
+  await driverExecuteQuery(conn, { query: 'SELECT sqlite_version()' });
+
+  return {
+    wrapIdentifier,
+    disconnect: () => disconnect(conn),
+    listTables: () => listTables(conn),
+    listViews: () => listViews(conn),
+    listRoutines: () => listRoutines(conn),
+    listTableColumns: (db, table) => listTableColumns(conn, db, table),
+    listTableTriggers: (table) => listTableTriggers(conn, table),
+    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
+    listSchemas: () => listSchemas(conn),
+    getTableReferences: (table) => getTableReferences(conn, table),
+    getTableKeys: (db, table) => getTableKeys(conn, db, table),
+    query: (queryText) => query(conn, queryText),
+    executeQuery: (queryText) => executeQuery(conn, queryText),
+    listDatabases: () => listDatabases(conn),
+    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
+    getTableCreateScript: (table) => getTableCreateScript(conn, table),
+    getViewCreateScript: (view) => getViewCreateScript(conn, view),
+    getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
+    truncateAllTables: () => truncateAllTables(conn)
+  };
 }

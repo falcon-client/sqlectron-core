@@ -1,3 +1,4 @@
+// @flow
 import mysql from './mysql';
 import postgresql from './postgresql';
 import sqlserver from './sqlserver';

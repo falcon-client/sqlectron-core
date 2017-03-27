@@ -1,6 +1,6 @@
+// @flow
 import { Connection } from 'mssql';
 import { identify } from 'sql-query-identifier';
-
 import { buildDatabseFilter, buildSchemaFilter } from './utils';
 import createLogger from '../../logger';
 
@@ -10,50 +10,14 @@ const mmsqlErrors = {
   CANCELED: 'ECANCEL'
 };
 
-
-export default async function (server, database) {
-  const dbConfig = configDatabase(server, database);
-  logger().debug('create driver client for mmsql with config %j', dbConfig);
-
-  const conn = { dbConfig };
-
-  // light solution to test connection with with the server
-  await driverExecuteQuery(conn, { query: 'SELECT @@version' });
-
-  return {
-    wrapIdentifier,
-    disconnect: () => disconnect(conn),
-    listTables: (db, filter) => listTables(conn, filter),
-    listViews: (filter) => listViews(conn, filter),
-    listRoutines: (filter) => listRoutines(conn, filter),
-    listTableColumns: (db, table) => listTableColumns(conn, db, table),
-    listTableTriggers: (table) => listTableTriggers(conn, table),
-    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
-    listSchemas: () => listSchemas(conn),
-    getTableReferences: (table) => getTableReferences(conn, table),
-    getTableKeys: (db, table) => getTableKeys(conn, db, table),
-    query: (queryText) => query(conn, queryText),
-    executeQuery: (queryText) => executeQuery(conn, queryText),
-    listDatabases: (filter) => listDatabases(conn, filter),
-    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
-    getTableCreateScript: (table) => getTableCreateScript(conn, table),
-    getViewCreateScript: (view) => getViewCreateScript(conn, view),
-    getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
-    truncateAllTables: () => truncateAllTables(conn)
-  };
-}
-
-
 export async function disconnect(conn) {
   const connection = await new Connection(conn.dbConfig);
   connection.close();
 }
 
-
 export function wrapIdentifier(value) {
   return (value !== '*' ? `[${value.replace(/\[/g, '[')}]` : '*');
 }
-
 
 export function getQuerySelectTop(client, table, limit) {
   return `SELECT TOP ${limit} * FROM ${wrapIdentifier(table)}`;
@@ -475,4 +439,36 @@ async function runWithConnection(conn, run) {
   const connection = await new Connection(conn.dbConfig).connect();
 
   return run(connection);
+}
+
+export default async function (server, database) {
+  const dbConfig = configDatabase(server, database);
+  logger().debug('create driver client for mmsql with config %j', dbConfig);
+
+  const conn = { dbConfig };
+
+  // light solution to test connection with with the server
+  await driverExecuteQuery(conn, { query: 'SELECT @@version' });
+
+  return {
+    wrapIdentifier,
+    disconnect: () => disconnect(conn),
+    listTables: (db, filter) => listTables(conn, filter),
+    listViews: (filter) => listViews(conn, filter),
+    listRoutines: (filter) => listRoutines(conn, filter),
+    listTableColumns: (db, table) => listTableColumns(conn, db, table),
+    listTableTriggers: (table) => listTableTriggers(conn, table),
+    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
+    listSchemas: () => listSchemas(conn),
+    getTableReferences: (table) => getTableReferences(conn, table),
+    getTableKeys: (db, table) => getTableKeys(conn, db, table),
+    query: (queryText) => query(conn, queryText),
+    executeQuery: (queryText) => executeQuery(conn, queryText),
+    listDatabases: (filter) => listDatabases(conn, filter),
+    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
+    getTableCreateScript: (table) => getTableCreateScript(conn, table),
+    getViewCreateScript: (view) => getViewCreateScript(conn, view),
+    getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
+    truncateAllTables: () => truncateAllTables(conn)
+  };
 }
