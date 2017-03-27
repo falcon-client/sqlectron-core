@@ -6,7 +6,6 @@ import createLogger from '../logger';
 
 const logger = createLogger('db');
 
-
 const DEFAULT_LIMIT = 1000;
 let limitSelect = null;
 
@@ -27,6 +26,14 @@ export function createConnection(server, database) {
     listSchemas: listSchemas.bind(null, server, database),
     getTableReferences: getTableReferences.bind(null, server, database),
     getTableKeys: getTableKeys.bind(null, server, database),
+    /**
+     * @TODO: Needs testing
+     */
+    getTableValues: getTableValues.bind(null, server, database),
+    /**
+     * @TODO: Implement
+     */
+    // insert: insert.bind(null, server, database, objectToInsert),
     query: query.bind(null, server, database),
     executeQuery: executeQuery.bind(null, server, database),
     listDatabases: listDatabases.bind(null, server, database),
@@ -162,6 +169,11 @@ function getTableReferences(server, database, table, schema) {
 function getTableKeys(server, database, table, schema) {
   checkIsConnected(server, database);
   return database.connection.getTableKeys(database.database, table, schema);
+}
+
+function getTableValues(server, database, table, schema) {
+  checkIsConnected(server, database);
+  return database.connection.getTableValues(database.database, table, schema);
 }
 
 function query(server, database, queryText) {

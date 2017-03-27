@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect as chaiExpect } from 'chai';
 import { config } from '../src';
 import { readJSONFile } from './../src/utils';
 import utilsStub from './utils-stub';
@@ -19,8 +19,8 @@ describe('config', () => {
       await config.prepare();
       const fixtureAfter = await loadConfig();
 
-      expect(findItem(fixtureBefore)).to.not.have.property('id');
-      expect(findItem(fixtureAfter)).to.have.property('id');
+      chaiExpect(findItem(fixtureBefore)).to.not.have.property('id');
+      chaiExpect(findItem(fixtureAfter)).to.have.property('id');
     });
   });
 });
