@@ -18,6 +18,6 @@ The cross-database ORM that powers falcon
 git clone https://github.com/falcon-client/falcon-core.git
 cd falcon-core
 yarn
-docker-compose up
+docker-compose up -d
 yarn test
 ```
