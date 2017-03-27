@@ -1,9 +1,11 @@
+// @flow
 import mysql from 'mysql';
 import { identify } from 'sql-query-identifier';
-
 import createLogger from '../../logger';
 import { createCancelablePromise } from '../../utils';
 import errors from '../../errors';
+import type { ClientType } from '../ClientType';
+
 
 const logger = createLogger('db:clients:mysql');
 
@@ -12,47 +14,65 @@ const mysqlErrors = {
   CONNECTION_LOST: 'PROTOCOL_CONNECTION_LOST'
 };
 
-
-export default async function (server, database) {
-  const dbConfig = configDatabase(server, database);
-  logger().debug('create driver client for mysql with config %j', dbConfig);
-
-  const conn = {
-    pool: mysql.createPool(dbConfig)
-  };
-
-  // light solution to test connection with with the server
-  await driverExecuteQuery(conn, { query: 'select version();' });
-
-  return {
-    wrapIdentifier,
-    disconnect: () => disconnect(conn),
-    listTables: () => listTables(conn),
-    listViews: () => listViews(conn),
-    listRoutines: () => listRoutines(conn),
-    listTableColumns: (db, table) => listTableColumns(conn, db, table),
-    listTableTriggers: (table) => listTableTriggers(conn, table),
-    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
-    listSchemas: () => listSchemas(conn),
-    getTableReferences: (table) => getTableReferences(conn, table),
-    getTableKeys: (db, table) => getTableKeys(conn, db, table),
-    getTableValues: (db, table) => getTableValues(conn, db, table),
-    query: (queryText) => query(conn, queryText),
-    executeQuery: (queryText) => executeQuery(conn, queryText),
-    listDatabases: (filter) => listDatabases(conn, filter),
-    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
-    getTableCreateScript: (table) => getTableCreateScript(conn, table),
-    getViewCreateScript: (view) => getViewCreateScript(conn, view),
-    getRoutineCreateScript: (routine, type) => getRoutineCreateScript(conn, routine, type),
-    truncateAllTables: () => truncateAllTables(conn)
-  };
-}
-
-
 export function disconnect(conn) {
   conn.pool.end();
 }
 
+async function runWithConnection({ pool }, run) {
+  let rejected = false;
+
+  return new Promise((resolve, reject) => {
+    const rejectErr = (err) => {
+      if (!rejected) {
+        rejected = true;
+        reject(err);
+      }
+    };
+
+    pool.getConnection(async (errPool, connection) => {
+      if (errPool) {
+        rejectErr(errPool);
+        return;
+      }
+
+      connection.on('error', (error) => {
+        // it will be handled later in the next query execution
+        logger().error('Connection fatal error %j', error);
+      });
+
+      try {
+        resolve(await run(connection));
+      } catch (err) {
+        rejectErr(err);
+      } finally {
+        connection.release();
+      }
+    });
+  });
+}
+
+function getRealError(conn, err) {
+  /* eslint no-underscore-dangle:0 */
+  if (conn && conn._protocol && conn._protocol._fatalError) {
+    return conn._protocol._fatalError;
+  }
+  return err;
+}
+
+function driverExecuteQuery(conn, queryArgs) {
+  const runQuery = (connection) => new Promise((resolve, reject) => {
+    connection.query(queryArgs.query, queryArgs.params, (err, data, fields) => {
+      if (err && err.code === mysqlErrors.EMPTY_QUERY) return resolve({});
+      if (err) return reject(getRealError(connection, err));
+
+      return resolve({ data, fields });
+    });
+  });
+
+  return conn.connection
+    ? runQuery(conn.connection)
+    : runWithConnection(conn, runQuery);
+}
 
 export async function listTables(conn) {
   const sql = `
@@ -205,6 +225,45 @@ export async function getTableValues(conn, table, tableName) {
   return data;
 }
 
+export function getQuerySelectTop(conn, table, limit) {
+  return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
+}
+
+export function filterDatabase(item, { database } = {}, databaseField) {
+  if (!database) { return true; }
+
+  const value = item[databaseField];
+  if (typeof database === 'string') {
+    return database === value;
+  }
+
+  const { only, ignore } = database;
+
+  if (only && only.length && !~only.indexOf(value)) {
+    return false;
+  }
+
+  if (ignore && ignore.length && ~ignore.indexOf(value)) {
+    return false;
+  }
+
+  return true;
+}
+
+export async function executeQuery(conn, queryText) {
+  const { fields, data } = await driverExecuteQuery(conn, { query: queryText });
+  if (!data) {
+    return [];
+  }
+
+  const commands = identifyCommands(queryText).map((item) => item.type);
+
+  if (!isMultipleQuery(fields)) {
+    return [parseRowQueryResult(data, fields, commands[0])];
+  }
+
+  return data.map((_, idx) => parseRowQueryResult(data[idx], fields[idx], commands[idx]));
+}
 
 export function query(conn, queryText) {
   let pid = null;
@@ -266,23 +325,6 @@ export function query(conn, queryText) {
   };
 }
 
-
-export async function executeQuery(conn, queryText) {
-  const { fields, data } = await driverExecuteQuery(conn, { query: queryText });
-  if (!data) {
-    return [];
-  }
-
-  const commands = identifyCommands(queryText).map((item) => item.type);
-
-  if (!isMultipleQuery(fields)) {
-    return [parseRowQueryResult(data, fields, commands[0])];
-  }
-
-  return data.map((_, idx) => parseRowQueryResult(data[idx], fields[idx], commands[idx]));
-}
-
-
 export async function listDatabases(conn, filter) {
   const sql = 'show databases';
 
@@ -291,11 +333,6 @@ export async function listDatabases(conn, filter) {
   return data
     .filter((item) => filterDatabase(item, filter, 'Database'))
     .map((row) => row.Database);
-}
-
-
-export function getQuerySelectTop(conn, table, limit) {
-  return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
 }
 
 export async function getTableCreateScript(conn, table) {
@@ -390,16 +427,6 @@ function configDatabase(server, database) {
   return config;
 }
 
-
-function getRealError(conn, err) {
-  /* eslint no-underscore-dangle:0 */
-  if (conn && conn._protocol && conn._protocol._fatalError) {
-    return conn._protocol._fatalError;
-  }
-  return err;
-}
-
-
 function parseRowQueryResult(data, fields, command) {
   // Fallback in case the identifier could not reconize the command
   const isSelect = Array.isArray(data);
@@ -428,70 +455,37 @@ function identifyCommands(queryText) {
   }
 }
 
-function driverExecuteQuery(conn, queryArgs) {
-  const runQuery = (connection) => new Promise((resolve, reject) => {
-    connection.query(queryArgs.query, queryArgs.params, (err, data, fields) => {
-      if (err && err.code === mysqlErrors.EMPTY_QUERY) return resolve({});
-      if (err) return reject(getRealError(connection, err));
+export default async function (server, database): ClientType {
+  const dbConfig = configDatabase(server, database);
+  logger().debug('create driver client for mysql with config %j', dbConfig);
 
-      resolve({ data, fields });
-    });
-  });
+  const conn = {
+    pool: mysql.createPool(dbConfig)
+  };
 
-  return conn.connection
-    ? runQuery(conn.connection)
-    : runWithConnection(conn, runQuery);
-}
+  // light solution to test connection with with the server
+  await driverExecuteQuery(conn, { query: 'select version();' });
 
-async function runWithConnection({ pool }, run) {
-  let rejected = false;
-  return new Promise((resolve, reject) => {
-    const rejectErr = (err) => {
-      if (!rejected) {
-        rejected = true;
-        reject(err);
-      }
-    };
-
-    pool.getConnection(async (errPool, connection) => {
-      if (errPool) {
-        rejectErr(errPool);
-        return;
-      }
-
-      connection.on('error', (error) => {
-        // it will be handled later in the next query execution
-        logger().error('Connection fatal error %j', error);
-      });
-
-      try {
-        resolve(await run(connection));
-      } catch (err) {
-        rejectErr(err);
-      } finally {
-        connection.release();
-      }
-    });
-  });
-}
-
-export function filterDatabase(item, { database } = {}, databaseField) {
-  if (!database) { return true; }
-
-  const value = item[databaseField];
-  if (typeof database === 'string') {
-    return database === value;
-  }
-
-  const { only, ignore } = database;
-
-  if (only && only.length && !~only.indexOf(value)) {
-    return false;
-  }
-
-  if (ignore && ignore.length && ~ignore.indexOf(value)) {
-    return false;
-  }
-
-  return true;
+  return {
+    wrapIdentifier,
+    disconnect: () => disconnect(conn),
+    listTables: () => listTables(conn),
+    listViews: () => listViews(conn),
+    listRoutines: () => listRoutines(conn),
+    listTableColumns: (db, table) => listTableColumns(conn, db, table),
+    listTableTriggers: (table) => listTableTriggers(conn, table),
+    listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
+    listSchemas: () => listSchemas(conn),
+    getTableReferences: (table) => getTableReferences(conn, table),
+    getTableKeys: (db, table) => getTableKeys(conn, db, table),
+    getTableValues: (db, table) => getTableValues(conn, db, table),
+    query: (queryText) => query(conn, queryText),
+    executeQuery: (queryText) => executeQuery(conn, queryText),
+    listDatabases: (filter) => listDatabases(conn, filter),
+    getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
+    getTableCreateScript: (table) => getTableCreateScript(conn, table),
+    getViewCreateScript: (view) => getViewCreateScript(conn, view),
+    getRoutineCreateScript: (routine, type) => getRoutineCreateScript(conn, routine, type),
+    truncateAllTables: () => truncateAllTables(conn)
+  };
 }

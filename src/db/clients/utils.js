@@ -1,3 +1,4 @@
+// @flow
 export function buildSchemaFilter({ schema } = {}, schemaField = 'schema_name') {
   if (!schema) { return null; }
 

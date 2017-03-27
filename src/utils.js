@@ -108,7 +108,8 @@ export function createCancelablePromise(error, timeIdle = 100) {
       if (canceled) {
         const err = new Error(error.message || 'Promise canceled.');
 
-        Object.getOwnPropertyNames(error)
+        Object
+          .getOwnPropertyNames(error)
           .forEach((key) => err[key] = error[key]); // eslint-disable-line no-return-assign
 
         throw err;

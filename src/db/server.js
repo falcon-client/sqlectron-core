@@ -1,3 +1,4 @@
+// @flow
 import { createConnection } from './client';
 import { CLIENTS } from './clients';
 

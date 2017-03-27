@@ -1,5 +1,6 @@
 import debug from 'debug';
 
+
 const loggers = {};
 
 export default function createLogger(namespace) {

@@ -1,54 +1,10 @@
+// @flow
 import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
-
 import createLogger from '../../logger';
 
+
 const logger = createLogger('db:clients:cassandra');
-
-/**
- * To keep compatibility with the other clients we treat keyspaces as database.
- */
-
-export default function (server, database) {
-  return new Promise(async (resolve, reject) => {
-    const dbConfig = configDatabase(server, database);
-
-    logger().debug('creating database client %j', dbConfig);
-    const client = new Client(dbConfig);
-
-    logger().debug('connecting');
-    client.connect((err) => {
-      if (err) {
-        client.shutdown();
-        return reject(err);
-      }
-
-      logger().debug('connected');
-      resolve({
-        wrapIdentifier,
-        disconnect: () => disconnect(client),
-        listTables: (db) => listTables(client, db),
-        listViews: () => listViews(client),
-        listRoutines: () => listRoutines(client),
-        listTableColumns: (db, table) => listTableColumns(client, db, table),
-        listTableTriggers: (table) => listTableTriggers(client, table),
-        listTableIndexes: (db, table) => listTableIndexes(client, table),
-        listSchemas: () => listSchemas(client),
-        getTableReferences: (table) => getTableReferences(client, table),
-        getTableKeys: (db, table) => getTableKeys(client, db, table),
-        query: (queryText) => executeQuery(client, queryText),
-        executeQuery: (queryText) => executeQuery(client, queryText),
-        listDatabases: () => listDatabases(client),
-        getQuerySelectTop: (table, limit) => getQuerySelectTop(client, table, limit),
-        getTableCreateScript: (table) => getTableCreateScript(client, table),
-        getViewCreateScript: (view) => getViewCreateScript(client, view),
-        getRoutineCreateScript: (routine) => getRoutineCreateScript(client, routine),
-        truncateAllTables: (db) => truncateAllTables(client, db)
-      });
-    });
-  });
-}
-
 
 export function disconnect(client) {
   client.shutdown();
@@ -258,4 +214,47 @@ function identifyCommands(queryText) {
   } catch (err) {
     return [];
   }
+}
+
+/**
+ * To keep compatibility with the other clients we treat keyspaces as database.
+ */
+export default function (server, database) {
+  return new Promise(async (resolve, reject) => {
+    const dbConfig = configDatabase(server, database);
+
+    logger().debug('creating database client %j', dbConfig);
+    const client = new Client(dbConfig);
+
+    logger().debug('connecting');
+    client.connect((err) => {
+      if (err) {
+        client.shutdown();
+        return reject(err);
+      }
+
+      logger().debug('connected');
+      resolve({
+        wrapIdentifier,
+        disconnect: () => disconnect(client),
+        listTables: (db) => listTables(client, db),
+        listViews: () => listViews(client),
+        listRoutines: () => listRoutines(client),
+        listTableColumns: (db, table) => listTableColumns(client, db, table),
+        listTableTriggers: (table) => listTableTriggers(client, table),
+        listTableIndexes: (db, table) => listTableIndexes(client, table),
+        listSchemas: () => listSchemas(client),
+        getTableReferences: (table) => getTableReferences(client, table),
+        getTableKeys: (db, table) => getTableKeys(client, db, table),
+        query: (queryText) => executeQuery(client, queryText),
+        executeQuery: (queryText) => executeQuery(client, queryText),
+        listDatabases: () => listDatabases(client),
+        getQuerySelectTop: (table, limit) => getQuerySelectTop(client, table, limit),
+        getTableCreateScript: (table) => getTableCreateScript(client, table),
+        getViewCreateScript: (view) => getViewCreateScript(client, view),
+        getRoutineCreateScript: (routine) => getRoutineCreateScript(client, routine),
+        truncateAllTables: (db) => truncateAllTables(client, db)
+      });
+    });
+  });
 }
