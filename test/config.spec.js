@@ -18,8 +18,8 @@ describe('config', () => {
       await config.prepare();
       const fixtureAfter = await loadConfig();
 
-      expect(findItem(fixtureBefore)).toMatchSnapshot()
-      expect(findItem(fixtureAfter)).toMatchSnapshot()
+      expect(findItem(fixtureBefore)).toMatchSnapshot();
+      expect(findItem(fixtureAfter)).toHaveProperty('id');
     });
   });
 });
