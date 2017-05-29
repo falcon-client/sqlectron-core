@@ -1,0 +1,2022 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CANCELED_BY_USER 1`] = `"CANCELED_BY_USER"`;
+
+exports[`CANCELED_BY_USER 2`] = `"CANCELED_BY_USER"`;
+
+exports[`CANCELED_BY_USER 3`] = `"CANCELED_BY_USER"`;
+
+exports[`db mysql given is already connected .executeQuery CREATE DATABASE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "CREATE_DATABASE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery DELETE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery DELETE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery DROP DATABASE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 0,
+    "command": "DROP_DATABASE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery INSERT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery INSERT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16899,
+        "length": 11,
+        "name": "id",
+        "orgName": "id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "username",
+        "orgName": "username",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 450,
+        "name": "email",
+        "orgName": "email",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "password",
+        "orgName": "password",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16392,
+        "length": 11,
+        "name": "role_id",
+        "orgName": "role_id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 128,
+        "length": 19,
+        "name": "createdat",
+        "orgName": "createdat",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 12,
+        "zeroFill": false,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 2`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 63,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 16899,
+  "length": 11,
+  "name": "id",
+  "orgName": "id",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 3,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 3`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 33,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 0,
+  "length": 135,
+  "name": "username",
+  "orgName": "username",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 253,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 4`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 33,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 0,
+  "length": 450,
+  "name": "email",
+  "orgName": "email",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 253,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 5`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 33,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 0,
+  "length": 135,
+  "name": "password",
+  "orgName": "password",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 253,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 6`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 63,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 16392,
+  "length": 11,
+  "name": "role_id",
+  "orgName": "role_id",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 3,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query 7`] = `
+FieldPacket {
+  "catalog": "def",
+  "charsetNr": 63,
+  "db": "sqlectron",
+  "decimals": 0,
+  "default": undefined,
+  "flags": 128,
+  "length": 19,
+  "name": "createdat",
+  "orgName": "createdat",
+  "orgTable": "users",
+  "protocol41": true,
+  "table": "users",
+  "type": 12,
+  "zeroFill": false,
+}
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute a single query with empty result 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16899,
+        "length": 11,
+        "name": "id",
+        "orgName": "id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "username",
+        "orgName": "username",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 450,
+        "name": "email",
+        "orgName": "email",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "password",
+        "orgName": "password",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16392,
+        "length": 11,
+        "name": "role_id",
+        "orgName": "role_id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 128,
+        "length": 19,
+        "name": "createdat",
+        "orgName": "createdat",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 12,
+        "zeroFill": false,
+      },
+    ],
+    "rowCount": 0,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute an empty query 1`] = `Array []`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute an query with only comments 1`] = `
+Array [
+  Object {
+    "affectedRows": 0,
+    "command": false,
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16899,
+        "length": 11,
+        "name": "id",
+        "orgName": "id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "username",
+        "orgName": "username",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 450,
+        "name": "email",
+        "orgName": "email",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 135,
+        "name": "password",
+        "orgName": "password",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 253,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16392,
+        "length": 11,
+        "name": "role_id",
+        "orgName": "role_id",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 128,
+        "length": 19,
+        "name": "createdat",
+        "orgName": "createdat",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 12,
+        "zeroFill": false,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 16899,
+        "length": 11,
+        "name": "id",
+        "orgName": "id",
+        "orgTable": "roles",
+        "protocol41": true,
+        "table": "roles",
+        "type": 3,
+        "zeroFill": false,
+      },
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 33,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 0,
+        "length": 300,
+        "name": "name",
+        "orgName": "name",
+        "orgTable": "roles",
+        "protocol41": true,
+        "table": "roles",
+        "type": 253,
+        "zeroFill": false,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      RowDataPacket {
+        "id": 1,
+        "name": "developer",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery SELECT should not cast DATE types to native JS Date objects 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      FieldPacket {
+        "catalog": "def",
+        "charsetNr": 63,
+        "db": "sqlectron",
+        "decimals": 0,
+        "default": undefined,
+        "flags": 128,
+        "length": 19,
+        "name": "createdat",
+        "orgName": "createdat",
+        "orgTable": "users",
+        "protocol41": true,
+        "table": "users",
+        "type": 12,
+        "zeroFill": false,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery UPDATE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .executeQuery UPDATE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db mysql given is already connected .getRoutineCreateScript should return CREATE PROCEDURE/FUNCTION script 1`] = `
+"CREATE DEFINER=\`root\`@\`localhost\` PROCEDURE \`users_count\`()
+BEGIN
+  SELECT COUNT(*) FROM users;
+END"
+`;
+
+exports[`db mysql given is already connected .getTableCreateScript should return table create script 1`] = `
+"CREATE TABLE \`users\` (
+  \`id\` int(11) NOT NULL AUTO_INCREMENT,
+  \`username\` varchar(45) DEFAULT NULL,
+  \`email\` varchar(150) DEFAULT NULL,
+  \`password\` varchar(45) DEFAULT NULL,
+  \`role_id\` int(11) DEFAULT NULL,
+  \`createdat\` datetime DEFAULT NULL,
+  PRIMARY KEY (\`id\`),
+  KEY \`role_id\` (\`role_id\`),
+  CONSTRAINT \`users_ibfk_1\` FOREIGN KEY (\`role_id\`) REFERENCES \`roles\` (\`id\`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1"
+`;
+
+exports[`db mysql given is already connected .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \`roles\` WHERE <condition>;"`;
+
+exports[`db mysql given is already connected .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \`public\`.\`roles\` WHERE <condition>;"`;
+
+exports[`db mysql given is already connected .getTableInsertScript should return INSERT INTO table script 1`] = `
+"INSERT INTO \`users\` (\`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\`)
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db mysql given is already connected .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
+"INSERT INTO \`public\`.\`users\` (\`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\`)
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db mysql given is already connected .getTableKeys should list all tables keys 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "constraintName": "PRIMARY KEY",
+    "keyType": "PRIMARY KEY",
+    "referencedTable": null,
+  },
+  Object {
+    "columnName": "role_id",
+    "constraintName": "users_ibfk_1 KEY",
+    "keyType": "FOREIGN KEY",
+    "referencedTable": "roles",
+  },
+]
+`;
+
+exports[`db mysql given is already connected .getTableReferences should list all tables that selected table has references to 1`] = `
+Array [
+  "roles",
+]
+`;
+
+exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script 1`] = `"SELECT \`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\` FROM \`users\`;"`;
+
+exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script with schema if defined 1`] = `"SELECT \`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\` FROM \`public\`.\`users\`;"`;
+
+exports[`db mysql given is already connected .getTableUpdateScript should return UPDATE table script 1`] = `
+"UPDATE \`users\`
+ SET \`id\`=?, \`username\`=?, \`email\`=?, \`password\`=?, \`role_id\`=?, \`createdat\`=?
+ WHERE <condition>;"
+`;
+
+exports[`db mysql given is already connected .getTableUpdateScript should return UPDATE table script with schema if defined 1`] = `
+"UPDATE \`public\`.\`users\`
+ SET \`id\`=?, \`username\`=?, \`email\`=?, \`password\`=?, \`role_id\`=?, \`createdat\`=?
+ WHERE <condition>;"
+`;
+
+exports[`db mysql given is already connected .getViewCreateScript should return CREATE VIEW script 1`] = `"CREATE ALGORITHM=UNDEFINED DEFINER=\`root\`@\`localhost\` SQL SECURITY DEFINER VIEW \`email_view\` AS select \`users\`.\`email\` AS \`email\`,\`users\`.\`password\` AS \`password\` from \`users\`"`;
+
+exports[`db mysql given is already connected .listDatabases should list all databases 1`] = `
+Array [
+  "information_schema",
+  "mysql",
+  "performance_schema",
+  "sqlectron",
+  "sys",
+]
+`;
+
+exports[`db mysql given is already connected .listRoutines should list all routines with their type 1`] = `
+Array [
+  Object {
+    "routineName": "users_count",
+    "routineType": "PROCEDURE",
+  },
+]
+`;
+
+exports[`db mysql given is already connected .listSchemas should list all schema 1`] = `Array []`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "dataType": "int",
+  },
+  Object {
+    "columnName": "username",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "email",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "password",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "role_id",
+    "dataType": "int",
+  },
+  Object {
+    "columnName": "createdat",
+    "dataType": "datetime",
+  },
+]
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 2`] = `
+Object {
+  "columnName": "id",
+  "dataType": "int",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 3`] = `
+Object {
+  "columnName": "username",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 4`] = `
+Object {
+  "columnName": "email",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 5`] = `
+Object {
+  "columnName": "password",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 6`] = `
+Object {
+  "columnName": "role_id",
+  "dataType": "int",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 7`] = `
+Object {
+  "columnName": "createdat",
+  "dataType": "datetime",
+}
+`;
+
+exports[`db mysql given is already connected .listTableIndexes should list all indexes 1`] = `
+Array [
+  "PRIMARY",
+  "role_id",
+]
+`;
+
+exports[`db mysql given is already connected .listTableTriggers should list all table related triggers 1`] = `
+Array [
+  "dummy_trigger",
+]
+`;
+
+exports[`db mysql given is already connected .listTables should list all tables 1`] = `
+Array [
+  RowDataPacket {
+    "name": "compat-test-1",
+  },
+  RowDataPacket {
+    "name": "job-queue-test-3",
+  },
+  RowDataPacket {
+    "name": "job-queue-test-4",
+  },
+  RowDataPacket {
+    "name": "job-queue-test-5",
+  },
+  RowDataPacket {
+    "name": "jobs",
+  },
+  RowDataPacket {
+    "name": "metadata",
+  },
+  RowDataPacket {
+    "name": "recordmetadata",
+  },
+  RowDataPacket {
+    "name": "records",
+  },
+  RowDataPacket {
+    "name": "roles",
+  },
+  RowDataPacket {
+    "name": "users",
+  },
+]
+`;
+
+exports[`db mysql given is already connected .listViews should list all views 1`] = `
+Array [
+  RowDataPacket {
+    "name": "email_view",
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery CREATE DATABASE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "CREATE_DATABASE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery DELETE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery DELETE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery DROP DATABASE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "DROP_DATABASE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery EXPLAIN should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "EXPLAIN",
+    "fields": Array [
+      Field {
+        "columnID": 0,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "QUERY PLAN",
+        "tableID": 0,
+      },
+    ],
+    "rowCount": undefined,
+    "rows": Array [
+      anonymous {
+        "QUERY PLAN": "Seq Scan on users  (cost=0.00..15.90 rows=590 width=108)",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery INSERT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery INSERT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      Field {
+        "columnID": 1,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 2,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "username",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 3,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "email",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 4,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "password",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 5,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "role_id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 6,
+        "dataTypeID": 1082,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "createdat",
+        "tableID": 16399,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      anonymous {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 2`] = `
+Field {
+  "columnID": 1,
+  "dataTypeID": 23,
+  "dataTypeModifier": -1,
+  "dataTypeSize": 4,
+  "format": "text",
+  "name": "id",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 3`] = `
+Field {
+  "columnID": 2,
+  "dataTypeID": 25,
+  "dataTypeModifier": -1,
+  "dataTypeSize": -1,
+  "format": "text",
+  "name": "username",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 4`] = `
+Field {
+  "columnID": 3,
+  "dataTypeID": 25,
+  "dataTypeModifier": -1,
+  "dataTypeSize": -1,
+  "format": "text",
+  "name": "email",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 5`] = `
+Field {
+  "columnID": 4,
+  "dataTypeID": 25,
+  "dataTypeModifier": -1,
+  "dataTypeSize": -1,
+  "format": "text",
+  "name": "password",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 6`] = `
+Field {
+  "columnID": 5,
+  "dataTypeID": 23,
+  "dataTypeModifier": -1,
+  "dataTypeSize": 4,
+  "format": "text",
+  "name": "role_id",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query 7`] = `
+Field {
+  "columnID": 6,
+  "dataTypeID": 1082,
+  "dataTypeModifier": -1,
+  "dataTypeSize": 4,
+  "format": "text",
+  "name": "createdat",
+  "tableID": 16399,
+}
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute a single query with empty result 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      Field {
+        "columnID": 1,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 2,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "username",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 3,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "email",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 4,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "password",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 5,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "role_id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 6,
+        "dataTypeID": 1082,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "createdat",
+        "tableID": 16399,
+      },
+    ],
+    "rowCount": 0,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute an empty query 1`] = `Array []`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute an query with only comments 1`] = `Array []`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      Field {
+        "columnID": 1,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 2,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "username",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 3,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "email",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 4,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "password",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 5,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "role_id",
+        "tableID": 16399,
+      },
+      Field {
+        "columnID": 6,
+        "dataTypeID": 1082,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "createdat",
+        "tableID": 16399,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      anonymous {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      Field {
+        "columnID": 1,
+        "dataTypeID": 23,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "id",
+        "tableID": 16388,
+      },
+      Field {
+        "columnID": 2,
+        "dataTypeID": 25,
+        "dataTypeModifier": -1,
+        "dataTypeSize": -1,
+        "format": "text",
+        "name": "name",
+        "tableID": 16388,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      anonymous {
+        "id": 1,
+        "name": "developer",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery SELECT should not cast DATE types to native JS Date objects 1`] = `
+Array [
+  Object {
+    "affectedRows": undefined,
+    "command": "SELECT",
+    "fields": Array [
+      Field {
+        "columnID": 6,
+        "dataTypeID": 1082,
+        "dataTypeModifier": -1,
+        "dataTypeSize": 4,
+        "format": "text",
+        "name": "createdat",
+        "tableID": 16399,
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      anonymous {
+        "createdat": "2016-10-25",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery UPDATE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .executeQuery UPDATE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .getRoutineCreateScript should return CREATE PROCEDURE/FUNCTION script 1`] = `
+"CREATE OR REPLACE FUNCTION public.users_count()
+ RETURNS bigint
+ LANGUAGE sql
+AS $function$
+  SELECT COUNT(*) FROM users AS total;
+$function$
+"
+`;
+
+exports[`db postgresql given is already connected .getTableCreateScript should return table create script 1`] = `
+"CREATE TABLE public.users (
+  id integer NOT NULL,
+  username text NOT NULL,
+  email text NOT NULL,
+  password text NOT NULL,
+  role_id integer NULL,
+  createdat date NULL
+);
+
+ALTER TABLE public.users ADD CONSTRAINT users_pkey PRIMARY KEY (id)"
+`;
+
+exports[`db postgresql given is already connected .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \\"roles\\" WHERE <condition>;"`;
+
+exports[`db postgresql given is already connected .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \\"public\\".\\"roles\\" WHERE <condition>;"`;
+
+exports[`db postgresql given is already connected .getTableInsertScript should return INSERT INTO table script 1`] = `
+"INSERT INTO \\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db postgresql given is already connected .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
+"INSERT INTO \\"public\\".\\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db postgresql given is already connected .getTableKeys should list all tables keys 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "constraintName": "users_pkey",
+    "keyType": "PRIMARY KEY",
+    "referencedTable": null,
+  },
+  Object {
+    "columnName": "role_id",
+    "constraintName": "users_role_id_fkey",
+    "keyType": "FOREIGN KEY",
+    "referencedTable": "roles",
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .getTableReferences should list all tables that selected table has references to 1`] = `
+Array [
+  "roles",
+]
+`;
+
+exports[`db postgresql given is already connected .getTableSelectScript should return SELECT table script 1`] = `"SELECT \\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\" FROM \\"users\\";"`;
+
+exports[`db postgresql given is already connected .getTableSelectScript should return SELECT table script with schema if defined 1`] = `"SELECT \\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\" FROM \\"public\\".\\"users\\";"`;
+
+exports[`db postgresql given is already connected .getTableUpdateScript should return UPDATE table script 1`] = `
+"UPDATE \\"users\\"
+ SET \\"id\\"=?, \\"username\\"=?, \\"email\\"=?, \\"password\\"=?, \\"role_id\\"=?, \\"createdat\\"=?
+ WHERE <condition>;"
+`;
+
+exports[`db postgresql given is already connected .getTableUpdateScript should return UPDATE table script with schema if defined 1`] = `
+"UPDATE \\"public\\".\\"users\\"
+ SET \\"id\\"=?, \\"username\\"=?, \\"email\\"=?, \\"password\\"=?, \\"role_id\\"=?, \\"createdat\\"=?
+ WHERE <condition>;"
+`;
+
+exports[`db postgresql given is already connected .getViewCreateScript should return CREATE VIEW script 1`] = `
+"CREATE OR REPLACE VIEW \\"public\\".email_view AS
+ SELECT users.email,
+    users.password
+   FROM users;"
+`;
+
+exports[`db postgresql given is already connected .listDatabases should list all databases 1`] = `
+Array [
+  "postgres",
+  "sqlectron",
+]
+`;
+
+exports[`db postgresql given is already connected .listRoutines should list all routines with their type 1`] = `
+Array [
+  Object {
+    "routineName": "test_trigger_func",
+    "routineType": "FUNCTION",
+    "schema": "public",
+  },
+  Object {
+    "routineName": "users_count",
+    "routineType": "FUNCTION",
+    "schema": "public",
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .listSchemas should list all schema 1`] = `
+Array [
+  "dummy_schema",
+  "public",
+]
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "dataType": "integer",
+  },
+  Object {
+    "columnName": "username",
+    "dataType": "text",
+  },
+  Object {
+    "columnName": "email",
+    "dataType": "text",
+  },
+  Object {
+    "columnName": "password",
+    "dataType": "text",
+  },
+  Object {
+    "columnName": "role_id",
+    "dataType": "integer",
+  },
+  Object {
+    "columnName": "createdat",
+    "dataType": "date",
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 2`] = `
+Object {
+  "columnName": "id",
+  "dataType": "integer",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 3`] = `
+Object {
+  "columnName": "username",
+  "dataType": "text",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 4`] = `
+Object {
+  "columnName": "email",
+  "dataType": "text",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 5`] = `
+Object {
+  "columnName": "password",
+  "dataType": "text",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 6`] = `
+Object {
+  "columnName": "role_id",
+  "dataType": "integer",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableColumns should list all columns and their type from users table 7`] = `
+Object {
+  "columnName": "createdat",
+  "dataType": "date",
+}
+`;
+
+exports[`db postgresql given is already connected .listTableIndexes should list all indexes 1`] = `
+Array [
+  "users_pkey",
+]
+`;
+
+exports[`db postgresql given is already connected .listTableTriggers should list all table related triggers 1`] = `
+Array [
+  "dummy_trigger",
+]
+`;
+
+exports[`db postgresql given is already connected .listTables should list all tables 1`] = `
+Array [
+  anonymous {
+    "name": "roles",
+    "schema": "public",
+  },
+  anonymous {
+    "name": "users",
+    "schema": "public",
+  },
+]
+`;
+
+exports[`db postgresql given is already connected .listViews should list all views 1`] = `
+Array [
+  anonymous {
+    "name": "email_view",
+    "schema": "public",
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery DELETE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery DELETE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "DELETE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery INSERT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery INSERT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "INSERT",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 0,
+    "command": "SELECT",
+    "fields": Array [
+      Object {
+        "name": "id",
+      },
+      Object {
+        "name": "username",
+      },
+      Object {
+        "name": "email",
+      },
+      Object {
+        "name": "password",
+      },
+      Object {
+        "name": "role_id",
+      },
+      Object {
+        "name": "createdat",
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      Object {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 2`] = `
+Object {
+  "name": "id",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 3`] = `
+Object {
+  "name": "username",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 4`] = `
+Object {
+  "name": "email",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 5`] = `
+Object {
+  "name": "password",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 6`] = `
+Object {
+  "name": "role_id",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query 7`] = `
+Object {
+  "name": "createdat",
+}
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute a single query with empty result 1`] = `
+Array [
+  Object {
+    "affectedRows": 0,
+    "command": "SELECT",
+    "fields": Array [],
+    "rowCount": 0,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute an empty query 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute an query with only comments 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .executeQuery SELECT should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 0,
+    "command": "SELECT",
+    "fields": Array [
+      Object {
+        "name": "id",
+      },
+      Object {
+        "name": "username",
+      },
+      Object {
+        "name": "email",
+      },
+      Object {
+        "name": "password",
+      },
+      Object {
+        "name": "role_id",
+      },
+      Object {
+        "name": "createdat",
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      Object {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+    ],
+  },
+  Object {
+    "affectedRows": 0,
+    "command": "SELECT",
+    "fields": Array [
+      Object {
+        "name": "id",
+      },
+      Object {
+        "name": "name",
+      },
+    ],
+    "rowCount": 1,
+    "rows": Array [
+      Object {
+        "id": 1,
+        "name": "developer",
+      },
+    ],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery UPDATE should execute a single query 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .executeQuery UPDATE should execute multiple queries 1`] = `
+Array [
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+  Object {
+    "affectedRows": 1,
+    "command": "UPDATE",
+    "fields": Array [],
+    "rowCount": undefined,
+    "rows": Array [],
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .getRoutineCreateScript should return CREATE PROCEDURE/FUNCTION script 1`] = `undefined`;
+
+exports[`db sqlite given is already connected .getTableCreateScript should return table create script 1`] = `
+"CREATE TABLE users (
+  id INTEGER NOT NULL,
+  username VARCHAR(45) NULL,
+  email VARCHAR(150) NULL,
+  password VARCHAR(45) NULL,
+  role_id INT,
+  createdat DATETIME NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (role_id) REFERENCES roles (id)
+)"
+`;
+
+exports[`db sqlite given is already connected .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \\"roles\\" WHERE <condition>;"`;
+
+exports[`db sqlite given is already connected .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \\"public\\".\\"roles\\" WHERE <condition>;"`;
+
+exports[`db sqlite given is already connected .getTableInsertScript should return INSERT INTO table script 1`] = `
+"INSERT INTO \\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db sqlite given is already connected .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
+"INSERT INTO \\"public\\".\\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`db sqlite given is already connected .getTableKeys should list all tables keys 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .getTableReferences should list all tables that selected table has references to 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .getTableSelectScript should return SELECT table script 1`] = `"SELECT \\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\" FROM \\"users\\";"`;
+
+exports[`db sqlite given is already connected .getTableSelectScript should return SELECT table script with schema if defined 1`] = `"SELECT \\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\" FROM \\"public\\".\\"users\\";"`;
+
+exports[`db sqlite given is already connected .getTableUpdateScript should return UPDATE table script 1`] = `
+"UPDATE \\"users\\"
+ SET \\"id\\"=?, \\"username\\"=?, \\"email\\"=?, \\"password\\"=?, \\"role_id\\"=?, \\"createdat\\"=?
+ WHERE <condition>;"
+`;
+
+exports[`db sqlite given is already connected .getTableUpdateScript should return UPDATE table script with schema if defined 1`] = `
+"UPDATE \\"public\\".\\"users\\"
+ SET \\"id\\"=?, \\"username\\"=?, \\"email\\"=?, \\"password\\"=?, \\"role_id\\"=?, \\"createdat\\"=?
+ WHERE <condition>;"
+`;
+
+exports[`db sqlite given is already connected .getViewCreateScript should return CREATE VIEW script 1`] = `
+"CREATE VIEW email_view AS
+  SELECT users.email, users.password
+  FROM users"
+`;
+
+exports[`db sqlite given is already connected .listDatabases should list all databases 1`] = `
+Array [
+  "/Users/amila/Documents/Projects/falcon-core/test/databases/sqlite/sqlectron.db",
+]
+`;
+
+exports[`db sqlite given is already connected .listRoutines should list all routines with their type 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .listSchemas should list all schema 1`] = `Array []`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "dataType": "INTEGER",
+  },
+  Object {
+    "columnName": "username",
+    "dataType": "VARCHAR(45)",
+  },
+  Object {
+    "columnName": "email",
+    "dataType": "VARCHAR(150)",
+  },
+  Object {
+    "columnName": "password",
+    "dataType": "VARCHAR(45)",
+  },
+  Object {
+    "columnName": "role_id",
+    "dataType": "INT",
+  },
+  Object {
+    "columnName": "createdat",
+    "dataType": "DATETIME",
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 2`] = `
+Object {
+  "columnName": "id",
+  "dataType": "INTEGER",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 3`] = `
+Object {
+  "columnName": "username",
+  "dataType": "VARCHAR(45)",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 4`] = `
+Object {
+  "columnName": "email",
+  "dataType": "VARCHAR(150)",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 5`] = `
+Object {
+  "columnName": "password",
+  "dataType": "VARCHAR(45)",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 6`] = `
+Object {
+  "columnName": "role_id",
+  "dataType": "INT",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableColumns should list all columns and their type from users table 7`] = `
+Object {
+  "columnName": "createdat",
+  "dataType": "DATETIME",
+}
+`;
+
+exports[`db sqlite given is already connected .listTableIndexes should list all indexes 1`] = `
+Array [
+  "users_id_index",
+]
+`;
+
+exports[`db sqlite given is already connected .listTableTriggers should list all table related triggers 1`] = `
+Array [
+  "dummy_trigger",
+]
+`;
+
+exports[`db sqlite given is already connected .listTables should list all tables 1`] = `
+Array [
+  Object {
+    "name": "roles",
+  },
+  Object {
+    "name": "users",
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .listViews should list all views 1`] = `
+Array [
+  Object {
+    "name": "email_view",
+  },
+]
+`;
