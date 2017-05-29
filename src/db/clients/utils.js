@@ -1,5 +1,5 @@
 // @flow
-export function buildSchemaFilter({ schema } = {}, schemaField = 'schema_name') {
+export function buildSchemaFilter({ schema }: Object = {}, schemaField: string = 'schema_name') {
   if (!schema) { return null; }
 
   if (typeof schema === 'string') {
@@ -20,7 +20,7 @@ export function buildSchemaFilter({ schema } = {}, schemaField = 'schema_name') 
   return where.join(' AND ');
 }
 
-export function buildDatabseFilter({ database } = {}, databaseField) {
+export function buildDatabseFilter({ database }: Object = {}, databaseField: string) {
   if (!database) { return null; }
 
   if (typeof database === 'string') {

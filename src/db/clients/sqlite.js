@@ -19,7 +19,7 @@ export function disconnect() {
   return Promise.resolve();
 }
 
-export function wrapIdentifier(value) {
+export function wrapIdentifier(value: string) {
   if (value === '*') {
     return value;
   }
@@ -33,11 +33,11 @@ export function wrapIdentifier(value) {
   return `"${value.replace(/"/g, '""')}"`;
 }
 
-export function getQuerySelectTop(client, table, limit) {
+export function getQuerySelectTop(client, table: string, limit: number) {
   return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
 }
 
-export function query(conn, queryText) {
+export function query(conn, queryText: string) {
   let queryConnection = null;
 
   return {
@@ -69,17 +69,17 @@ export function query(conn, queryText) {
   };
 }
 
-export async function executeQuery(conn, queryText) {
+export async function executeQuery(conn, queryText: string) {
   const result = await driverExecuteQuery(conn, { query: queryText, multiple: true });
 
   return result.map(parseRowQueryResult);
 }
 
-export async function getTableKeys(conn, table, tableName) {
+export async function getTableKeys(conn, table: string, tableName: string) {
   return Promise.resolve([]); // TODO: not implemented yet
 }
 
-export async function getTableValues(conn, table, tableName) {
+export async function getTableValues(conn, table: string, tableName: string) {
   const sql = `
     SELECT *
     FROM '${tableName}';
@@ -119,7 +119,7 @@ export function listRoutines() {
   return Promise.resolve([]); // DOES NOT SUPPORT IT
 }
 
-export async function listTableColumns(conn, database, table) {
+export async function listTableColumns(conn, database, table: string) {
   const sql = `PRAGMA table_info('${table}')`;
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
@@ -130,7 +130,7 @@ export async function listTableColumns(conn, database, table) {
   }));
 }
 
-export async function listTableTriggers(conn, table) {
+export async function listTableTriggers(conn, table: string) {
   const sql = `
     SELECT name
     FROM sqlite_master
@@ -143,7 +143,7 @@ export async function listTableTriggers(conn, table) {
   return data.map((row) => row.name);
 }
 
-export async function listTableIndexes(conn, database, table) {
+export async function listTableIndexes(conn, database: string, table: string) {
   const sql = `PRAGMA INDEX_LIST('${table}')`;
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
@@ -165,7 +165,7 @@ export function getTableReferences() {
   return Promise.resolve([]); // TODO: not implemented yet
 }
 
-export async function getTableCreateScript(conn, table) {
+export async function getTableCreateScript(conn, table: string) {
   const sql = `
     SELECT sql
     FROM sqlite_master
@@ -304,7 +304,7 @@ function resolveExecutionType(executioType) {
   }
 }
 
-export default async function (server, database): ClientType {
+export default async function (server, database: Object): ClientType {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for sqlite3 with config %j', dbConfig);
 

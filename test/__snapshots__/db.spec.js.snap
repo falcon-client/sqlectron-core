@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CANCELED_BY_USER 1`] = `"CANCELED_BY_USER"`;
-
-exports[`CANCELED_BY_USER 2`] = `"CANCELED_BY_USER"`;
-
-exports[`CANCELED_BY_USER 3`] = `"CANCELED_BY_USER"`;
-
 exports[`db mysql given is already connected .executeQuery CREATE DATABASE should execute a single query 1`] = `
 Array [
   Object {
@@ -898,6 +892,8 @@ Array [
 ]
 `;
 
+exports[`db mysql given is already connected .query should be able to cancel the current query 1`] = `"CANCELED_BY_USER"`;
+
 exports[`db postgresql given is already connected .executeQuery CREATE DATABASE should execute a single query 1`] = `
 Array [
   Object {
@@ -1610,6 +1606,8 @@ Array [
 ]
 `;
 
+exports[`db postgresql given is already connected .query should be able to cancel the current query 1`] = `"CANCELED_BY_USER"`;
+
 exports[`db sqlite given is already connected .executeQuery DELETE should execute a single query 1`] = `
 Array [
   Object {
@@ -2020,3 +2018,5 @@ Array [
   },
 ]
 `;
+
+exports[`db sqlite given is already connected .query should be able to cancel the current query 1`] = `"CANCELED_BY_USER"`;

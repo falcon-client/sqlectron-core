@@ -3,7 +3,7 @@ import { createConnection } from './client';
 import { CLIENTS } from './clients';
 
 
-export function createServer(serverConfig) {
+export function createServer(serverConfig: Object) {
   if (!serverConfig) {
     throw new Error('Missing server configuration');
   }
@@ -28,7 +28,7 @@ export function createServer(serverConfig) {
   * Server public API
   */
   return {
-    db(dbName) {
+    db(dbName: string) {
       return server.db[dbName];
     },
 
@@ -43,7 +43,7 @@ export function createServer(serverConfig) {
       }
     },
 
-    createConnection(dbName) {
+    createConnection(dbName: string) {
       if (server.db[dbName]) {
         return server.db[dbName];
       }
