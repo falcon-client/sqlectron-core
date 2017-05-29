@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { servers } from '../src';
 import { readJSONFile } from './../src/utils';
 import utilsStub from './utils-stub';
@@ -15,7 +14,7 @@ describe('servers', () => {
     it('should load servers from file', async () => {
       const fixture = await loadConfig();
       const result = await servers.getAll();
-      expect(result).to.eql(fixture.servers);
+      expect(result).toEqual(fixture.servers);
     });
   });
 
@@ -33,12 +32,12 @@ describe('servers', () => {
         password: 'password'
       };
       const createdServer = await servers.add(newServer);
-      expect(createdServer).to.have.property('id');
+      expect(createdServer).toHaveProperty('id');
       delete createdServer.id;
-      expect(createdServer).to.eql(newServer);
+      expect(createdServer).toEqual(newServer);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).to.eql(configBefore.servers.length + 1);
+      expect(configAfter.servers.length).toEqual(configBefore.servers.length + 1);
     });
 
     it('should add new server with ssh', async () => {
@@ -61,12 +60,12 @@ describe('servers', () => {
         }
       };
       const createdServer = await servers.add(newServer);
-      expect(createdServer).to.have.property('id');
+      expect(createdServer).toHaveProperty('id');
       delete createdServer.id;
-      expect(createdServer).to.eql(newServer);
+      expect(createdServer).toEqual(newServer);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).to.eql(configBefore.servers.length + 1);
+      expect(configAfter.servers.length).toEqual(configBefore.servers.length + 1);
     });
   });
 
@@ -86,11 +85,11 @@ describe('servers', () => {
         password: 'pwd'
       };
       const updatedServer = await servers.update(serverToUpdate);
-      expect(updatedServer).to.eql(serverToUpdate);
+      expect(updatedServer).toEqual(serverToUpdate);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).to.eql(configBefore.servers.length);
-      expect(configAfter.servers.find((srv) => srv.id === id)).to.eql(serverToUpdate);
+      expect(configAfter.servers.length).toEqual(configBefore.servers.length);
+      expect(configAfter.servers.find((srv) => srv.id === id)).toEqual(serverToUpdate);
     });
   });
 
@@ -109,12 +108,12 @@ describe('servers', () => {
           password: 'password'
         };
         const createdServer = await servers.addOrUpdate(newServer);
-        expect(createdServer).to.have.property('id');
+        expect(createdServer).toHaveProperty('id');
         delete createdServer.id;
-        expect(createdServer).to.eql(newServer);
+        expect(createdServer).toEqual(newServer);
 
         const configAfter = await loadConfig();
-        expect(configAfter.servers.length).to.eql(configBefore.servers.length + 1);
+        expect(configAfter.servers.length).toEqual(configBefore.servers.length + 1);
       });
     });
 
@@ -134,11 +133,11 @@ describe('servers', () => {
           password: 'pwd'
         };
         const updatedServer = await servers.addOrUpdate(serverToUpdate);
-        expect(updatedServer).to.eql(serverToUpdate);
+        expect(updatedServer).toEqual(serverToUpdate);
 
         const configAfter = await loadConfig();
-        expect(configAfter.servers.length).to.eql(configBefore.servers.length);
-        expect(configAfter.servers.find((srv) => srv.id === id)).to.eql(serverToUpdate);
+        expect(configAfter.servers.length).toEqual(configBefore.servers.length);
+        expect(configAfter.servers.find((srv) => srv.id === id)).toEqual(serverToUpdate);
       });
     });
   });
@@ -149,8 +148,8 @@ describe('servers', () => {
       await servers.removeById('c94cbafa-8977-4142-9f34-c84d382d8731');
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).to.eql(configBefore.servers.length - 1);
-      expect(configAfter.servers.find((srv) => srv.name === 'pg-vm')).to.eql(undefined);
+      expect(configAfter.servers.length).toEqual(configBefore.servers.length - 1);
+      expect(configAfter.servers.find((srv) => srv.name === 'pg-vm')).toEqual(undefined);
     });
   });
 });
