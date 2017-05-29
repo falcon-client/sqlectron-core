@@ -6,7 +6,7 @@
   "author": "The Falcon Team",
   "scripts": {
     "build": "babel -d lib/ src/ --source-maps",
-    "flow": "flow check",
+    "flow": "flow",
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
     "prepublish": "npm run build",
     "test": "jest",
