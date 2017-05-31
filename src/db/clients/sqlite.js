@@ -325,6 +325,7 @@ export default async function (server, database: Object): ClientType {
     listSchemas: () => listSchemas(conn),
     getTableReferences: (table) => getTableReferences(conn, table),
     getTableKeys: (db, table) => getTableKeys(conn, db, table),
+    getTableValues: (db, table) => getTableValues(conn, db, table),
     query: (queryText) => query(conn, queryText),
     executeQuery: (queryText) => executeQuery(conn, queryText),
     listDatabases: () => listDatabases(conn),
