@@ -117,7 +117,7 @@ export async function listRoutines(conn) {
   }));
 }
 
-export async function listTableColumns(conn, database, table) {
+export async function listTableColumns(conn, database: string, table: string) {
   const sql = `
     SELECT column_name, data_type
     FROM information_schema.columns
@@ -137,7 +137,7 @@ export async function listTableColumns(conn, database, table) {
   }));
 }
 
-export async function listTableTriggers(conn, table) {
+export async function listTableTriggers(conn, table: string) {
   const sql = `
     SELECT trigger_name
     FROM information_schema.triggers
@@ -154,7 +154,7 @@ export async function listTableTriggers(conn, table) {
   return data.map((row) => row.trigger_name);
 }
 
-export async function listTableIndexes(conn, database, table) {
+export async function listTableIndexes(conn, database: string, table: string) {
   const sql = 'SHOW INDEX FROM ?? FROM ??';
 
   const params = [
@@ -171,7 +171,7 @@ export function listSchemas() {
   return Promise.resolve([]);
 }
 
-export async function getTableReferences(conn, table) {
+export async function getTableReferences(conn, table: string) {
   const sql = `
     SELECT referenced_table_name
     FROM information_schema.key_column_usage
@@ -189,7 +189,7 @@ export async function getTableReferences(conn, table) {
   return data.map((row) => row.referenced_table_name);
 }
 
-export async function getTableKeys(conn, database, table) {
+export async function getTableKeys(conn, database: string, table: string) {
   const sql = `
     SELECT constraint_name, column_name, referenced_table_name,
       CASE WHEN (referenced_table_name IS NOT NULL) THEN 'FOREIGN'
@@ -215,7 +215,7 @@ export async function getTableKeys(conn, database, table) {
   }));
 }
 
-export async function getTableValues(conn, table, tableName) {
+export async function getTableValues(conn, table, tableName: string) {
   const sql = `
     SELECT * FROM ${tableName};
   `;
@@ -225,7 +225,7 @@ export async function getTableValues(conn, table, tableName) {
   return data;
 }
 
-export function getQuerySelectTop(conn, table, limit) {
+export function getQuerySelectTop(conn, table: string, limit: number) {
   return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
 }
 
@@ -250,7 +250,7 @@ export function filterDatabase(item, { database } = {}, databaseField) {
   return true;
 }
 
-export async function executeQuery(conn, queryText) {
+export async function executeQuery(conn, queryText: string) {
   const { fields, data } = await driverExecuteQuery(conn, { query: queryText });
   if (!data) {
     return [];
@@ -265,7 +265,7 @@ export async function executeQuery(conn, queryText) {
   return data.map((_, idx) => parseRowQueryResult(data[idx], fields[idx], commands[idx]));
 }
 
-export function query(conn, queryText) {
+export function query(conn, queryText: string) {
   let pid = null;
   let canceling = false;
   const cancelable = createCancelablePromise({
@@ -335,7 +335,7 @@ export async function listDatabases(conn, filter) {
     .map((row) => row.Database);
 }
 
-export async function getTableCreateScript(conn, table) {
+export async function getTableCreateScript(conn, table: string) {
   const sql = `SHOW CREATE TABLE ${table}`;
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
@@ -351,7 +351,7 @@ export async function getViewCreateScript(conn, view) {
   return data.map((row) => row['Create View']);
 }
 
-export async function getRoutineCreateScript(conn, routine, type) {
+export async function getRoutineCreateScript(conn, routine, type: string) {
   const sql = `SHOW CREATE ${type.toUpperCase()} ${routine}`;
 
   const { data } = await driverExecuteQuery(conn, { query: sql });

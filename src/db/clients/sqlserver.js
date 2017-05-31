@@ -10,20 +10,20 @@ const mmsqlErrors = {
   CANCELED: 'ECANCEL'
 };
 
-export async function disconnect(conn) {
+export async function disconnect(conn: Object) {
   const connection = await new Connection(conn.dbConfig);
   connection.close();
 }
 
-export function wrapIdentifier(value) {
+export function wrapIdentifier(value: string) {
   return (value !== '*' ? `[${value.replace(/\[/g, '[')}]` : '*');
 }
 
-export function getQuerySelectTop(client, table, limit) {
+export function getQuerySelectTop(client: any, table: string, limit: number) {
   return `SELECT TOP ${limit} * FROM ${wrapIdentifier(table)}`;
 }
 
-export function query(conn, queryText) {
+export function query(conn, queryText: string) {
   let queryRequest = null;
 
   return {
@@ -67,7 +67,7 @@ export function query(conn, queryText) {
 }
 
 
-export async function executeQuery(conn, queryText) {
+export async function executeQuery(conn, queryText: string) {
   const { request, data } = await driverExecuteQuery(conn, { query: queryText, multiple: true });
 
   const commands = identifyCommands(queryText).map((item) => item.type);
@@ -80,7 +80,7 @@ export async function executeQuery(conn, queryText) {
 }
 
 
-async function getSchema(conn) {
+async function getSchema(conn: Object) {
   const sql = 'SELECT schema_name() AS \'schema\'';
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
@@ -150,7 +150,7 @@ export async function listRoutines(conn, filter) {
   }));
 }
 
-export async function listTableColumns(conn, database, table) {
+export async function listTableColumns(conn, database: string, table: string) {
   const sql = `
     SELECT column_name, data_type
     FROM information_schema.columns
@@ -165,7 +165,7 @@ export async function listTableColumns(conn, database, table) {
   }));
 }
 
-export async function listTableTriggers(conn, table) {
+export async function listTableTriggers(conn, table: string) {
   // SQL Server does not have information_schema for triggers, so other way around
   // is using sp_helptrigger stored procedure to fetch triggers related to table
   const sql = `EXEC sp_helptrigger ${wrapIdentifier(table)}`;
@@ -175,7 +175,7 @@ export async function listTableTriggers(conn, table) {
   return data.map((row) => row.trigger_name);
 }
 
-export async function listTableIndexes(conn, database, table) {
+export async function listTableIndexes(conn, database: string, table: string) {
   // SQL Server does not have information_schema for indexes, so other way around
   // is using sp_helpindex stored procedure to fetch indexes related to table
   const sql = `EXEC sp_helpindex ${wrapIdentifier(table)}`;
@@ -213,7 +213,7 @@ export async function listDatabases(conn, filter) {
   return data.map((row) => row.name);
 }
 
-export async function getTableReferences(conn, table) {
+export async function getTableReferences(conn, table: string) {
   const sql = `
     SELECT OBJECT_NAME(referenced_object_id) referenced_table_name
     FROM sys.foreign_keys
@@ -225,7 +225,7 @@ export async function getTableReferences(conn, table) {
   return data.map((row) => row.referenced_table_name);
 }
 
-export async function getTableKeys(conn, database, table) {
+export async function getTableKeys(conn, database: string, table: string) {
   const sql = `
     SELECT
       tc.constraint_name,
@@ -253,7 +253,7 @@ export async function getTableKeys(conn, database, table) {
   }));
 }
 
-export async function getTableCreateScript(conn, table) {
+export async function getTableCreateScript(conn, table: string) {
   // Reference http://stackoverflow.com/a/317864
   const sql = `
     SELECT  ('CREATE TABLE ' + so.name + ' (' +
@@ -344,7 +344,7 @@ export async function getRoutineCreateScript(conn, routine) {
   return data.map((row) => row.routine_definition);
 }
 
-export async function truncateAllTables(conn) {
+export async function truncateAllTables(conn: Object) {
   await runWithConnection(conn, async (connection) => {
     const connClient = { connection };
     const schema = await getSchema(connClient);
@@ -417,7 +417,7 @@ function identifyCommands(queryText) {
   }
 }
 
-export async function driverExecuteQuery(conn, queryArgs) {
+export async function driverExecuteQuery(conn, queryArgs: Object) {
   const runQuery = async (connection) => {
     const request = connection.request();
     if (queryArgs.multiple) {
@@ -441,7 +441,7 @@ async function runWithConnection(conn, run) {
   return run(connection);
 }
 
-export default async function (server, database) {
+export default async function (server, database: string) {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for mmsql with config %j', dbConfig);
 

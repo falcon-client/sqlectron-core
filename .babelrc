@@ -4,11 +4,19 @@
       "node": 6
     }
   }]],
+  "env": {
+    "development": {
+      "plugins": [
+        ["flow-runtime", {"assert": true,"annotate": true}]
+      ]
+    },
+    "test": {
+      "plugins": [
+        ["flow-runtime", {"assert": true,"annotate": true}]
+      ]
+    }
+  },
   "plugins": [
-    ["flow-runtime", {
-      "assert": true,
-      "annotate": true
-    }],
     "syntax-flow",
     "transform-object-rest-spread",
     "transform-decorators-legacy",

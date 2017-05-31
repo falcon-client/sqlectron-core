@@ -74,7 +74,7 @@ export function getSync() {
 }
 
 
-export function save(data) {
+export function save(data: string) {
   const filename = utils.getConfigPath();
   return utils.writeJSONFile(filename, data);
 }

@@ -3,13 +3,13 @@ import path from 'path';
 import pf from 'portfinder';
 
 
-export function getConfigPath() {
-  return path.join(homedir(), '.sqlectron.json');
+export function homedir() {
+  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
 
-export function homedir() {
-  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+export function getConfigPath() {
+  return path.join(homedir(), '.sqlectron.json');
 }
 
 
@@ -36,7 +36,7 @@ export function writeFile(filename, data) {
   return new Promise((resolve, reject) => {
     fs.writeFile(filename, data, (err) => {
       if (err) return reject(err);
-      resolve();
+      return resolve();
     });
   });
 }
@@ -57,7 +57,7 @@ export function readFile(filename) {
   return new Promise((resolve, reject) => {
     fs.readFile(path.resolve(filePath), (err, data) => {
       if (err) return reject(err);
-      resolve(data);
+      return resolve(data);
     });
   });
 }
@@ -93,11 +93,11 @@ export function getPort() {
   });
 }
 
+const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
+
 export function createCancelablePromise(error, timeIdle = 100) {
   let canceled = false;
   let discarded = false;
-
-  const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
   return {
     async wait() {

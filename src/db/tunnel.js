@@ -7,7 +7,7 @@ import createLogger from '../logger';
 
 const logger = createLogger('db:tunnel');
 
-export default function (serverInfo) {
+export default function (serverInfo: Object) {
   return new Promise(async (resolve, reject) => {
     logger().debug('configuring tunnel');
     const config = await configTunnel(serverInfo);

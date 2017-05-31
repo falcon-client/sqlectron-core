@@ -34,7 +34,7 @@ export function listRoutines() {
   return Promise.resolve([]);
 }
 
-export function listTableColumns(client, database, table) {
+export function listTableColumns(client, database: string, table: string) {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT position, column_name, type
@@ -48,7 +48,7 @@ export function listTableColumns(client, database, table) {
     ];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      resolve(
+      return resolve(
         data.rows
         // force pks be placed at the results beginning
         .sort((a, b) => b.position - a.position)
@@ -76,7 +76,7 @@ export function getTableReferences() {
   return Promise.resolve([]);
 }
 
-export function getTableKeys(client, database, table) {
+export function getTableKeys(client, database: string, table: string) {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT column_name
@@ -92,7 +92,7 @@ export function getTableKeys(client, database, table) {
     ];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      resolve(data.rows.map((row) => ({
+      return resolve(data.rows.map((row) => ({
         constraintName: null,
         columnName: row.column_name,
         referencedTable: null,
@@ -102,11 +102,11 @@ export function getTableKeys(client, database, table) {
   });
 }
 
-function query(conn, queryText) { // eslint-disable-line no-unused-vars
+function query(conn, queryText: string) {
   throw new Error('"query" function is not implementd by cassandra client.');
 }
 
-export function executeQuery(client, queryText) {
+export function executeQuery(client, queryText: string) {
   const commands = identifyCommands(queryText).map((item) => item.type);
 
   return new Promise((resolve, reject) => {
@@ -125,13 +125,13 @@ export function listDatabases(client) {
     const params = [];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      resolve(data.rows.map((row) => row.keyspace_name));
+      return resolve(data.rows.map((row) => row.keyspace_name));
     });
   });
 }
 
 
-export function getQuerySelectTop(client, table, limit) {
+export function getQuerySelectTop(client, table: string, limit: number) {
   return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
 }
 

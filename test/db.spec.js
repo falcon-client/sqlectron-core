@@ -305,7 +305,7 @@ describe('db', () => {
                 }
 
                 try {
-                  expect(error.sqlectronError).toMatchSnapshot('CANCELED_BY_USER');
+                  expect(error.sqlectronError).toMatchSnapshot();
                   done();
                 } catch (err) {
                   done(err);
@@ -339,7 +339,7 @@ describe('db', () => {
                 expect(results).toMatchSnapshot();
               } catch (err) {
                 if (dbClient === 'cassandra') {
-                  expect(err.message).toMatchSnapshot('line 0:-1 no viable alternative at input \'<EOF>\'');
+                  expect(err.message).toMatchSnapshot();
                 } else {
                   throw err;
                 }
@@ -352,7 +352,7 @@ describe('db', () => {
                 expect(results).toMatchSnapshot();
               } catch (err) {
                 if (dbClient === 'cassandra') {
-                  expect(err.message).toMatchSnapshot('line 1:13 mismatched character \'<EOF>\' expecting set null');
+                  expect(err.message).toMatchSnapshot();
                 } else {
                   throw err;
                 }
