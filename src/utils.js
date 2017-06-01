@@ -2,26 +2,22 @@ import fs from 'fs';
 import path from 'path';
 import pf from 'portfinder';
 
-
 export function homedir() {
-  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+  return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'];
 }
-
 
 export function getConfigPath() {
   return path.join(homedir(), '.sqlectron.json');
 }
 
-
 export function fileExists(filename) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     fs.stat(filename, (err, stats) => {
       if (err) return resolve(false);
       resolve(stats.isFile());
     });
   });
 }
-
 
 export function fileExistsSync(filename) {
   try {
@@ -31,26 +27,22 @@ export function fileExistsSync(filename) {
   }
 }
 
-
 export function writeFile(filename, data) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filename, data, (err) => {
+    fs.writeFile(filename, data, err => {
       if (err) return reject(err);
       return resolve();
     });
   });
 }
 
-
 export function writeJSONFile(filename, data) {
   return writeFile(filename, JSON.stringify(data, null, 2));
 }
 
-
 export function writeJSONFileSync(filename, data) {
   return fs.writeFileSync(filename, JSON.stringify(data, null, 2));
 }
-
 
 export function readFile(filename) {
   const filePath = resolveHomePathToAbsolute(filename);
@@ -62,18 +54,15 @@ export function readFile(filename) {
   });
 }
 
-
 export function readJSONFile(filename) {
-  return readFile(filename).then((data) => JSON.parse(data));
+  return readFile(filename).then(data => JSON.parse(data));
 }
-
 
 export function readJSONFileSync(filename) {
   const filePath = resolveHomePathToAbsolute(filename);
   const data = fs.readFileSync(path.resolve(filePath), { enconding: 'utf-8' });
   return JSON.parse(data);
 }
-
 
 export function resolveHomePathToAbsolute(filename) {
   if (!/^~\//.test(filename)) {
@@ -82,7 +71,6 @@ export function resolveHomePathToAbsolute(filename) {
 
   return path.join(homedir(), filename.substring(2));
 }
-
 
 export function getPort() {
   return new Promise((resolve, reject) => {
@@ -93,7 +81,7 @@ export function getPort() {
   });
 }
 
-const wait = (time) => new Promise((resolve) => setTimeout(resolve, time));
+const wait = time => new Promise(resolve => setTimeout(resolve, time));
 
 export function createCancelablePromise(error, timeIdle = 100) {
   let canceled = false;
@@ -108,9 +96,9 @@ export function createCancelablePromise(error, timeIdle = 100) {
       if (canceled) {
         const err = new Error(error.message || 'Promise canceled.');
 
-        Object
-          .getOwnPropertyNames(error)
-          .forEach((key) => err[key] = error[key]); // eslint-disable-line no-return-assign
+        Object.getOwnPropertyNames(error).forEach(
+          key => (err[key] = error[key])
+        ); // eslint-disable-line no-return-assign
 
         throw err;
       }

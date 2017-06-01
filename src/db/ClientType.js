@@ -16,7 +16,7 @@ export type ClientType = {
   listDatabases: () => Promise<any>,
   getQuerySelectTop: (table: string, limit: number) => Promise<any>,
   getTableCreateScript: (table: string) => Promise<any>,
-  getViewCreateScript: (view) => Promise<any>,
-  getRoutineCreateScript: (routine) => Promise<any>,
+  getViewCreateScript: view => Promise<any>,
+  getRoutineCreateScript: routine => Promise<any>,
   truncateAllTables: () => Promise<any>
 };

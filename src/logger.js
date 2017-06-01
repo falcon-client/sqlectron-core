@@ -1,11 +1,14 @@
 import debug from 'debug';
 
-
 const loggers = {};
 
 export default function createLogger(namespace) {
-  if (!namespace) { throw new Error('Missing log namespace'); }
-  if (loggers[namespace]) { throw new Error('This logger is already registered'); }
+  if (!namespace) {
+    throw new Error('Missing log namespace');
+  }
+  if (loggers[namespace]) {
+    throw new Error('This logger is already registered');
+  }
 
   // default logger
   const debugLogger = debug(`sqlectron-core:${namespace}`);
@@ -24,7 +27,7 @@ export default function createLogger(namespace) {
  * Allow use a different logger
  */
 export function setLogger(customLogger) {
-  Object.keys(loggers).forEach((logger) => {
+  Object.keys(loggers).forEach(logger => {
     loggers[logger] = customLogger(logger);
   });
 }

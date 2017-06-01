@@ -1,13 +1,37 @@
 // @flow
 import net from 'net';
 import { Client } from 'ssh2';
-import { getPort, readFile } from '../utils';
-import createLogger from '../logger';
+import { getPort, readFile } from '../Utils';
+import createLogger from '../Logger';
 
+async function configTunnel(serverInfo) {
+  const config = {
+    username: serverInfo.ssh.user,
+    port: serverInfo.ssh.port,
+    host: serverInfo.ssh.host,
+    dstPort: serverInfo.port,
+    dstHost: serverInfo.host,
+    sshPort: 22,
+    srcPort: 0,
+    srcHost: 'localhost',
+    localHost: 'localhost',
+    localPort: await getPort()
+  };
+  if (serverInfo.ssh.password) {
+    config.password = serverInfo.ssh.password;
+  }
+  if (serverInfo.ssh.passphrase) {
+    config.passphrase = serverInfo.ssh.passphrase;
+  }
+  if (serverInfo.ssh.privateKey) {
+    config.privateKey = await readFile(serverInfo.ssh.privateKey);
+  }
+  return config;
+}
 
-const logger = createLogger('db:tunnel');
+export default function Tunnel(serverInfo: Object) {
+  const logger = createLogger('db:tunnel');
 
-export default function (serverInfo: Object) {
   return new Promise(async (resolve, reject) => {
     logger().debug('configuring tunnel');
     const config = await configTunnel(serverInfo);
@@ -15,14 +39,14 @@ export default function (serverInfo: Object) {
     const connections = [];
 
     logger().debug('creating ssh tunnel server');
-    const server = net.createServer(async (conn) => {
-      conn.on('error', (err) => server.emit('error', err));
+    const server = net.createServer(async conn => {
+      conn.on('error', err => server.emit('error', err));
 
       logger().debug('creating ssh tunnel client');
       const client = new Client();
       connections.push(conn);
 
-      client.on('error', (err) => server.emit('error', err));
+      client.on('error', err => server.emit('error', err));
 
       client.on('ready', () => {
         logger().debug('connected ssh tunnel client');
@@ -43,7 +67,8 @@ export default function (serverInfo: Object) {
             }
             server.emit('success');
             conn.pipe(sshStream).pipe(conn);
-          });
+          }
+        );
       });
 
       try {
@@ -58,37 +83,14 @@ export default function (serverInfo: Object) {
 
     server.once('close', () => {
       logger().debug('close ssh tunnel server');
-      connections.forEach((conn) => conn.end());
+      connections.forEach(conn => conn.end());
     });
 
     logger().debug('connecting ssh tunnel server');
-    server.listen(config.localPort, config.localHost, (err) => {
+    server.listen(config.localPort, config.localHost, err => {
       if (err) return reject(err);
-
       logger().debug('connected ssh tunnel server');
-      resolve(server);
+      return resolve(server);
     });
   });
-}
-
-
-async function configTunnel(serverInfo) {
-  const config = {
-    username: serverInfo.ssh.user,
-    port: serverInfo.ssh.port,
-    host: serverInfo.ssh.host,
-    dstPort: serverInfo.port,
-    dstHost: serverInfo.host,
-    sshPort: 22,
-    srcPort: 0,
-    srcHost: 'localhost',
-    localHost: 'localhost',
-    localPort: await getPort()
-  };
-  if (serverInfo.ssh.password) config.password = serverInfo.ssh.password;
-  if (serverInfo.ssh.passphrase) config.passphrase = serverInfo.ssh.passphrase;
-  if (serverInfo.ssh.privateKey) {
-    config.privateKey = await readFile(serverInfo.ssh.privateKey);
-  }
-  return config;
 }

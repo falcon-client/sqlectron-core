@@ -1,12 +1,6 @@
-import * as config from './config';
-import * as servers from './servers';
+import * as config from './Config';
+import * as servers from './Servers';
 import * as db from './db';
-import { setLogger } from './logger';
+import { setLogger } from './Logger';
 
-
-export {
-  config,
-  servers,
-  db,
-  setLogger
-};
+export { config, servers, db, setLogger };

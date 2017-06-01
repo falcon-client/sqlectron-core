@@ -1,15 +1,13 @@
 // @flow
 import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
-import createLogger from '../../logger';
-
+import createLogger from '../../Logger';
 
 const logger = createLogger('db:clients:cassandra');
 
 export function disconnect(client) {
   client.shutdown();
 }
-
 
 export function listTables(client, database) {
   return new Promise((resolve, reject) => {
@@ -21,7 +19,7 @@ export function listTables(client, database) {
     const params = [database];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      resolve(data.rows.map((row) => ({ name: row.name })));
+      resolve(data.rows.map(row => ({ name: row.name })));
     });
   });
 }
@@ -42,20 +40,17 @@ export function listTableColumns(client, database: string, table: string) {
       WHERE keyspace_name = ?
         AND table_name = ?
     `;
-    const params = [
-      database,
-      table
-    ];
+    const params = [database, table];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
       return resolve(
         data.rows
-        // force pks be placed at the results beginning
-        .sort((a, b) => b.position - a.position)
-        .map((row) => ({
-          columnName: row.column_name,
-          dataType: row.type
-        }))
+          // force pks be placed at the results beginning
+          .sort((a, b) => b.position - a.position)
+          .map(row => ({
+            columnName: row.column_name,
+            dataType: row.type
+          }))
       );
     });
   });
@@ -86,18 +81,17 @@ export function getTableKeys(client, database: string, table: string) {
         AND kind = 'partition_key'
       ALLOW FILTERING
     `;
-    const params = [
-      database,
-      table
-    ];
+    const params = [database, table];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      return resolve(data.rows.map((row) => ({
-        constraintName: null,
-        columnName: row.column_name,
-        referencedTable: null,
-        keyType: 'PRIMARY KEY'
-      })));
+      return resolve(
+        data.rows.map(row => ({
+          constraintName: null,
+          columnName: row.column_name,
+          referencedTable: null,
+          keyType: 'PRIMARY KEY'
+        }))
+      );
     });
   });
 }
@@ -107,7 +101,7 @@ function query(conn, queryText: string) {
 }
 
 export function executeQuery(client, queryText: string) {
-  const commands = identifyCommands(queryText).map((item) => item.type);
+  const commands = identifyCommands(queryText).map(item => item.type);
 
   return new Promise((resolve, reject) => {
     client.execute(queryText, (err, data) => {
@@ -118,18 +112,16 @@ export function executeQuery(client, queryText: string) {
   });
 }
 
-
 export function listDatabases(client) {
   return new Promise((resolve, reject) => {
     const sql = 'SELECT keyspace_name FROM system_schema.keyspaces';
     const params = [];
     client.execute(sql, params, (err, data) => {
       if (err) return reject(err);
-      return resolve(data.rows.map((row) => row.keyspace_name));
+      return resolve(data.rows.map(row => row.keyspace_name));
     });
   });
 }
-
 
 export function getQuerySelectTop(client, table: string, limit: number) {
   return `SELECT * FROM ${wrapIdentifier(table)} LIMIT ${limit}`;
@@ -154,7 +146,6 @@ export function wrapIdentifier(value) {
   return `"${value.replace(/"/g, '""')}"`;
 }
 
-
 export const truncateAllTables = async (connection, database) => {
   const sql = `
     SELECT table_name
@@ -162,8 +153,8 @@ export const truncateAllTables = async (connection, database) => {
     WHERE keyspace_name = '${database}'
   `;
   const [result] = await executeQuery(connection, sql);
-  const tables = result.rows.map((row) => row.table_name);
-  const promises = tables.map((t) => {
+  const tables = result.rows.map(row => row.table_name);
+  const promises = tables.map(t => {
     const truncateSQL = `
       TRUNCATE TABLE ${wrapIdentifier(database)}.${wrapIdentifier(t)};
     `;
@@ -194,7 +185,6 @@ function configDatabase(server, database) {
   return config;
 }
 
-
 function parseRowQueryResult(data, command) {
   // Fallback in case the identifier could not reconize the command
   const isSelect = command ? command === 'SELECT' : Array.isArray(data.rows);
@@ -202,11 +192,12 @@ function parseRowQueryResult(data, command) {
     command: command || (isSelect && 'SELECT'),
     rows: data.rows || [],
     fields: data.columns || [],
-    rowCount: isSelect ? (data.rowLength || 0) : undefined,
-    affectedRows: !isSelect && !isNaN(data.rowLength) ? data.rowLength : undefined
+    rowCount: isSelect ? data.rowLength || 0 : undefined,
+    affectedRows: !isSelect && !isNaN(data.rowLength)
+      ? data.rowLength
+      : undefined
   };
 }
-
 
 function identifyCommands(queryText) {
   try {
@@ -219,7 +210,7 @@ function identifyCommands(queryText) {
 /**
  * To keep compatibility with the other clients we treat keyspaces as database.
  */
-export default function (server, database) {
+export default function Cassandra(server, database) {
   return new Promise(async (resolve, reject) => {
     const dbConfig = configDatabase(server, database);
 
@@ -227,7 +218,7 @@ export default function (server, database) {
     const client = new Client(dbConfig);
 
     logger().debug('connecting');
-    client.connect((err) => {
+    client.connect(err => {
       if (err) {
         client.shutdown();
         return reject(err);
@@ -237,23 +228,25 @@ export default function (server, database) {
       resolve({
         wrapIdentifier,
         disconnect: () => disconnect(client),
-        listTables: (db) => listTables(client, db),
+        listTables: db => listTables(client, db),
         listViews: () => listViews(client),
         listRoutines: () => listRoutines(client),
         listTableColumns: (db, table) => listTableColumns(client, db, table),
-        listTableTriggers: (table) => listTableTriggers(client, table),
+        listTableTriggers: table => listTableTriggers(client, table),
         listTableIndexes: (db, table) => listTableIndexes(client, table),
         listSchemas: () => listSchemas(client),
-        getTableReferences: (table) => getTableReferences(client, table),
+        getTableReferences: table => getTableReferences(client, table),
         getTableKeys: (db, table) => getTableKeys(client, db, table),
-        query: (queryText) => executeQuery(client, queryText),
-        executeQuery: (queryText) => executeQuery(client, queryText),
+        query: queryText => executeQuery(client, queryText),
+        executeQuery: queryText => executeQuery(client, queryText),
         listDatabases: () => listDatabases(client),
-        getQuerySelectTop: (table, limit) => getQuerySelectTop(client, table, limit),
-        getTableCreateScript: (table) => getTableCreateScript(client, table),
-        getViewCreateScript: (view) => getViewCreateScript(client, view),
-        getRoutineCreateScript: (routine) => getRoutineCreateScript(client, routine),
-        truncateAllTables: (db) => truncateAllTables(client, db)
+        getQuerySelectTop: (table, limit) =>
+          getQuerySelectTop(client, table, limit),
+        getTableCreateScript: table => getTableCreateScript(client, table),
+        getViewCreateScript: view => getViewCreateScript(client, view),
+        getRoutineCreateScript: routine =>
+          getRoutineCreateScript(client, routine),
+        truncateAllTables: db => truncateAllTables(client, db)
       });
     });
   });

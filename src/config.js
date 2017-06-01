@@ -1,17 +1,21 @@
 // @flow
 import uuid from 'uuid';
-import * as utils from './utils';
+import * as utils from './Utils';
 
 const EMPTY_CONFIG = { servers: [] };
 
 function sanitizeServers(data) {
-  return data.servers.map((server) => {
+  return data.servers.map(server => {
     const srv = { ...server };
     // ensure all server has an unique id
-    if (!srv.id) { srv.id = uuid.v4(); }
+    if (!srv.id) {
+      srv.id = uuid.v4();
+    }
 
     // ensure all servers has the new fileld SSL
-    if (srv.ssl === undefined) { srv.ssl = false; }
+    if (srv.ssl === undefined) {
+      srv.ssl = false;
+    }
 
     return srv;
   });
@@ -72,7 +76,6 @@ export function getSync() {
   const filename = utils.getConfigPath();
   return utils.readJSONFileSync(filename);
 }
-
 
 export function save(data: string) {
   const filename = utils.getConfigPath();

@@ -3,7 +3,6 @@ import clients from './clients';
 import * as config from '../config';
 import createLogger from '../logger';
 
-
 const logger = createLogger('db');
 
 const DEFAULT_LIMIT = 1000;
@@ -12,11 +11,15 @@ let limitSelect = null;
 async function connect(server, database) {
   /* eslint no-param-reassign: 0 */
   if (database.connecting) {
-    throw new Error('There is already a connection in progress for this server. Aborting this new request.');
+    throw new Error(
+      'There is already a connection in progress for this server. Aborting this new request.'
+    );
   }
 
   if (database.connecting) {
-    throw new Error('There is already a connection in progress for this database. Aborting this new request.');
+    throw new Error(
+      'There is already a connection in progress for this database. Aborting this new request.'
+    );
   }
 
   try {
@@ -33,7 +36,11 @@ async function connect(server, database) {
       server.sshTunnel = await connectTunnel(server.config);
 
       const { address, port } = server.sshTunnel.address();
-      logger().debug('ssh forwarding through local connection %s:%d', address, port);
+      logger().debug(
+        'ssh forwarding through local connection %s:%d',
+        address,
+        port
+      );
 
       server.config.localHost = address;
       server.config.localPort = port;
@@ -56,7 +63,6 @@ async function connect(server, database) {
   }
 }
 
-
 function handleSSHError(sshTunnel) {
   return new Promise((resolve, reject) => {
     if (!sshTunnel) {
@@ -64,13 +70,12 @@ function handleSSHError(sshTunnel) {
     }
 
     sshTunnel.on('success', resolve);
-    sshTunnel.on('error', (error) => {
+    sshTunnel.on('error', error => {
       logger().error('ssh error %j', error);
       reject(error);
     });
   });
 }
-
 
 function disconnect(server, database) {
   database.connecting = false;
@@ -145,19 +150,19 @@ function executeQuery(server, database, queryText) {
   return database.connection.executeQuery(queryText);
 }
 
-
 function listDatabases(server, database, filter) {
   checkIsConnected(server, database);
   return database.connection.listDatabases(filter);
 }
-
 
 async function getQuerySelectTop(server, database, table, schema, limit) {
   checkIsConnected(server, database);
   let limitValue = limit;
   if (typeof _limit === 'undefined') {
     await loadConfigLimit();
-    limitValue = typeof limitSelect !== 'undefined' ? limitSelect : DEFAULT_LIMIT;
+    limitValue = typeof limitSelect !== 'undefined'
+      ? limitSelect
+      : DEFAULT_LIMIT;
   }
   return database.connection.getQuerySelectTop(table, limitValue, schema);
 }
@@ -168,7 +173,12 @@ function getTableCreateScript(server, database, table, schema) {
 }
 
 async function getTableSelectScript(server, database, table, schema) {
-  const columnNames = await getTableColumnNames(server, database, table, schema);
+  const columnNames = await getTableColumnNames(
+    server,
+    database,
+    table,
+    schema
+  );
   const schemaSelection = resolveSchema(database, schema);
   return [
     `SELECT ${wrap(database, columnNames).join(', ')}`,
@@ -176,9 +186,13 @@ async function getTableSelectScript(server, database, table, schema) {
   ].join(' ');
 }
 
-
 async function getTableInsertScript(server, database, table, schema) {
-  const columnNames = await getTableColumnNames(server, database, table, schema);
+  const columnNames = await getTableColumnNames(
+    server,
+    database,
+    table,
+    schema
+  );
   const schemaSelection = resolveSchema(database, schema);
   return [
     `INSERT INTO ${schemaSelection}${wrap(database, table)}`,
@@ -188,8 +202,15 @@ async function getTableInsertScript(server, database, table, schema) {
 }
 
 async function getTableUpdateScript(server, database, table, schema) {
-  const columnNames = await getTableColumnNames(server, database, table, schema);
-  const setColumnForm = wrap(database, columnNames).map((col) => `${col}=?`).join(', ');
+  const columnNames = await getTableColumnNames(
+    server,
+    database,
+    table,
+    schema
+  );
+  const setColumnForm = wrap(database, columnNames)
+    .map(col => `${col}=?`)
+    .join(', ');
   const schemaSelection = resolveSchema(database, schema);
   return [
     `UPDATE ${schemaSelection}${wrap(database, table)}\n`,
@@ -222,8 +243,12 @@ function truncateAllTables(server, database, schema) {
 
 async function getTableColumnNames(server, database, table, schema) {
   checkIsConnected(server, database);
-  const columns = await database.connection.listTableColumns(database.database, table, schema);
-  return columns.map((column) => column.columnName);
+  const columns = await database.connection.listTableColumns(
+    database.database,
+    table,
+    schema
+  );
+  return columns.map(column => column.columnName);
 }
 
 function resolveSchema(database, schema) {
@@ -235,7 +260,7 @@ function wrap(database, identifier) {
     return database.connection.wrapIdentifier(identifier);
   }
 
-  return identifier.map((item) => database.connection.wrapIdentifier(item));
+  return identifier.map(item => database.connection.wrapIdentifier(item));
 }
 
 async function loadConfigLimit() {
@@ -245,7 +270,6 @@ async function loadConfigLimit() {
   }
   return limitSelect;
 }
-
 
 function checkIsConnected(server, database) {
   if (database.connecting || !database.connection) {

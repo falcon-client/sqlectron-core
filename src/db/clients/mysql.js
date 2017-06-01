@@ -1,11 +1,10 @@
 // @flow
 import mysql from 'mysql';
 import { identify } from 'sql-query-identifier';
-import createLogger from '../../logger';
-import { createCancelablePromise } from '../../utils';
-import errors from '../../errors';
+import createLogger from '../../Logger';
+import { createCancelablePromise } from '../../Utils';
+import errors from '../../Errors';
 import type { ClientType } from '../ClientType';
-
 
 const logger = createLogger('db:clients:mysql');
 
@@ -22,7 +21,7 @@ async function runWithConnection({ pool }, run) {
   let rejected = false;
 
   return new Promise((resolve, reject) => {
-    const rejectErr = (err) => {
+    const rejectErr = err => {
       if (!rejected) {
         rejected = true;
         reject(err);
@@ -35,7 +34,7 @@ async function runWithConnection({ pool }, run) {
         return;
       }
 
-      connection.on('error', (error) => {
+      connection.on('error', error => {
         // it will be handled later in the next query execution
         logger().error('Connection fatal error %j', error);
       });
@@ -60,14 +59,19 @@ function getRealError(conn, err) {
 }
 
 function driverExecuteQuery(conn, queryArgs) {
-  const runQuery = (connection) => new Promise((resolve, reject) => {
-    connection.query(queryArgs.query, queryArgs.params, (err, data, fields) => {
-      if (err && err.code === mysqlErrors.EMPTY_QUERY) return resolve({});
-      if (err) return reject(getRealError(connection, err));
+  const runQuery = connection =>
+    new Promise((resolve, reject) => {
+      connection.query(
+        queryArgs.query,
+        queryArgs.params,
+        (err, data, fields) => {
+          if (err && err.code === mysqlErrors.EMPTY_QUERY) return resolve({});
+          if (err) return reject(getRealError(connection, err));
 
-      return resolve({ data, fields });
+          return resolve({ data, fields });
+        }
+      );
     });
-  });
 
   return conn.connection
     ? runQuery(conn.connection)
@@ -111,7 +115,7 @@ export async function listRoutines(conn) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => ({
+  return data.map(row => ({
     routineName: row.routine_name,
     routineType: row.routine_type
   }));
@@ -125,13 +129,11 @@ export async function listTableColumns(conn, database: string, table: string) {
     AND table_name = ?
   `;
 
-  const params = [
-    table
-  ];
+  const params = [table];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
-  return data.map((row) => ({
+  return data.map(row => ({
     columnName: row.column_name,
     dataType: row.data_type
   }));
@@ -145,26 +147,21 @@ export async function listTableTriggers(conn, table: string) {
     AND event_object_table = ?
   `;
 
-  const params = [
-    table
-  ];
+  const params = [table];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
-  return data.map((row) => row.trigger_name);
+  return data.map(row => row.trigger_name);
 }
 
 export async function listTableIndexes(conn, database: string, table: string) {
   const sql = 'SHOW INDEX FROM ?? FROM ??';
 
-  const params = [
-    table,
-    database
-  ];
+  const params = [table, database];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
-  return data.map((row) => row.Key_name);
+  return data.map(row => row.Key_name);
 }
 
 export function listSchemas() {
@@ -180,13 +177,11 @@ export async function getTableReferences(conn, table: string) {
     AND table_name = ?
   `;
 
-  const params = [
-    table
-  ];
+  const params = [table];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
-  return data.map((row) => row.referenced_table_name);
+  return data.map(row => row.referenced_table_name);
 }
 
 export async function getTableKeys(conn, database: string, table: string) {
@@ -201,13 +196,11 @@ export async function getTableKeys(conn, database: string, table: string) {
     AND ((referenced_table_name IS NOT NULL) OR constraint_name LIKE '%PRIMARY%')
   `;
 
-  const params = [
-    table
-  ];
+  const params = [table];
 
   const { data } = await driverExecuteQuery(conn, { query: sql, params });
 
-  return data.map((row) => ({
+  return data.map(row => ({
     constraintName: `${row.constraint_name} KEY`,
     columnName: row.column_name,
     referencedTable: row.referenced_table_name,
@@ -230,7 +223,9 @@ export function getQuerySelectTop(conn, table: string, limit: number) {
 }
 
 export function filterDatabase(item, { database } = {}, databaseField) {
-  if (!database) { return true; }
+  if (!database) {
+    return true;
+  }
 
   const value = item[databaseField];
   if (typeof database === 'string') {
@@ -256,13 +251,15 @@ export async function executeQuery(conn, queryText: string) {
     return [];
   }
 
-  const commands = identifyCommands(queryText).map((item) => item.type);
+  const commands = identifyCommands(queryText).map(item => item.type);
 
   if (!isMultipleQuery(fields)) {
     return [parseRowQueryResult(data, fields, commands[0])];
   }
 
-  return data.map((_, idx) => parseRowQueryResult(data[idx], fields[idx], commands[idx]));
+  return data.map((_, idx) =>
+    parseRowQueryResult(data[idx], fields[idx], commands[idx])
+  );
 }
 
 export function query(conn, queryText: string) {
@@ -275,7 +272,7 @@ export function query(conn, queryText: string) {
 
   return {
     execute() {
-      return runWithConnection(conn, async (connection) => {
+      return runWithConnection(conn, async connection => {
         const connClient = { connection };
 
         const { data: dataPid } = await driverExecuteQuery(connClient, {
@@ -331,8 +328,8 @@ export async function listDatabases(conn, filter) {
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
   return data
-    .filter((item) => filterDatabase(item, filter, 'Database'))
-    .map((row) => row.Database);
+    .filter(item => filterDatabase(item, filter, 'Database'))
+    .map(row => row.Database);
 }
 
 export async function getTableCreateScript(conn, table: string) {
@@ -340,7 +337,7 @@ export async function getTableCreateScript(conn, table: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row['Create Table']);
+  return data.map(row => row['Create Table']);
 }
 
 export async function getViewCreateScript(conn, view) {
@@ -348,7 +345,7 @@ export async function getViewCreateScript(conn, view) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row['Create View']);
+  return data.map(row => row['Create View']);
 }
 
 export async function getRoutineCreateScript(conn, routine, type: string) {
@@ -356,15 +353,15 @@ export async function getRoutineCreateScript(conn, routine, type: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row[`Create ${type}`]);
+  return data.map(row => row[`Create ${type}`]);
 }
 
 export function wrapIdentifier(value) {
-  return (value !== '*' ? `\`${value.replace(/`/g, '``')}\`` : '*');
+  return value !== '*' ? `\`${value.replace(/`/g, '``')}\`` : '*';
 }
 
 async function getSchema(conn) {
-  const sql = 'SELECT database() AS \'schema\'';
+  const sql = "SELECT database() AS 'schema'";
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
@@ -372,7 +369,7 @@ async function getSchema(conn) {
 }
 
 export async function truncateAllTables(conn) {
-  await runWithConnection(conn, async (connection) => {
+  await runWithConnection(conn, async connection => {
     const connClient = { connection };
 
     const schema = await getSchema(connClient);
@@ -386,16 +383,19 @@ export async function truncateAllTables(conn) {
 
     const { data } = await driverExecuteQuery(connClient, { query: sql });
 
-    const truncateAll = data.map((row) => `
+    const truncateAll = data
+      .map(
+        row => `
       SET FOREIGN_KEY_CHECKS = 0;
       TRUNCATE TABLE ${wrapIdentifier(schema)}.${wrapIdentifier(row.table_name)};
       SET FOREIGN_KEY_CHECKS = 1;
-    `).join('');
+    `
+      )
+      .join('');
 
     await driverExecuteQuery(connClient, { query: truncateAll });
   });
 }
-
 
 function configDatabase(server, database) {
   const config = {
@@ -439,13 +439,15 @@ function parseRowQueryResult(data, fields, command) {
   };
 }
 
-
 function isMultipleQuery(fields) {
-  if (!fields) { return false; }
-  if (!fields.length) { return false; }
-  return (Array.isArray(fields[0]) || fields[0] === undefined);
+  if (!fields) {
+    return false;
+  }
+  if (!fields.length) {
+    return false;
+  }
+  return Array.isArray(fields[0]) || fields[0] === undefined;
 }
-
 
 function identifyCommands(queryText) {
   try {
@@ -473,19 +475,20 @@ export default async function (server, database): ClientType {
     listViews: () => listViews(conn),
     listRoutines: () => listRoutines(conn),
     listTableColumns: (db, table) => listTableColumns(conn, db, table),
-    listTableTriggers: (table) => listTableTriggers(conn, table),
+    listTableTriggers: table => listTableTriggers(conn, table),
     listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
     listSchemas: () => listSchemas(conn),
-    getTableReferences: (table) => getTableReferences(conn, table),
+    getTableReferences: table => getTableReferences(conn, table),
     getTableKeys: (db, table) => getTableKeys(conn, db, table),
     getTableValues: (db, table) => getTableValues(conn, db, table),
-    query: (queryText) => query(conn, queryText),
-    executeQuery: (queryText) => executeQuery(conn, queryText),
-    listDatabases: (filter) => listDatabases(conn, filter),
+    query: queryText => query(conn, queryText),
+    executeQuery: queryText => executeQuery(conn, queryText),
+    listDatabases: filter => listDatabases(conn, filter),
     getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
-    getTableCreateScript: (table) => getTableCreateScript(conn, table),
-    getViewCreateScript: (view) => getViewCreateScript(conn, view),
-    getRoutineCreateScript: (routine, type) => getRoutineCreateScript(conn, routine, type),
+    getTableCreateScript: table => getTableCreateScript(conn, table),
+    getViewCreateScript: view => getViewCreateScript(conn, view),
+    getRoutineCreateScript: (routine, type) =>
+      getRoutineCreateScript(conn, routine, type),
     truncateAllTables: () => truncateAllTables(conn)
   };
 }

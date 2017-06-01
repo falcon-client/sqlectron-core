@@ -1,9 +1,8 @@
 // @flow
 import sqlite3 from 'sqlite3';
 import { identify } from 'sql-query-identifier';
-import createLogger from '../../logger';
+import createLogger from '../../Logger';
 import type { ClientType } from '../ClientType';
-
 
 const logger = createLogger('db:clients:sqlite');
 
@@ -42,7 +41,7 @@ export function query(conn, queryText: string) {
 
   return {
     execute() {
-      return runWithConnection(conn, async (connection) => {
+      return runWithConnection(conn, async connection => {
         try {
           queryConnection = connection;
 
@@ -70,7 +69,10 @@ export function query(conn, queryText: string) {
 }
 
 export async function executeQuery(conn, queryText: string) {
-  const result = await driverExecuteQuery(conn, { query: queryText, multiple: true });
+  const result = await driverExecuteQuery(conn, {
+    query: queryText,
+    multiple: true
+  });
 
   return result.map(parseRowQueryResult);
 }
@@ -124,7 +126,7 @@ export async function listTableColumns(conn, database, table: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => ({
+  return data.map(row => ({
     columnName: row.name,
     dataType: row.type
   }));
@@ -140,7 +142,7 @@ export async function listTableTriggers(conn, table: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row.name);
+  return data.map(row => row.name);
 }
 
 export async function listTableIndexes(conn, database: string, table: string) {
@@ -148,7 +150,7 @@ export async function listTableIndexes(conn, database: string, table: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row.name);
+  return data.map(row => row.name);
 }
 
 export function listSchemas() {
@@ -156,9 +158,11 @@ export function listSchemas() {
 }
 
 export async function listDatabases(conn) {
-  const result = await driverExecuteQuery(conn, { query: 'PRAGMA database_list;' });
+  const result = await driverExecuteQuery(conn, {
+    query: 'PRAGMA database_list;'
+  });
 
-  return result.data.map((row) => row.file || ':memory:');
+  return result.data.map(row => row.file || ':memory:');
 }
 
 export function getTableReferences() {
@@ -174,7 +178,7 @@ export async function getTableCreateScript(conn, table: string) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row.sql);
+  return data.map(row => row.sql);
 }
 
 export async function getViewCreateScript(conn, view) {
@@ -186,7 +190,7 @@ export async function getViewCreateScript(conn, view) {
 
   const { data } = await driverExecuteQuery(conn, { query: sql });
 
-  return data.map((row) => row.sql);
+  return data.map(row => row.sql);
 }
 
 export function getRoutineCreateScript() {
@@ -194,14 +198,16 @@ export function getRoutineCreateScript() {
 }
 
 export async function truncateAllTables(conn) {
-  await runWithConnection(conn, async (connection) => {
+  await runWithConnection(conn, async connection => {
     const connClient = { connection };
     const tables = await listTables(connClient);
 
     const truncateAll = tables
-      .map((table) => `
+      .map(
+        table => `
         DELETE FROM ${table.name};
-      `)
+      `
+      )
       .join('');
 
     // TODO: Check if sqlite_sequence exists then execute:
@@ -225,12 +231,11 @@ function parseRowQueryResult({ data, statement, changes }) {
   return {
     rows,
     command: statement.type || (isSelect && 'SELECT'),
-    fields: Object.keys(rows[0] || {}).map((name) => ({ name })),
+    fields: Object.keys(rows[0] || {}).map(name => ({ name })),
     rowCount: data && data.length,
     affectedRows: changes || 0
   };
 }
-
 
 function identifyCommands(queryText) {
   try {
@@ -241,24 +246,30 @@ function identifyCommands(queryText) {
 }
 
 export function driverExecuteQuery(conn, queryArgs) {
-  const runQuery = (connection, { executionType, text }) => new Promise((resolve, reject) => {
-    const method = resolveExecutionType(executionType);
-    connection[method](text, queryArgs.params, function driverExecQuery(err, data) {
-      if (err) { return reject(err); }
+  const runQuery = (connection, { executionType, text }) =>
+    new Promise((resolve, reject) => {
+      const method = resolveExecutionType(executionType);
+      connection[method](text, queryArgs.params, function driverExecQuery(
+        err,
+        data
+      ) {
+        if (err) {
+          return reject(err);
+        }
 
-      return resolve({
-        data,
-        lastID: this.lastID,
-        changes: this.changes
+        return resolve({
+          data,
+          lastID: this.lastID,
+          changes: this.changes
+        });
       });
     });
-  });
 
-  const identifyStatementsRunQuery = async (connection) => {
+  const identifyStatementsRunQuery = async connection => {
     const statements = identifyCommands(queryArgs.query);
 
     const results = await Promise.all(
-      statements.map(async (statement) => {
+      statements.map(async statement => {
         const result = await runQuery(connection, statement);
 
         return {
@@ -278,7 +289,7 @@ export function driverExecuteQuery(conn, queryArgs) {
 
 function runWithConnection(conn, run) {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(conn.dbConfig.database, async (err) => {
+    const db = new sqlite3.Database(conn.dbConfig.database, async err => {
       if (err) {
         reject(err);
         return;
@@ -299,8 +310,10 @@ function runWithConnection(conn, run) {
 
 function resolveExecutionType(executioType) {
   switch (executioType) {
-    case 'MODIFICATION': return 'run';
-    default: return 'all';
+    case 'MODIFICATION':
+      return 'run';
+    default:
+      return 'all';
   }
 }
 
@@ -320,19 +333,19 @@ export default async function (server, database: Object): ClientType {
     listViews: () => listViews(conn),
     listRoutines: () => listRoutines(conn),
     listTableColumns: (db, table) => listTableColumns(conn, db, table),
-    listTableTriggers: (table) => listTableTriggers(conn, table),
+    listTableTriggers: table => listTableTriggers(conn, table),
     listTableIndexes: (db, table) => listTableIndexes(conn, db, table),
     listSchemas: () => listSchemas(conn),
-    getTableReferences: (table) => getTableReferences(conn, table),
+    getTableReferences: table => getTableReferences(conn, table),
     getTableKeys: (db, table) => getTableKeys(conn, db, table),
     getTableValues: (db, table) => getTableValues(conn, db, table),
-    query: (queryText) => query(conn, queryText),
-    executeQuery: (queryText) => executeQuery(conn, queryText),
+    query: queryText => query(conn, queryText),
+    executeQuery: queryText => executeQuery(conn, queryText),
     listDatabases: () => listDatabases(conn),
     getQuerySelectTop: (table, limit) => getQuerySelectTop(conn, table, limit),
-    getTableCreateScript: (table) => getTableCreateScript(conn, table),
-    getViewCreateScript: (view) => getViewCreateScript(conn, view),
-    getRoutineCreateScript: (routine) => getRoutineCreateScript(conn, routine),
+    getTableCreateScript: table => getTableCreateScript(conn, table),
+    getViewCreateScript: view => getViewCreateScript(conn, view),
+    getRoutineCreateScript: routine => getRoutineCreateScript(conn, routine),
     truncateAllTables: () => truncateAllTables(conn)
   };
 }

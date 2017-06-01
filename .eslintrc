@@ -1,6 +1,7 @@
 {
   "extends": "bliss",
   "rules": {
+    "class-methods-use-this": "off",
     "fp/no-arguments": "off",
     "fp/no-class": "off",
     "fp/no-delete": "off",
