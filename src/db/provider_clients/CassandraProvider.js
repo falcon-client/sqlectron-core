@@ -2,13 +2,15 @@
 /* eslint promise/avoid-new: 0 */
 import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
-import createLogger from '../../logger';
+import BaseProvider from './BaseProvider';
+import createLogger from '../../Logger';
 import type { ProviderInterface } from './ProviderInterface';
 
-class CassandraProvider implements ProviderInterface {
+class CassandraProvider extends BaseProvider implements ProviderInterface {
   client: Object;
 
   constructor(client) {
+    super();
     this.client = client;
   }
 

@@ -1,9 +1,9 @@
 // @flow
-import mysql from './mysql';
-import postgresql from './postgresql';
-import sqlserver from './sqlserver';
-import sqlite from './sqlite';
-import cassandra from './cassandra';
+import mysql from './Mysql';
+import postgresql from './Postgresql';
+import sqlserver from './Sqlserver';
+import sqlite from './Sqlite';
+import cassandra from './Cassandra';
 
 /**
  * List of supported database clients

@@ -1,7 +1,7 @@
-import connectTunnel from './tunnel';
+import connectTunnel from './Tunnel';
 import clients from './clients';
-import * as config from '../config';
-import createLogger from '../logger';
+import * as config from '../Config';
+import createLogger from '../Logger';
 
 const logger = createLogger('db');
 

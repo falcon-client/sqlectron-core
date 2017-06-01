@@ -59,3 +59,5 @@ export function createServer(serverConfig: Object) {
     }
   };
 }
+
+export default createServer;

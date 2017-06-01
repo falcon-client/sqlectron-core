@@ -1,6 +1,6 @@
 import uuid from 'uuid';
-import { validate, validateUniqueId } from './validators/server';
-import * as config from './config';
+import { validate, validateUniqueId } from './validators/Server';
+import * as config from './Config';
 
 export async function getAll() {
   const result = await config.get();
