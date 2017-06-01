@@ -4,8 +4,24 @@ import { Client } from 'ssh2';
 import { getPort, readFile } from '../Utils';
 import createLogger from '../Logger';
 
-async function configTunnel(serverInfo) {
-  const config = {
+type configType = {
+  username: string,
+  port: number,
+  host: string,
+  dstPort: string,
+  dstHost: string,
+  sshPort: number,
+  srcPort: number,
+  srcHost: string,
+  localHost: string,
+  localPort: string,
+  password?: string,
+  passphrase?: string,
+  privateKey?: string,
+};
+
+async function configTunnel(serverInfo): Promise<configType> {
+  const config: configType = {
     username: serverInfo.ssh.user,
     port: serverInfo.ssh.port,
     host: serverInfo.ssh.host,
@@ -17,6 +33,7 @@ async function configTunnel(serverInfo) {
     localHost: 'localhost',
     localPort: await getPort()
   };
+
   if (serverInfo.ssh.password) {
     config.password = serverInfo.ssh.password;
   }
@@ -26,6 +43,7 @@ async function configTunnel(serverInfo) {
   if (serverInfo.ssh.privateKey) {
     config.privateKey = await readFile(serverInfo.ssh.privateKey);
   }
+
   return config;
 }
 

@@ -3,6 +3,8 @@
 .*/node_modules/*
 .*/lib/*
 .*/test/*
+.*/src/db/clients/*
+.*/src/db/Client.js
 .*/git/.*
 
 [options]

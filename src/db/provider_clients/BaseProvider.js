@@ -1,4 +1,251 @@
 // @flow
+/* eslint promise/avoid-new: 0 */
+import connectTunnel from '../Tunnel';
+import clients from '../clients';
+import * as config from '../../Config';
+import createLogger from '../../Logger';
+
+const logger = createLogger('db');
+
+type sshTunnelType = {
+  on: (event: 'success' | 'error', () => void) => void
+};
+
 export default class BaseProvider {
-  connect() {}
+
+  static DEFAULT_LIMIT: number = 1000;
+
+  static limitSelect = null;
+
+  server: Object;
+
+  database: Object;
+
+  constructor(server: Object, database: Object) {
+    this.server = server;
+    this.database = database;
+  }
+
+  async connect() {
+    if (this.database.connecting) {
+      throw new Error(
+        'There is already a connection in progress for this server. Aborting this new request.'
+      );
+    }
+
+    if (this.database.connecting) {
+      throw new Error(
+        'There is already a connection in progress for this database. Aborting this new request.'
+      );
+    }
+
+    try {
+      this.database.connecting = true;
+
+      // terminate any previous lost connection for this DB
+      if (this.database.connection) {
+        this.database.connection.disconnect();
+      }
+
+      // reuse existing tunnel
+      if (this.server.config.ssh && !this.server.sshTunnel) {
+        logger().debug('creating ssh tunnel');
+        this.server.sshTunnel = await connectTunnel(this.server.config);
+
+        const { address, port } = this.server.sshTunnel.address();
+        logger().debug(
+          'ssh forwarding through local connection %s:%d',
+          address,
+          port
+        );
+
+        this.server.config.localHost = address;
+        this.server.config.localPort = port;
+      }
+
+      const driver = clients[this.server.config.client];
+
+      const [connection] = await Promise.all([
+        driver(this.server, this.database),
+        this.handleSSHError(this.server.sshTunnel)
+      ]);
+
+      this.database.connection = connection;
+    } catch (err) {
+      logger().error('Connection error %j', err);
+      this.disconnect();
+      throw err;
+    } finally {
+      this.database.connecting = false;
+    }
+  }
+
+  handleSSHError(sshTunnel?: sshTunnelType) {
+    return new Promise((resolve, reject) => {
+      if (!sshTunnel) {
+        return resolve();
+      }
+
+      sshTunnel.on('success', resolve);
+      sshTunnel.on('error', error => {
+        logger().error('ssh error %j', error);
+        reject(error);
+      });
+
+      return true;
+    });
+  }
+
+  buildSchemaFilter({ schema }: Object = {}, schemaField: string = 'schema_name') {
+    if (!schema) {
+      return null;
+    }
+
+    if (typeof schema === 'string') {
+      return `${schemaField} = '${schema}'`;
+    }
+
+    const where = [];
+    const { only, ignore } = schema;
+
+    if (only && only.length) {
+      where.push(
+        `${schemaField} IN (${only.map(name => `'${name}'`).join(',')})`
+      );
+    }
+    if (ignore && ignore.length) {
+      where.push(
+        `${schemaField} NOT IN (${ignore.map(name => `'${name}'`).join(',')})`
+      );
+    }
+
+    return where.join(' AND ');
+  }
+
+  buildDatabseFilter({ database }: Object = {}, databaseField: string) {
+    if (!database) {
+      return null;
+    }
+
+    if (typeof database === 'string') {
+      return `${databaseField} = '${database}'`;
+    }
+
+    const where = [];
+    const { only, ignore } = database;
+
+    if (only && only.length) {
+      where.push(
+        `${databaseField} IN (${only.map(name => `'${name}'`).join(',')})`
+      );
+    }
+
+    if (ignore && ignore.length) {
+      where.push(
+        `${databaseField} NOT IN (${ignore.map(name => `'${name}'`).join(',')})`
+      );
+    }
+
+    return where.join(' AND ');
+  }
+
+  disconnect() {
+    this.database.connecting = false;
+
+    if (this.database.connection) {
+      this.database.connection.disconnect();
+      this.database.connection = null;
+    }
+
+    if (this.server.db[this.database.database]) {
+      delete this.server.db[this.database.database];
+    }
+  }
+
+  async getQuerySelectTop(table: string, limit: number, schema: string) {
+    this.checkIsConnected();
+    let limitValue = limit;
+
+    await this.loadConfigLimit();
+    limitValue = typeof BaseProvider.limitSelect !== 'undefined'
+      ? BaseProvider.limitSelect
+      : BaseProvider.DEFAULT_LIMIT;
+
+    return this.database.connection.getQuerySelectTop(table, limitValue, schema);
+  }
+
+  async getTableSelectScript(table: string, schema: string) {
+    const columnNames = await this.getTableColumnNames(table, schema);
+    const schemaSelection = this.resolveSchema(schema);
+    return [
+      `SELECT ${this.wrap(columnNames).join(', ')}`,
+      `FROM ${schemaSelection}${this.wrap(table)};`
+    ].join(' ');
+  }
+
+  async getTableInsertScript(table: string, schema: string) {
+    const columnNames = await this.getTableColumnNames(table, schema);
+    const schemaSelection = this.resolveSchema(schema);
+    return [
+      `INSERT INTO ${schemaSelection}${this.wrap(table)}`,
+      `(${this.wrap(columnNames).join(', ')})\n`,
+      `VALUES (${columnNames.fill('?').join(', ')});`
+    ].join(' ');
+  }
+
+  async getTableColumnNames(table: string, schema: string) {
+    this.checkIsConnected();
+    const columns = await this.database.connection.listTableColumns(
+      this.database.database,
+      table,
+      schema
+    );
+    return columns.map(column => column.columnName);
+  }
+
+  async getTableUpdateScript(table: string, schema: string) {
+    const columnNames = await this.getTableColumnNames(table, schema);
+    const setColumnForm = this.wrap(columnNames)
+      .map(col => `${col}=?`)
+      .join(', ');
+    const schemaSelection = this.resolveSchema(schema);
+    return [
+      `UPDATE ${schemaSelection}${this.wrap(table)}\n`,
+      `SET ${setColumnForm}\n`,
+      'WHERE <condition>;'
+    ].join(' ');
+  }
+
+  getTableDeleteScript(table: string, schema: string) {
+    const schemaSelection = this.resolveSchema(schema);
+    return [
+      `DELETE FROM ${schemaSelection}${this.wrap(table)}`,
+      'WHERE <condition>;'
+    ].join(' ');
+  }
+
+  resolveSchema(schema: string) {
+    return schema ? `${this.wrap(schema)}.` : '';
+  }
+
+  wrap(identifier: any) {
+    return !Array.isArray(identifier)
+      ? this.database.connection.wrapIdentifier(identifier)
+      : identifier.map(item => this.database.connection.wrapIdentifier(item));
+  }
+
+  async loadConfigLimit() {
+    if (BaseProvider.limitSelect === null) {
+      const { limitQueryDefaultSelectTop } = await config.get();
+      BaseProvider.limitSelect = limitQueryDefaultSelectTop;
+    }
+    return BaseProvider.limitSelect;
+  }
+
+  checkIsConnected() {
+    if (this.database.connecting || !this.database.connection) {
+      throw new Error('There is no connection available.');
+    }
+    return true;
+  }
 }

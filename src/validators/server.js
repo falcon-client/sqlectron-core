@@ -2,11 +2,13 @@
 import Valida from 'valida';
 import { CLIENTS } from '../db';
 
-type validatorType = true |
-{
-  validator: string,
-  msg: string
-};
+type validatorType =
+  | true
+  | void
+  | {
+      validator: string,
+      msg: string
+    };
 
 function serverAddressValidator(ctx): validatorType {
   const { host, port, socketPath } = ctx.obj;
@@ -35,7 +37,7 @@ function clientValidator(ctx, options, value): validatorType {
   if (typeof value === 'undefined' || value === null) {
     return undefined;
   }
-  if (!~CLIENTS.some(dbClient => dbClient.key === ctx.obj.client)) {
+  if (!CLIENTS.some(dbClient => dbClient.key === ctx.obj.client)) {
     return {
       validator: 'clientValidator',
       msg: 'Invalid client type'
@@ -127,7 +129,7 @@ const SERVER_SCHEMA = {
 };
 
 /**
- * validations applied on creating/updating a server
+ * Validations applied on creating/updating a server
  */
 export async function validate(server: Object) {
   const serverSchema = { ...SERVER_SCHEMA };

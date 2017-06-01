@@ -4,13 +4,13 @@ import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
 import BaseProvider from './BaseProvider';
 import createLogger from '../../Logger';
-import type { ProviderInterface } from './ProviderInterface';
+import type { ProviderInterface, FactoryType } from './ProviderInterface';
 
 class CassandraProvider extends BaseProvider implements ProviderInterface {
-  client: Object;
+  client: Client;
 
-  constructor(client) {
-    super();
+  constructor(server, database, client: Client) {
+    super(server, database);
     this.client = client;
   }
 
@@ -105,6 +105,10 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
     });
   }
 
+  getTableValues() {
+    return Promise.resolve([]);
+  }
+
   query() {
     throw new Error('"query" is not implementd by cassandra this.client.');
   }
@@ -132,7 +136,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
   }
 
   getQuerySelectTop(table: string, limit: number) {
-    return `SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`;
+    return Promise.resolve(`SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`);
   }
 
   getTableCreateScript() {
@@ -217,10 +221,10 @@ function configDatabase(server: Object, database: Object) {
 }
 
 /**
- * Construct the CassandraProvider. Wait for the client to connect and
- * then instantiate the provider
+ * Construct the CassandraProvider. Wait for the client to connect and then instantiate
+ * the provider
  */
-export default async function CassandraFactory(server: Object, database: Object) {
+async function CassandraFactory(server: Object, database: Object): FactoryType {
   const dbConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:cassandra');
 
@@ -230,5 +234,7 @@ export default async function CassandraFactory(server: Object, database: Object)
   logger().debug('connecting');
   await this.client.connect();
 
-  return new CassandraProvider(client);
+  return new CassandraProvider(server, database, client);
 }
+
+export default CassandraFactory;

@@ -495,7 +495,7 @@ async function runWithConnection({ pool }, run) {
   }
 }
 
-export default async function (server, database) {
+export default async function(server, database) {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for postgres with config %j', dbConfig);
 

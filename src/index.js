@@ -1,3 +1,4 @@
+// @flow
 import * as config from './Config';
 import * as servers from './Servers';
 import * as db from './db';

@@ -449,7 +449,7 @@ async function runWithConnection(conn, run) {
   return run(connection);
 }
 
-export default async function (server, database: string) {
+export default async function(server, database: string) {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for mmsql with config %j', dbConfig);
 

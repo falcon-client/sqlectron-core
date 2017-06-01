@@ -1,3 +1,4 @@
+// @flow
 import uuid from 'uuid';
 import { validate, validateUniqueId } from './validators/Server';
 import * as config from './Config';
@@ -46,7 +47,7 @@ export function addOrUpdate(server) {
   return hasId ? update(server) : add(server);
 }
 
-export async function removeById(id) {
+export async function removeById(id: string) {
   const data = await config.get();
 
   const index = data.servers.findIndex(srv => srv.id === id);
@@ -55,5 +56,5 @@ export async function removeById(id) {
     ...data.servers.slice(index + 1)
   ];
 
-  await config.save(data);
+  return config.save(data);
 }

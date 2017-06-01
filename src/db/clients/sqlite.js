@@ -317,7 +317,7 @@ function resolveExecutionType(executioType) {
   }
 }
 
-export default async function (server, database: Object): ClientType {
+export default async function(server, database: Object): ClientType {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for sqlite3 with config %j', dbConfig);
 
