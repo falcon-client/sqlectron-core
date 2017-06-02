@@ -1,9 +1,9 @@
 // @flow
 import cassandra from './CassandraProvider';
-import mysql from './MysqlProvider';
-import postgresql from './PostgresqlProvider';
-import sqlserver from './SqlserverProvider';
-import sqlite from './SqliteProvider';
+// import mysql from './MysqlProvider';
+// import postgresql from './PostgresqlProvider';
+// import sqlserver from './SqlserverProvider';
+// import sqlite from './SqliteProvider';
 
 /**
  * List of supported database clients
@@ -63,9 +63,9 @@ export const CLIENTS = [
 ];
 
 export default {
-  mysql,
-  postgresql,
-  sqlserver,
-  sqlite,
+  // mysql,
+  // postgresql,
+  // sqlserver,
+  // sqlite,
   cassandra
 };

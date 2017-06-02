@@ -1,5 +1,31 @@
 // @flow
+import type { sshTunnelType, tunnelConfigType } from '../Tunnel';
+
+export type serverType = {
+  db: {
+    [dbName: string]: {}
+  },
+  sshTunnel: sshTunnelType,
+  config: {
+    ...tunnelConfigType,
+    client: string
+  }
+};
+
+export type databaseType = {
+  database: string,
+  connection: {
+    getQuerySelectTop: (table: string, limit: number, schema: string) => void,
+    listTableColumns: (database: string, table: string, schema: string) => Array<Object>,
+    wrapIdentifier: (item: any) => any,
+    disconnect: () => void
+  } | null,
+  connecting: bool
+};
+
 export interface ProviderInterface {
+  server: serverType,
+  database: databaseType,
   wrapIdentifier: (value: string) => string,
   disconnect: () => void,
   listTables: () => Promise<Array<string>>,
@@ -21,14 +47,14 @@ export interface ProviderInterface {
   executeQuery: (queryText: string) => Promise<any>,
   listDatabases: () => Promise<Array<string>>,
   getQuerySelectTop: (table: string, limit: number) => (Promise<string> | string),
-  getTableCreateScript: (table: string, schema: string) => (Promise<Array<string>> | string),
-  getTableSelectScript: (table: string, schema: string) => (Promise<Array<string>> | string),
-  getTableInsertScript: (table: string, schema: string) => (Promise<Array<string>> | string),
-  getTableUpdateScript: (table: string, schema: string) => (Promise<Array<string>> | string),
-  getTableDeleteScript: (table: string, scheme: string) => (Promise<Array<string>> | string),
-  getViewCreateScript: (view: string) => Promise<Array<Object>>,
-  getRoutineCreateScript: (routine: string) => Promise<Array<Object>>,
-  truncateAllTables: (database: string) => Promise<Array<Object>>
+  getTableCreateScript: (table: string, schema: string) => (Promise<string> | string),
+  getTableSelectScript: (table: string, schema: string) => (Promise<string> | string),
+  getTableInsertScript: (table: string, schema: string) => (Promise<string> | string),
+  getTableUpdateScript: (table: string, schema: string) => (Promise<string> | string),
+  getTableDeleteScript: (table: string, scheme: string) => (Promise<string> | string),
+  getViewCreateScript: (view: string) => (Promise<string> | string),
+  getRoutineCreateScript: (routine: string) => (Promise<string> | string),
+  truncateAllTables: (database: string) => (Promise<string> | string)
 }
 
 export type FactoryType = Promise<ProviderInterface>;

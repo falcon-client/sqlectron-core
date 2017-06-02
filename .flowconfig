@@ -5,6 +5,7 @@
 .*/test/*
 .*/src/db/clients/*
 .*/src/db/Client.js
+.*/src/db/ClientType.js
 .*/git/.*
 
 [options]

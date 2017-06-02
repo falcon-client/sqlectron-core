@@ -3,7 +3,7 @@ import debug from 'debug';
 
 const loggers = {};
 
-export default function createLogger(namespace: string) {
+export default function createLogger(namespace?: string) {
   if (!namespace) {
     throw new Error('Missing log namespace');
   }

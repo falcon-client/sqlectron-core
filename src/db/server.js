@@ -1,24 +1,31 @@
 // @flow
-import { createConnection } from './Client';
-import { CLIENTS } from './clients';
-
-type databaseType = {
-  database: string,
-  connection: null,
-  connecting: bool,
-  disconnect: () => void
-};
+import Client from './Client';
+import { CLIENTS } from './provider_clients';
+import type { ProviderInterface } from './provider_clients/ProviderInterface';
 
 type serverType = {
-  db: { [dbName: string]: databaseType } | {},
+  db: { [dbName: string]: ProviderInterface },
   sshTunnel?: { close: () => void } | null
 };
 
 /**
- * Create and persist a server session. Returns a server
- * object that contains this state.
+ * The config passed by the user to the external createServer() API
  */
-export function createServer(serverConfig: Object) {
+type serverConfigType = {
+  +database: string,
+  +client: 'mysql' | 'sqlite' | 'postgresql' | 'sqlserver' | 'cassandra',
+  +socketPath?: string,
+  +host?: string
+};
+
+/**
+ * Create and persist a server session. Returns a server object that
+ * contains this state.
+ *
+ * This API is exposed to users. Users pass the configuration of their
+ * server to this function
+ */
+export function createServer(serverConfig: serverConfigType) {
   if (!serverConfig) {
     throw new Error('Missing server configuration');
   }
@@ -48,7 +55,7 @@ export function createServer(serverConfig: Object) {
      * Retrieve the database connection pool if it exists
      * @TODO: Use use Map as dictionary instead of object literal
      */
-    db(dbName: string): databaseType {
+    db(dbName: string): ProviderInterface {
       if (dbName in server.db) {
         return server.db[dbName];
       }
@@ -73,8 +80,8 @@ export function createServer(serverConfig: Object) {
      * After the server session has been created, connect to a given
      * database
      */
-    createConnection(dbName: string): databaseType {
-      // If connection to database already exists in pool, return int
+    createConnection(dbName: string): ProviderInterface {
+      // If connection to database already exists in pool, return in
       if (server.db[dbName]) {
         return server.db[dbName];
       }
@@ -86,7 +93,7 @@ export function createServer(serverConfig: Object) {
       };
 
       // Add the connection to the 'connection pool'
-      server.db[dbName] = (createConnection(server, database): databaseType);
+      server.db[dbName] = Client(server, database);
 
       return server.db[dbName];
     }

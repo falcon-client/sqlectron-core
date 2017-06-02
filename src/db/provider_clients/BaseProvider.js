@@ -1,25 +1,23 @@
 // @flow
 /* eslint promise/avoid-new: 0 */
-import connectTunnel from '../Tunnel';
-import clients from '../clients';
+import Tunnel from '../Tunnel';
+import clients from './';
 import * as config from '../../Config';
 import createLogger from '../../Logger';
+import type { sshTunnelType } from '../Tunnel';
+import type { serverType, databaseType } from './ProviderInterface';
 
 const logger = createLogger('db');
 
-type sshTunnelType = {
-  on: (event: 'success' | 'error', () => void) => void
-};
-
 export default class BaseProvider {
+
+  server: serverType;
+
+  database: databaseType;
 
   static DEFAULT_LIMIT: number = 1000;
 
   static limitSelect = null;
-
-  server: Object;
-
-  database: Object;
 
   constructor(server: Object, database: Object) {
     this.server = server;
@@ -50,7 +48,7 @@ export default class BaseProvider {
       // reuse existing tunnel
       if (this.server.config.ssh && !this.server.sshTunnel) {
         logger().debug('creating ssh tunnel');
-        this.server.sshTunnel = await connectTunnel(this.server.config);
+        this.server.sshTunnel = await Tunnel(this.server.config);
 
         const { address, port } = this.server.sshTunnel.address();
         logger().debug(
@@ -83,7 +81,7 @@ export default class BaseProvider {
   handleSSHError(sshTunnel?: sshTunnelType) {
     return new Promise((resolve, reject) => {
       if (!sshTunnel) {
-        return resolve();
+        return resolve(true);
       }
 
       sshTunnel.on('success', resolve);
@@ -92,7 +90,7 @@ export default class BaseProvider {
         reject(error);
       });
 
-      return true;
+      return resolve(true);
     });
   }
 
@@ -167,7 +165,7 @@ export default class BaseProvider {
     let limitValue = limit;
 
     await this.loadConfigLimit();
-    limitValue = typeof BaseProvider.limitSelect !== 'undefined'
+    limitValue = BaseProvider.limitSelect === 'number'
       ? BaseProvider.limitSelect
       : BaseProvider.DEFAULT_LIMIT;
 
@@ -229,6 +227,7 @@ export default class BaseProvider {
   }
 
   wrap(identifier: any) {
+    this.checkIsConnected();
     return !Array.isArray(identifier)
       ? this.database.connection.wrapIdentifier(identifier)
       : identifier.map(item => this.database.connection.wrapIdentifier(item));

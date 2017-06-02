@@ -30,8 +30,7 @@ async function runWithConnection({ pool }, run) {
 
     pool.getConnection(async (errPool, connection) => {
       if (errPool) {
-        rejectErr(errPool);
-        return;
+        return rejectErr(errPool);
       }
 
       connection.on('error', error => {
@@ -457,7 +456,7 @@ function identifyCommands(queryText) {
   }
 }
 
-export default async function(server, database): ClientType {
+export default async function (server, database): ClientType {
   const dbConfig = configDatabase(server, database);
   logger().debug('create driver client for mysql with config %j', dbConfig);
 

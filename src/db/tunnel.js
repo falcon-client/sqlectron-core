@@ -4,7 +4,7 @@ import { Client } from 'ssh2';
 import { getPort, readFile } from '../Utils';
 import createLogger from '../Logger';
 
-type configType = {
+export type tunnelConfigType = {
   username: string,
   port: number,
   host: string,
@@ -14,14 +14,22 @@ type configType = {
   srcPort: number,
   srcHost: string,
   localHost: string,
-  localPort: string,
+  localPort: number,
   password?: string,
   passphrase?: string,
   privateKey?: string,
 };
 
-async function configTunnel(serverInfo): Promise<configType> {
-  const config: configType = {
+export type sshTunnelType = {
+  address: () => ({
+    address: string,
+    port: number
+  }),
+  on: (event: 'success' | 'error', () => void) => sshTunnelType
+};
+
+async function configTunnel(serverInfo): Promise<tunnelConfigType> {
+  const config: tunnelConfigType = {
     username: serverInfo.ssh.user,
     port: serverInfo.ssh.port,
     host: serverInfo.ssh.host,
@@ -105,7 +113,7 @@ export default function Tunnel(serverInfo: Object) {
     });
 
     logger().debug('connecting ssh tunnel server');
-    server.listen(config.localPort, config.localHost, err => {
+    server.listen(config.localPort, config.localHost, undefined, err => {
       if (err) return reject(err);
       logger().debug('connected ssh tunnel server');
       return resolve(server);

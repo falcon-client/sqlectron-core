@@ -113,6 +113,11 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
     throw new Error('"query" is not implementd by cassandra this.client.');
   }
 
+  // @TODO
+  insert(database: string, table: string, objectToInsert: Object) {
+    return Promise.resolve([objectToInsert]);
+  }
+
   executeQuery(queryText: string) {
     const commands = this.identifyCommands(queryText).map(item => item.type);
 
@@ -140,15 +145,15 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
   }
 
   getTableCreateScript() {
-    return Promise.resolve([]);
+    return Promise.resolve('');
   }
 
   getViewCreateScript() {
-    return Promise.resolve([]);
+    return Promise.resolve('');
   }
 
   getRoutineCreateScript() {
-    return Promise.resolve([]);
+    return Promise.resolve('');
   }
 
   wrapIdentifier(value) {
