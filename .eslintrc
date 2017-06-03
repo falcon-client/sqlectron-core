@@ -23,6 +23,7 @@
     "no-let": "off",
     "no-plusplus": "off",
     "no-use-before-define": "off",
-    "no-console": "off"
+    "no-console": "off",
+    "promise/avoid-new": "off"
   }
 }

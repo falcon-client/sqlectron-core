@@ -1,5 +1,4 @@
 // @flow
-/* eslint promise/avoid-new: 0 */
 import fs from 'fs';
 import path from 'path';
 import pf from 'portfinder';

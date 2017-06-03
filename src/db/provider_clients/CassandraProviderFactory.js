@@ -1,5 +1,4 @@
 // @flow
-/* eslint promise/avoid-new: 0 */
 import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
 import BaseProvider from './BaseProvider';

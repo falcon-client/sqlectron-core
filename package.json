@@ -16,7 +16,7 @@
     "test:sqlserver": "cross-env NODE_ENV=test DB_CLIENTS=sqlserver npm run test",
     "test:postgresql": "cross-env NODE_ENV=test DB_CLIENTS=postgresql npm run test",
     "test:cassandra": "cross-env NODE_ENV=test DB_CLIENTS=cassandra npm run test",
-    "watch": "cross-env NODE_ENV=development babel --watch -d lib/ src/ --source-maps"
+    "watch": "cross-env NODE_ENV=development babel --out-dir lib src --source-maps --watch"
   },
   "keywords": [
     "falcon",
@@ -36,6 +36,7 @@
     "npm": ">=3"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "cassandra-driver": "^3.2.1",
     "debug": "^2.6.8",
     "mssql": "^4.0.4",
@@ -59,7 +60,9 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
+    "babel-preset-bluebird": "^1.0.1",
     "babel-preset-env": "^1.5.1",
+    "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "cross-env": "^5.0.0",
     "dotenv": "^4.0.0",
@@ -70,7 +73,8 @@
     "flow-runtime": "^0.12.0",
     "flow-typed": "^2.1.2",
     "jest-cli": "^20.0.4",
-    "sinon": "^2.3.2"
+    "sinon": "^2.3.2",
+    "source-map-support": "^0.4.15"
   },
   "jest": {
     "testEnvironment": "node"

@@ -1,5 +1,4 @@
 // @flow
-/* eslint promise/avoid-new: 0 */
 import Tunnel from '../Tunnel';
 import clients from './';
 import * as config from '../../Config';
