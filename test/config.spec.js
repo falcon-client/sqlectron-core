@@ -1,16 +1,22 @@
+import path from 'path';
 import { config } from '../src';
-import { readJSONFile } from './../src/utils';
-import utilsStub from './utils-stub';
+import { readJSONFile, writeJSONFile } from '../src/Utils';
 
+const FIXTURE_PATH = path.join(__dirname, 'fixtures', '.sqlectron.json');
+const TMP_FIXTURE_PATH = path.join(__dirname, 'fixtures', '.tmp.sqlectron.json');
 
 function loadConfig() {
-  return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
+  return readJSONFile(TMP_FIXTURE_PATH);
 }
 
+// BUG: getConfigPath() isnt mocked properly. Investigate
 describe('config', () => {
-  utilsStub.getConfigPath.install({ copyFixtureToTemp: true });
-
   describe('.prepare', () => {
+    beforeEach(async () => {
+      const data = await readJSONFile(FIXTURE_PATH);
+      await writeJSONFile(TMP_FIXTURE_PATH, data);
+    });
+
     it('should include id for those servers without it', async () => {
       const findItem = (data) => data.servers.find((srv) => srv.name === 'without-id');
 

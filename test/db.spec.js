@@ -48,20 +48,20 @@ describe('db', () => {
 
     describe(dbClient, () => {
       describe('.connect', () => {
-        it(`should connect into a ${dbClient} database`, () => {
+        it(`should connect into a ${dbClient} database`, async () => {
           const serverInfo = {
             ...config[dbClient],
             name: dbClient,
             client: dbClient
           };
 
-          const serverSession = db.createServer(serverInfo);
-          const dbConn = serverSession.createConnection(serverInfo.database);
+          const serverSession = await db.createServer(serverInfo);
+          const dbConn = await serverSession.createConnection(serverInfo.database);
 
-          dbConn.connect();
+          await dbConn.connect();
         });
 
-        it('should connect into server without database specified', () => {
+        it('should connect into server without database specified', async () => {
           const serverInfo = {
             ...config[dbClient],
             database: db.CLIENTS.find((c) => c.key === dbClient).defaultDatabase,
@@ -69,10 +69,10 @@ describe('db', () => {
             client: dbClient
           };
 
-          const serverSession = db.createServer(serverInfo);
-          const dbConn = serverSession.createConnection(serverInfo.database);
+          const serverSession = await db.createServer(serverInfo);
+          const dbConn = await serverSession.createConnection(serverInfo.database);
 
-          dbConn.connect();
+          await dbConn.connect();
         });
       });
 
@@ -85,9 +85,9 @@ describe('db', () => {
 
         let serverSession;
         let dbConn;
-        beforeEach(() => {
-          serverSession = db.createServer(serverInfo);
-          dbConn = serverSession.createConnection(serverInfo.database);
+        beforeEach(async () => {
+          serverSession = await db.createServer(serverInfo);
+          dbConn = await serverSession.createConnection(serverInfo.database);
           return dbConn.connect();
         });
 
@@ -270,7 +270,7 @@ describe('db', () => {
           describe('.query', () => { // eslint-disable-line func-names
             // this.timeout(15000);
 
-            it('should be able to cancel the current query', (done) => {
+            it('should be able to cancel the current query', async () => {
               const sleepCommands = {
                 postgresql: 'SELECT pg_sleep(10);',
                 mysql: 'SELECT SLEEP(10000);',
@@ -289,7 +289,7 @@ describe('db', () => {
                 sleepCommands.sqlite = `SELECT last.name FROM ${fromTables.join(',')} as last`;
               }
 
-              const query = dbConn.query(sleepCommands[dbClient]);
+              const query = await dbConn.query(sleepCommands[dbClient]);
               const executing = query.execute();
 
               // wait a 5 secs before cancel
@@ -303,13 +303,7 @@ describe('db', () => {
                 } catch (err) {
                   error = err;
                 }
-
-                try {
-                  expect(error.sqlectronError).toMatchSnapshot();
-                  done();
-                } catch (err) {
-                  done(err);
-                }
+                expect(error.sqlectronError).toMatchSnapshot();
               }, 5000);
             });
           });

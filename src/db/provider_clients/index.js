@@ -1,9 +1,9 @@
 // @flow
-import cassandra from './CassandraProvider';
+import cassandra from './CassandraProviderFactory';
+import sqlite from './SqliteProviderFactory';
 // import mysql from './MysqlProvider';
 // import postgresql from './PostgresqlProvider';
 // import sqlserver from './SqlserverProvider';
-// import sqlite from './SqliteProvider';
 
 /**
  * List of supported database clients
@@ -66,6 +66,6 @@ export default {
   // mysql,
   // postgresql,
   // sqlserver,
-  // sqlite,
+  sqlite,
   cassandra
 };

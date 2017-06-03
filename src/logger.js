@@ -7,9 +7,6 @@ export default function createLogger(namespace?: string) {
   if (!namespace) {
     throw new Error('Missing log namespace');
   }
-  if (loggers[namespace]) {
-    throw new Error('This logger is already registered');
-  }
 
   // default logger
   const debugLogger = debug(`sqlectron-core:${namespace}`);

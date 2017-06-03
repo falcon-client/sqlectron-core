@@ -2,8 +2,8 @@
 .*/node_modules/fbjs/.*
 .*/node_modules/*
 .*/lib/*
+.*/src/db/old/*
 .*/test/*
-.*/src/db/clients/*
 .*/src/db/Client.js
 .*/src/db/ClientType.js
 .*/git/.*

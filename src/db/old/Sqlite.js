@@ -4,7 +4,7 @@ import { identify } from 'sql-query-identifier';
 import createLogger from '../../Logger';
 import type { ClientType } from '../ClientType';
 
-const logger = createLogger('db:clients:sqlite');
+// const logger = createLogger('db:clients:sqlite');
 
 const sqliteErrors = {
   CANCELED: 'SQLITE_INTERRUPT'

@@ -23,12 +23,16 @@ export type databaseType = {
   connecting: bool
 };
 
+type listTablesType = Promise<Array<{
+  name: string
+}>>;
+
 export interface ProviderInterface {
   server: serverType,
   database: databaseType,
   wrapIdentifier: (value: string) => string,
   disconnect: () => void,
-  listTables: () => Promise<Array<string>>,
+  listTables: () => listTablesType,
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
   listTableColumns: (db: string, table: string) => Promise<Array<string>>,

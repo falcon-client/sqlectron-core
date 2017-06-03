@@ -33,7 +33,7 @@ export async function update(server: serverType) {
   const data = await config.get();
   validateUniqueId(data.servers, server.id);
 
-  const index = data.servers.findIndex(srv => srv.id === server.id);
+  const index = await findServerIndexById(server.id);
   data.servers = [
     ...data.servers.slice(0, index),
     server,
@@ -51,10 +51,21 @@ export function addOrUpdate(server: serverType) {
   return hasId ? update(server) : add(server);
 }
 
+async function findServerIndexById(id: string) {
+  const data = await config.get();
+  const index = data.servers.findIndex(srv => srv.id === id);
+
+  if (index < 0) {
+    throw new Error(`Server with id of "${id}" does not exist`);
+  }
+
+  return index;
+}
+
 export async function removeById(id: string) {
+  const index = await findServerIndexById(id);
   const data = await config.get();
 
-  const index = data.servers.findIndex(srv => srv.id === id);
   data.servers = [
     ...data.servers.slice(0, index),
     ...data.servers.slice(index + 1)

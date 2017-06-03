@@ -5,8 +5,7 @@
         "node": 6
       }
     }],
-    "stage-0",
-    "bluebird"
+    "stage-0"
   ],
   /*
   "env": {
@@ -23,9 +22,6 @@
   },
   */
   "plugins": [
-    "transform-async-to-bluebird",
-    "transform-promise-to-bluebird",
-    "transform-runtime",
     "syntax-flow",
     "transform-decorators-legacy",
     // ["flow-runtime", {"assert": true,"annotate": true}],

@@ -8,7 +8,9 @@ export function homedir() {
 }
 
 export function getConfigPath() {
-  return path.join(homedir(), '.sqlectron.json');
+  return process.env.NODE_ENV === 'test'
+    ? path.join(__dirname, '..', 'test', 'fixtures', '.tmp.sqlectron.json')
+    : path.join(homedir(), '.sqlectron.json');
 }
 
 export function fileExists(filename: string) {
@@ -97,11 +99,11 @@ export function createCancelablePromise(error: Error, timeIdle: number = 100) {
       if (canceled) {
         const err = new Error(error.message || 'Promise canceled.');
 
-        Object.getOwnPropertyNames(error).forEach(
-          key => (err[key] = error[key])
-        ); // eslint-disable-line no-return-assign
+        Object
+          .getOwnPropertyNames(error)
+          .forEach(key => (err[key] = error[key]));
 
-        throw err;
+        throw new Error(err);
       }
     },
     cancel() {

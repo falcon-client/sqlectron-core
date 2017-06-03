@@ -7,8 +7,9 @@ const EMPTY_CONFIG = { servers: [] };
 function sanitizeServers(data) {
   return data.servers.map(server => {
     const srv = { ...server };
+
     // ensure all server has an unique id
-    if (!srv.id) {
+    if (!('id' in srv)) {
       srv.id = uuid.v4();
     }
 
@@ -37,7 +38,7 @@ export async function prepare() {
 
   await utils.writeJSONFile(filename, result);
 
-  // TODO: Validate whole configuration file
+  // @TODO: Validate whole configuration file
   // if (!configValidate(result)) {
   //   throw new Error('Invalid ~/.sqlectron.json file format');
   // }

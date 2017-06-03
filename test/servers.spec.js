@@ -1,14 +1,19 @@
+import path from 'path';
 import { servers } from '../src';
-import { readJSONFile } from './../src/utils';
-import utilsStub from './utils-stub';
+import { readJSONFile, writeJSONFile } from '../src/Utils';
 
+const FIXTURE_PATH = path.join(__dirname, 'fixtures', '.sqlectron.json');
+const TMP_FIXTURE_PATH = path.join(__dirname, 'fixtures', '.tmp.sqlectron.json');
 
 function loadConfig() {
-  return readJSONFile(utilsStub.TMP_FIXTURE_PATH);
+  return readJSONFile(TMP_FIXTURE_PATH);
 }
 
 describe('servers', () => {
-  utilsStub.getConfigPath.install({ copyFixtureToTemp: true });
+  beforeEach(async () => {
+    const data = await readJSONFile(FIXTURE_PATH);
+    await writeJSONFile(TMP_FIXTURE_PATH, data);
+  });
 
   describe('.getAll', () => {
     it('should load servers from file', async () => {
@@ -146,8 +151,8 @@ describe('servers', () => {
     it('should remove an existing server', async () => {
       const configBefore = await loadConfig();
       await servers.removeById('c94cbafa-8977-4142-9f34-c84d382d8731');
-
       const configAfter = await loadConfig();
+
       expect(configAfter.servers.length).toEqual(configBefore.servers.length - 1);
       expect(configAfter.servers.find((srv) => srv.name === 'pg-vm')).toEqual(undefined);
     });

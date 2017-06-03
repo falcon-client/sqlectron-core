@@ -146,7 +146,7 @@ export async function validate(server: Object) {
 
   const validated = await Valida.process(server, serverSchema);
   if (!validated.isValid()) {
-    throw validated.invalidError();
+    throw new Error(JSON.stringify(validated.errors()));
   }
 }
 
