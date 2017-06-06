@@ -18,6 +18,9 @@ export type tunnelConfigType = {
   password?: string,
   passphrase?: string,
   privateKey?: string,
+  ssl?: {
+    rejectUnauthorized: bool
+  }
 };
 
 export type sshTunnelType = {

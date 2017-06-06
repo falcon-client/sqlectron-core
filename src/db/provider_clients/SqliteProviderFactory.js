@@ -3,7 +3,19 @@ import sqlite3 from 'sqlite3';
 import { identify } from 'sql-query-identifier';
 import createLogger from '../../Logger';
 import BaseProvider from './BaseProvider';
-import type { ProviderInterface, FactoryType } from './ProviderInterface';
+import type {
+  ProviderInterface,
+  FactoryType,
+  serverType,
+  queryType,
+  databaseType
+} from './ProviderInterface';
+
+type queryArgsType = {
+  query: string,
+  multiple?: bool,
+  params?: Array<string>
+};
 
 type connectionType = {
   dbConfig: {
@@ -11,17 +23,6 @@ type connectionType = {
   },
   run: (queryText: string, args?: Array<string>, cb?: () => void) => void,
   all: (queryText: string, args?: Array<string>, cb?: () => void) => void,
-};
-
-type queryType = {
-  execute: () => void,
-  cancel: () => void,
-};
-
-type queryArgsType = {
-  query: string,
-  multiple?: bool,
-  params?: Array<string>
 };
 
 class SqliteProvider extends BaseProvider implements ProviderInterface {
@@ -51,11 +52,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
     const matched = value.match(/(.*?)(\[[0-9]\])/); // eslint-disable-line no-useless-escape
 
-    if (matched) {
-      return this.wrapIdentifier(matched[1]) + matched[2];
-    }
-
-    return `"${value.replace(/"/g, '""')}"`;
+    return matched
+      ? this.wrapIdentifier(matched[1]) + matched[2]
+      : `"${value.replace(/"/g, '""')}"`;
   }
 
   getQuerySelectTop(table: string, limit: number) {
@@ -143,6 +142,11 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async getTableColumnNames(table: string) {
     this.checkIsConnected();
+
+    if (!table) {
+      throw new Error('No table name provide');
+    }
+
     const columns = await this.listTableColumns(table);
     return columns.map(column => column.columnName);
   }
@@ -269,6 +273,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     }
   }
 
+  /**
+   * @private
+   */
   async driverExecuteQuery(queryArgs: queryArgsType): Promise<Object> {
     const runQuery = (connection: connectionType, { executionType, text }) =>
       new Promise((resolve, reject) => {
@@ -308,7 +315,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         }))
       );
 
-      return queryArgs.multiple ? Promise.all(results) : Promise.resolve(results[0]);
+      return queryArgs.multiple
+        ? Promise.all(results)
+        : Promise.resolve(results[0]);
     };
 
     return (
@@ -355,7 +364,7 @@ function configDatabase(server, database) {
   };
 }
 
-async function SqliteFactory(server: Object, database: Object): FactoryType {
+async function SqliteFactory(server: serverType, database: databaseType): FactoryType {
   const logger = createLogger('db:clients:sqlite');
   const dbConfig = configDatabase(server, database);
   const connection = { dbConfig };

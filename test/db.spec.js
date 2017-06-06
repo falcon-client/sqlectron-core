@@ -4,7 +4,7 @@ import setupSQLite from './databases/sqlite/setup';
 import setupCassandra from './databases/cassandra/setup';
 
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+// jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
 /**
  * List of supported DB clients.
@@ -32,14 +32,17 @@ const dbsToTest = (process.env.DB_CLIENTS || '').split(',').filter((client) => !
 
 
 describe('db', () => {
-  const dbClients = dbsToTest.length ? dbsToTest : SUPPORTED_DB_CLIENTS;
-  if (dbClients.some((dbClient) => !~SUPPORTED_DB_CLIENTS.indexOf(dbClient))) {
+  const dbClients = dbsToTest.length
+    ? dbsToTest
+    : SUPPORTED_DB_CLIENTS;
+
+  if (dbClients.some((dbClient) => !SUPPORTED_DB_CLIENTS.includes(dbClient))) {
     throw new Error('Invalid selected db client for tests');
   }
 
-  if (~dbClients.indexOf('sqlite')) {
+  if (dbClients.includes('sqlite')) {
     setupSQLite(config.sqlite);
-  } else if (~dbClients.indexOf('cassandra')) {
+  } else if (dbClients.includes('cassandra')) {
     setupCassandra(config.cassandra);
   }
 
@@ -55,9 +58,10 @@ describe('db', () => {
             client: dbClient
           };
 
+          console.log(db);
+
           const serverSession = await db.createServer(serverInfo);
           const dbConn = await serverSession.createConnection(serverInfo.database);
-
           await dbConn.connect();
         });
 
@@ -152,6 +156,7 @@ describe('db', () => {
         describe('.listTableIndexes', () => {
           it('should list all indexes', async () => {
             const indexes = await dbConn.listTableIndexes('users', dbSchema);
+            console.log(indexes);
             expect(indexes).toMatchSnapshot();
           });
         });
@@ -267,10 +272,10 @@ describe('db', () => {
         });
 
         if (dbClient !== 'cassandra') {
-          describe('.query', () => { // eslint-disable-line func-names
+          describe('.query', () => {
             // this.timeout(15000);
 
-            it('should be able to cancel the current query', async () => {
+            it('should be able to cancel the current query', async (done) => {
               const sleepCommands = {
                 postgresql: 'SELECT pg_sleep(10);',
                 mysql: 'SELECT SLEEP(10000);',
@@ -282,11 +287,8 @@ describe('db', () => {
               // we have to do this by selecting a huge data source.
               // This trick maske select from the same table multiple times.
               if (dbClient === 'sqlite') {
-                const fromTables = [];
-                for (let i = 0; i < 50; i++) { // eslint-disable-line no-plusplus
-                  fromTables.push('sqlite_master');
-                }
-                sleepCommands.sqlite = `SELECT last.name FROM ${fromTables.join(',')} as last`;
+                const fromTables = Array(50).fill('sqlite_master').join(',');
+                sleepCommands.sqlite = `SELECT last.name FROM ${fromTables} as last`;
               }
 
               const query = await dbConn.query(sleepCommands[dbClient]);
@@ -303,7 +305,12 @@ describe('db', () => {
                 } catch (err) {
                   error = err;
                 }
-                expect(error.sqlectronError).toMatchSnapshot();
+                try {
+                  expect(error.sqlectronError).toMatchSnapshot();
+                  done();
+                } catch (err) {
+                  done(err);
+                }
               }, 5000);
             });
           });

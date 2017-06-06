@@ -3,7 +3,12 @@ import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
 import BaseProvider from './BaseProvider';
 import createLogger from '../../Logger';
-import type { ProviderInterface, FactoryType } from './ProviderInterface';
+import type {
+  FactoryType,
+  ProviderInterface,
+  serverType,
+  databaseType
+} from './ProviderInterface';
 
 class CassandraProvider extends BaseProvider implements ProviderInterface {
   client: Client;
@@ -90,6 +95,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
         ALLOW FILTERING
       `;
       const params = [database, table];
+
       this.client.execute(sql, params, (err, data) => {
         if (err) return reject(err);
         return resolve(
@@ -228,7 +234,7 @@ function configDatabase(server: Object, database: Object) {
  * Construct the CassandraProvider. Wait for the client to connect and then instantiate
  * the provider
  */
-async function CassandraFactory(server: Object, database: Object): FactoryType {
+async function CassandraFactory(server: serverType, database: databaseType): FactoryType {
   const dbConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:cassandra');
 
@@ -236,7 +242,7 @@ async function CassandraFactory(server: Object, database: Object): FactoryType {
   const client = new Client(dbConfig);
 
   logger().debug('connecting');
-  await this.client.connect();
+  await client.connect();
 
   return new CassandraProvider(server, database, client);
 }

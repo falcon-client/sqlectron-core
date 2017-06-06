@@ -1,6 +1,11 @@
 falcon-core
 ===========
-The cross-database ORM that powers falcon
+The cross-database ORM that powers [falcon](https://github.com/falcon-client/falcon)
+
+[![Build Status](https://travis-ci.org/falcon-client/falcon-core.svg?branch=master&maxAge=2592)](https://travis-ci.org/falcon-client/falcon-core)
+[![NPM version](https://badge.fury.io/js/falcon-core.svg?maxAge=2592)](http://badge.fury.io/js/falcon-core)
+[![Dependency Status](https://img.shields.io/david/falcon-client/falcon-core.svg?maxAge=2592)](https://david-dm.org/falcon-client/falcon-core)
+[![npm](https://img.shields.io/npm/dm/falcon-core.svg?maxAge=2592)](https://npm-stat.com/charts.html?package=falcon-core)
 
 ## Roadmap
 ### Release 1.0.0
@@ -27,3 +32,30 @@ docker-compose up -d
 # Run the tests
 yarn test
 ```
+
+## Example
+```js
+import path from 'path';
+import {db, config} from 'falcon-core';
+
+const serverInfo = {
+    database: path.join(__dirname, 'demo.sqlite'),
+    client: 'sqlite'
+};
+
+async function main() {
+    const serverSession = db.createServer(serverInfo);
+    const connection = await serverSession.createConnection('demo.sqlite');
+    await connection.connect(serverInfo);
+    console.log(await connection.getTableSelectScript('albums'));
+    console.log(await connection.listTables());
+    console.log(await connection.listDatabases());
+    console.log(await connection.getTableKeys('albums'));
+    console.log(await connection.getTableValues('albums'));
+}
+
+main();
+```
+
+## Related
+* [falcon](https://github.com/falcon-client/falcon)

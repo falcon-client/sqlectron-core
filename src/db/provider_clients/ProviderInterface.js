@@ -8,7 +8,11 @@ export type serverType = {
   sshTunnel: sshTunnelType,
   config: {
     ...tunnelConfigType,
-    client: string
+    ssl?: {
+      rejectUnauthorized: bool
+    },
+    client: string,
+    user?: string
   }
 };
 
@@ -27,10 +31,22 @@ type listTablesType = Promise<Array<{
   name: string
 }>>;
 
+export type queryType = {
+  execute: () => void,
+  cancel: () => void,
+};
+
+export type queryArgsType = {
+  query: string,
+  multiple?: bool,
+  params?: Array<string>
+};
+
 export interface ProviderInterface {
   server: serverType,
   database: databaseType,
   wrapIdentifier: (value: string) => string,
+  connect: () => void,
   disconnect: () => void,
   listTables: () => listTablesType,
   listViews: () => Promise<Array<string>>,
@@ -47,7 +63,7 @@ export interface ProviderInterface {
     table: string,
     objectToInsert: Object
   ) => Promise<Array<Object>>,
-  query: (queryText: string) => Promise<Array<Object>>,
+  query: (queryText: string) => Promise<queryType>,
   executeQuery: (queryText: string) => Promise<any>,
   listDatabases: () => Promise<Array<string>>,
   getQuerySelectTop: (table: string, limit: number) => (Promise<string> | string),
