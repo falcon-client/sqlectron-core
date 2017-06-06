@@ -11,7 +11,7 @@
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
     "prepublish": "npm run build",
     "test": "cross-env NODE_ENV=test jest",
-    "coverage": "npm run test -- --coverage",
+    "coverage": "npm run test:sqlite -- --coverage",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:mysql": "cross-env NODE_ENV=test DB_CLIENTS=mysql jest test/db.spec.js",
     "test:sqlite": "cross-env NODE_ENV=test DB_CLIENTS=sqlite jest test/db.spec.js",
@@ -78,6 +78,9 @@
     "sinon": "^2.3.2"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/db/provider_clients/Sqlite*.js"
+    ]
   }
 }

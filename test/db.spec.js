@@ -4,7 +4,7 @@ import setupSQLite from './databases/sqlite/setup';
 import setupCassandra from './databases/cassandra/setup';
 
 
-// jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
 /**
  * List of supported DB clients.
@@ -57,8 +57,6 @@ describe('db', () => {
             name: dbClient,
             client: dbClient
           };
-
-          console.log(db);
 
           const serverSession = await db.createServer(serverInfo);
           const dbConn = await serverSession.createConnection(serverInfo.database);
@@ -156,7 +154,6 @@ describe('db', () => {
         describe('.listTableIndexes', () => {
           it('should list all indexes', async () => {
             const indexes = await dbConn.listTableIndexes('users', dbSchema);
-            console.log(indexes);
             expect(indexes).toMatchSnapshot();
           });
         });

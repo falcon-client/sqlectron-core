@@ -2,8 +2,7 @@
 .*/node_modules/fbjs/.*
 .*/node_modules/*
 .*/lib/*
-.*/src/db/old/*
-.*/test/*
+.*/coverage/*
 .*/src/db/Client.js
 .*/src/db/ClientType.js
 .*/git/.*
