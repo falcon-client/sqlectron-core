@@ -3,6 +3,7 @@ falcon-core
 The cross-database ORM that powers [falcon](https://github.com/falcon-client/falcon)
 
 [![Build Status](https://travis-ci.org/falcon-client/falcon-core.svg?branch=master&maxAge=2592)](https://travis-ci.org/falcon-client/falcon-core)
+[![Coverage Status](https://coveralls.io/repos/github/falcon-client/falcon-core/badge.svg)](https://coveralls.io/github/falcon-client/falcon-core)
 [![NPM version](https://badge.fury.io/js/falcon-core.svg?maxAge=2592)](http://badge.fury.io/js/falcon-core)
 [![Dependency Status](https://img.shields.io/david/falcon-client/falcon-core.svg?maxAge=2592)](https://david-dm.org/falcon-client/falcon-core)
 [![npm](https://img.shields.io/npm/dm/falcon-core.svg?maxAge=2592)](https://npm-stat.com/charts.html?package=falcon-core)
