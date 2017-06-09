@@ -1,6 +1,6 @@
 {
   "name": "falcon-core",
-  "version": "0.0.1-3",
+  "version": "0.0.1-4",
   "description": "The cross-database ORM that powers falcon",
   "main": "lib/index.js",
   "author": "The Falcon Team",
@@ -35,7 +35,7 @@
     "type": "git",
     "url": "https://github.com/falcon-client/falcon-core"
   },
-  "files":[
+  "files": [
     "lib"
   ],
   "engines": {
