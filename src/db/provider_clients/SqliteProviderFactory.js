@@ -8,6 +8,7 @@ import type {
   FactoryType,
   serverType,
   queryType,
+  queryResponseType,
   databaseType
 } from './ProviderInterface';
 
@@ -69,12 +70,12 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
     return Promise.resolve({
       execute() {
-        return factory.runWithConnection(async connection => {
+        return factory.runWithConnection(async () => {
           try {
             queryConnection = connection;
-            return this.executeQuery(queryText);
+            return factory.executeQuery(queryText);
           } catch (err) {
-            if (err.code === this.sqliteErrors.CANCELED) {
+            if (err.code === factory.CANCELED) {
               err.sqlectronError = 'CANCELED_BY_USER';
             }
             throw new Error(err);
@@ -153,7 +154,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async listTableColumns(table: string) {
     const sql = `PRAGMA table_info(${table})`;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
 
     return data.map(row => ({
@@ -169,7 +169,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       WHERE type = 'trigger'
         AND tbl_name = '${table}'
     `;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
 
     return data.map(row => row.name);
@@ -177,7 +176,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async listTableIndexes(database: string, table: string) {
     const sql = `PRAGMA INDEX_LIST('${table}')`;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
 
     return data.map(row => row.name);
@@ -210,7 +208,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       FROM sqlite_master
       WHERE name = '${table}';
     `;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
 
     return data.map(row => row.sql);
@@ -222,7 +219,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       FROM sqlite_master
       WHERE name = '${view}';
     `;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
 
     return data.map(row => row.sql);
@@ -231,6 +227,15 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   // @NOT_SUPPORTED
   getRoutineCreateScript() {
     return Promise.resolve('');
+  }
+
+  /**
+   * SQLITE is a local file in there's no concept of being 'online'. Or
+   * are we online when we can verify that the path to the sqlite database
+   * exists?
+   */
+  isOnline() {
+    return Promise.resolve(true);
   }
 
   async truncateAllTables() {
@@ -251,7 +256,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     });
   }
 
-  parseRowQueryResult({ data, statement, changes }) {
+  parseRowQueryResult({ data, statement, changes }): queryResponseType {
     // Fallback in case the identifier could not reconize the command
     const isSelect = Array.isArray(data);
     const rows = data || [];
@@ -280,7 +285,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     const runQuery = (connection: connectionType, { executionType, text }) =>
       new Promise((resolve, reject) => {
         const method = this.resolveExecutionType(executionType);
-        const fn = function (err?: Error, data: Object) {
+        const fn = function queryCallback(err?: Error, data?: Object) {
           if (err) {
             return reject(err);
           }
@@ -327,7 +332,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     );
   }
 
-  runWithConnection(run: (connection: connectionType) => void) {
+  runWithConnection(run: () => Promise<Array<Object>>) {
     return new Promise((resolve, reject) => {
       const db = new sqlite3.Database(this.connection.dbConfig.database, async err => {
         if (err) {
@@ -348,6 +353,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     });
   }
 
+  /**
+   * @private
+   */
   resolveExecutionType(executionType: string): 'run' | 'all' {
     switch (executionType) {
       case 'MODIFICATION':

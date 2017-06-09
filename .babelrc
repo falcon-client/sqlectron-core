@@ -7,24 +7,10 @@
     }],
     "stage-0"
   ],
-  /*
-  "env": {
-    "development": {
-      "plugins": [
-        ["flow-runtime", {"assert": true,"annotate": true}]
-      ]
-    },
-    "test": {
-      "plugins": [
-        ["flow-runtime", {"assert": true,"annotate": true}]
-      ]
-    }
-  },
-  */
   "plugins": [
     "syntax-flow",
     "transform-decorators-legacy",
-    // ["flow-runtime", {"assert": true,"annotate": true}],
+    // "flow-runtime",
     "transform-flow-strip-types"
   ]
 }

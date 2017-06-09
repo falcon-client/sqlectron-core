@@ -27,9 +27,7 @@ export type databaseType = {
   connecting: bool
 };
 
-type listTablesType = Promise<Array<{
-  name: string
-}>>;
+type listTablesType = Promise<Array<{name: string}>>;
 
 export type queryType = {
   execute: () => void,
@@ -42,30 +40,100 @@ export type queryArgsType = {
   params?: Array<string>
 };
 
+export type queryResponseType = {
+  command: string,
+  rows: Array<Object>,
+  fields: Array<Object>,
+  rowCount: number,
+  affectedRows: number,
+};
+
+/**
+ * @TODO: Add documentation for each of these methods
+ */
 export interface ProviderInterface {
+  /**
+   * Database config properties
+   */
   server: serverType,
   database: databaseType,
+
+  /**
+   * @TODO: What does this to? What is an identifier?
+   */
   wrapIdentifier: (value: string) => string,
+
+  /**
+   * Connection operations:
+   *
+   * Create a connection to a database using `this.server.config` that is passed
+   * from ProviderFactory constructor -> BaseProvider constructor
+   */
   connect: () => void,
   disconnect: () => void,
+
+  /**
+   * List operations:
+   */
   listTables: () => listTablesType,
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
-  listTableColumns: (db: string, table: string) => Promise<Array<string>>,
   listTableTriggers: (table: string) => Promise<Array<string>>,
   listTableIndexes: (db: string, table: string) => Promise<Array<string>>,
   listSchemas: () => Promise<Array<string>>,
-  getTableReferences: (table: string) => Promise<Array<Object>>,
-  getTableKeys: (database: string, table: string) => Promise<Array<string>>,
-  getTableValues: (db: string, table: string) => Promise<Array<Object>>,
-  insert: (
-    database: string,
-    table: string,
-    objectToInsert: Object
-  ) => Promise<Array<Object>>,
-  query: (queryText: string) => Promise<queryType>,
-  executeQuery: (queryText: string) => Promise<any>,
   listDatabases: () => Promise<Array<string>>,
+  listTableColumns: (db: string, table: string) => Promise<Array<{
+    columnName: string,
+    dataType: string
+  }>>,
+
+  /**
+   * Retrival operations
+   */
+  getTableReferences: (table: string) => Promise<Array<string>>,
+  getTableValues: (db: string, table: string) => Promise<Array<Object>>,
+  getTableKeys: (database: string, table: string) => Promise<Array<{
+    constraintName: string,
+    columnName: string,
+    referencedTable: string,
+    keyType: string
+  }>>,
+
+  /**
+   * @TODO: Basic CRUD Operations. Given a database name, table name, dynamically
+   *        generate a query string from the given properties of the table. Perform
+   *        any necessary bookkeeping and validation
+   */
+  create: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
+  read: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
+  update: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
+  delete: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
+
+  /**
+   * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
+   */
+  query: (queryText: string) => Promise<queryResponseType>,
+  executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
+  driverExecuteQuery: (queryArgs: queryArgsType) => Promise<{data: Array<Object>}>,
+
+  /**
+   * Run a query inside of an existing connection pool
+   */
+  runWithConnection: (query: () => queryResponseType) => void,
+
+  /**
+   * Determine if the connection is still alive and the database is still conencted
+   * to
+   */
+  isOnline: () => Promise<bool>,
+
+   /**
+    * The following methods return sql query statements that are specific to the
+    * currently connected database
+    *
+    * @TODO: All the following API methods should return strings
+    *        If returns a string currently, manually create a promise out of it
+    */
   getQuerySelectTop: (table: string, limit: number) => (Promise<string> | string),
   getTableCreateScript: (table: string, schema: string) => (Promise<string> | string),
   getTableSelectScript: (table: string, schema: string) => (Promise<string> | string),

@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "author": "The Falcon Team",
   "scripts": {
-    "build": "cross-env NODE_ENV=production babel -d lib/ src/ --source-maps",
+    "build": "cross-env NODE_ENV=production rm -rf lib && babel -d lib/ src/ --source-maps",
     "flow": "flow",
     "flow-typed": "flow-typed install",
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
@@ -30,6 +30,7 @@
     "sqlite",
     "sqlite3"
   ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/falcon-client/falcon-core"
@@ -39,7 +40,7 @@
     "npm": ">=3"
   },
   "dependencies": {
-    "cassandra-driver": "^3.2.1",
+    "cassandra-driver": "^3.2.2",
     "debug": "^2.6.8",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0",
@@ -62,7 +63,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
+    "babel-preset-env": "^1.5.2",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "coveralls": "^2.13.1",

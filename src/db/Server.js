@@ -31,7 +31,7 @@ export function createServer(serverConfig: serverConfigType) {
   }
 
   if (!CLIENTS.some(cli => cli.key === serverConfig.client)) {
-    throw new Error('Invalid SQL client');
+    throw new Error(`Invalid SQL client: "${serverConfig.client}"`);
   }
 
   const server: serverType = {

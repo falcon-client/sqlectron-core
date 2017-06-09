@@ -11,15 +11,15 @@ import type {
 } from './ProviderInterface';
 
 class CassandraProvider extends BaseProvider implements ProviderInterface {
-  client: Client;
+  connection: Client;
 
-  constructor(server, database, client: Client) {
+  constructor(server, database, connection: Client) {
     super(server, database);
-    this.client = client;
+    this.connection = connection;
   }
 
   disconnect() {
-    this.client.shutdown();
+    this.connection.shutdown();
   }
 
   listTables(database) {
@@ -30,7 +30,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
         WHERE keyspace_name = ?
       `;
       const params = [database];
-      this.client.execute(sql, params, (err, data) => {
+      this.connection.execute(sql, params, (err, data) => {
         if (err) return reject(err);
         return resolve(data.rows.map(row => ({ name: row.name })));
       });
@@ -54,7 +54,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
           AND table_name = ?
       `;
       const params = [database, table];
-      this.client.execute(sql, params, (err, data) => {
+      this.connection.execute(sql, params, (err, data) => {
         if (err) return reject(err);
         return resolve(
           data.rows
@@ -96,7 +96,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
       `;
       const params = [database, table];
 
-      this.client.execute(sql, params, (err, data) => {
+      this.connection.execute(sql, params, (err, data) => {
         if (err) return reject(err);
         return resolve(
           data.rows.map(row => ({
@@ -115,7 +115,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
   }
 
   query() {
-    throw new Error('"query" is not implementd by cassandra this.client.');
+    throw new Error('"query" is not implementd by cassandra this.connection.');
   }
 
   // @TODO
@@ -127,7 +127,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
     const commands = this.identifyCommands(queryText).map(item => item.type);
 
     return new Promise((resolve, reject) => {
-      this.client.execute(queryText, (err, data) => {
+      this.connection.execute(queryText, (err, data) => {
         if (err) return reject(err);
         return resolve([this.parseRowQueryResult(data, commands[0])]);
       });
@@ -138,7 +138,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
     return new Promise((resolve, reject) => {
       const sql = 'SELECT keyspace_name FROM system_schema.keyspaces';
       const params = [];
-      this.client.execute(sql, params, (err, data) => {
+      this.connection.execute(sql, params, (err, data) => {
         if (err) return reject(err);
         return resolve(data.rows.map(row => row.keyspace_name));
       });

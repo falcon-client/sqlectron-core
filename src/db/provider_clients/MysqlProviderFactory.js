@@ -13,12 +13,17 @@ import type {
   queryArgsType
 } from './ProviderInterface';
 
-const logger = createLogger('db:clients:mysql');
-
 type driverExecuteResponse = {
   data: Array<Object>
 };
 
+/**
+ * @TODO: Why are we using this.connection.connection? Seems hard to follow
+ *        Refactor to use just this.connection instead
+ *
+ *        Add typings for the responses of driverExecuteQuery(). Each response
+ *        is different
+ */
 class MysqlProvider extends BaseProvider implements ProviderInterface {
 
   mysqlErrors = {
@@ -111,7 +116,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
         connection.query(
           queryArgs.query,
           queryArgs.params,
-          (err?: Error, data: Array<{scheme: string}>, fields) => {
+          (err?: Error, data?: Array<{scheme: string}>, fields) => {
             if (err && err.code === this.mysqlErrors.EMPTY_QUERY) return resolve({});
             if (err) return reject(this.getRealError(connection, err));
 
@@ -488,11 +493,12 @@ function configDatabase(server: serverType, database: databaseType) {
 }
 
 async function MysqlProviderFactory(server: serverType, database: databaseType): FactoryType {
-  const dbConfig = configDatabase(server, database);
-  logger().debug('create driver client for mysql with config %j', dbConfig);
+  const databaseConfig = configDatabase(server, database);
+  const logger = createLogger('db:clients:mysql');
+  logger().debug('create driver client for mysql with config %j', databaseConfig);
 
   const connection = {
-    pool: mysql.createPool(dbConfig)
+    pool: mysql.createPool(databaseConfig)
   };
   const provider = new MysqlProvider(server, database, connection);
 
