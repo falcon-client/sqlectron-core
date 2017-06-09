@@ -66,23 +66,22 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   query(queryText: string): Promise<queryType> {
     let queryConnection = null;
-    const factory = this;
+    const self = this;
 
     return Promise.resolve({
       execute() {
-        return factory.runWithConnection(async () => {
+        return self.runWithConnection(() => {
           try {
-            queryConnection = connection;
-            return factory.executeQuery(queryText);
+            queryConnection = self.connection;
+            return self.executeQuery(queryText);
           } catch (err) {
-            if (err.code === factory.CANCELED) {
+            if (err.code === self.CANCELED) {
               err.sqlectronError = 'CANCELED_BY_USER';
             }
-            throw new Error(err);
+            throw err;
           }
         });
       },
-
       cancel() {
         if (!queryConnection) {
           throw new Error('Query not ready to be canceled');
@@ -98,6 +97,16 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       multiple: true
     });
     return result.map(this.parseRowQueryResult);
+  }
+
+  getConnectionType() {
+    return Promise.resolve('local');
+  }
+
+  getVersion() {
+    return this
+      .driverExecuteQuery({ query: 'SELECT sqlite_version()' })
+      .then(res => res.data[0]['sqlite_version()']);
   }
 
   async getTableKeys(table: string, raw: bool = false) {

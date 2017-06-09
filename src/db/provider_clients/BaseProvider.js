@@ -171,8 +171,8 @@ export default class BaseProvider {
     return this.database.connection.getQuerySelectTop(table, limitValue, schema);
   }
 
-  async getTableSelectScript(table: string, schema: string) {
-    const columnNames = await this.getTableColumnNames(table, schema);
+  async getTableSelectScript(table: string, schema?: string) {
+    const columnNames = await this.getTableColumnNames(table);
     const schemaSelection = this.resolveSchema(schema);
     return [
       `SELECT ${this.wrap(columnNames).join(', ')}`,
@@ -180,8 +180,8 @@ export default class BaseProvider {
     ].join(' ');
   }
 
-  async getTableInsertScript(table: string, schema: string) {
-    const columnNames = await this.getTableColumnNames(table, schema);
+  async getTableInsertScript(table: string, schema?: string) {
+    const columnNames = await this.getTableColumnNames(table);
     const schemaSelection = this.resolveSchema(schema);
     return [
       `INSERT INTO ${schemaSelection}${this.wrap(table)}`,
@@ -190,18 +190,17 @@ export default class BaseProvider {
     ].join(' ');
   }
 
-  async getTableColumnNames(table: string, schema: string) {
+  async getTableColumnNames(table: string) {
     this.checkIsConnected();
     const columns = await this.database.connection.listTableColumns(
       this.database.database,
       table,
-      schema
     );
     return columns.map(column => column.columnName);
   }
 
-  async getTableUpdateScript(table: string, schema: string) {
-    const columnNames = await this.getTableColumnNames(table, schema);
+  async getTableUpdateScript(table: string, schema?: string) {
+    const columnNames = await this.getTableColumnNames(table);
     const setColumnForm = this.wrap(columnNames)
       .map(col => `${col}=?`)
       .join(', ');
@@ -213,7 +212,7 @@ export default class BaseProvider {
     ].join(' ');
   }
 
-  getTableDeleteScript(table: string, schema: string) {
+  getTableDeleteScript(table: string, schema?: string) {
     const schemaSelection = this.resolveSchema(schema);
     return [
       `DELETE FROM ${schemaSelection}${this.wrap(table)}`,
@@ -221,7 +220,7 @@ export default class BaseProvider {
     ].join(' ');
   }
 
-  resolveSchema(schema: string) {
+  resolveSchema(schema?: string) {
     return schema ? `${this.wrap(schema)}.` : '';
   }
 

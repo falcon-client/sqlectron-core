@@ -176,7 +176,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
     }));
   }
 
-  async listTableColumns(database: string, table: string) {
+  async listTableColumns(table: string) {
     const sql = `
       SELECT column_name, data_type
       FROM information_schema.columns
@@ -250,9 +250,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
       AND table_name = ?
       AND ((referenced_table_name IS NOT NULL) OR constraint_name LIKE '%PRIMARY%')
     `;
-
     const params = [table];
-
     const { data } = await this.driverExecuteQuery({ query: sql, params });
 
     return data.map(row => ({
@@ -263,13 +261,11 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
     }));
   }
 
-  async getTableValues(table, tableName: string) {
+  async getTableValues(tableName: string) {
     const sql = `
       SELECT * FROM ${tableName};
     `;
-
     const { data } = await this.driverExecuteQuery({ query: sql });
-
     return data;
   }
 

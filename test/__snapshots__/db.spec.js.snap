@@ -27,14 +27,14 @@ Array [
 exports[`db mysql given is already connected .executeQuery DELETE should execute multiple queries 1`] = `
 Array [
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "DELETE",
     "fields": Array [],
     "rowCount": undefined,
     "rows": Array [],
   },
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "DELETE",
     "fields": Array [],
     "rowCount": undefined,
@@ -189,12 +189,20 @@ Array [
         "zeroFill": false,
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       RowDataPacket {
         "createdat": "2016-10-25 00:00:00",
         "email": "maxcnunes@gmail.com",
         "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+        "email": "maxcnunes@gmail.com",
+        "id": 2,
         "password": "123456",
         "role_id": 1,
         "username": "maxcnunes",
@@ -427,8 +435,6 @@ Array [
 ]
 `;
 
-exports[`db mysql given is already connected .executeQuery SELECT should execute an empty query 1`] = `Array []`;
-
 exports[`db mysql given is already connected .executeQuery SELECT should execute an query with only comments 1`] = `
 Array [
   Object {
@@ -544,12 +550,20 @@ Array [
         "zeroFill": false,
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       RowDataPacket {
         "createdat": "2016-10-25 00:00:00",
         "email": "maxcnunes@gmail.com",
         "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+        "email": "maxcnunes@gmail.com",
+        "id": 2,
         "password": "123456",
         "role_id": 1,
         "username": "maxcnunes",
@@ -593,10 +607,14 @@ Array [
         "zeroFill": false,
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       RowDataPacket {
         "id": 1,
+        "name": "developer",
+      },
+      RowDataPacket {
+        "id": 2,
         "name": "developer",
       },
     ],
@@ -627,8 +645,11 @@ Array [
         "zeroFill": false,
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
+      RowDataPacket {
+        "createdat": "2016-10-25 00:00:00",
+      },
       RowDataPacket {
         "createdat": "2016-10-25 00:00:00",
       },
@@ -652,14 +673,14 @@ Array [
 exports[`db mysql given is already connected .executeQuery UPDATE should execute multiple queries 1`] = `
 Array [
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "UPDATE",
     "fields": Array [],
     "rowCount": undefined,
     "rows": Array [],
   },
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "UPDATE",
     "fields": Array [],
     "rowCount": undefined,
@@ -686,7 +707,7 @@ exports[`db mysql given is already connected .getTableCreateScript should return
   PRIMARY KEY (\`id\`),
   KEY \`role_id\` (\`role_id\`),
   CONSTRAINT \`users_ibfk_1\` FOREIGN KEY (\`role_id\`) REFERENCES \`roles\` (\`id\`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1"
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1"
 `;
 
 exports[`db mysql given is already connected .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \`roles\` WHERE <condition>;"`;
@@ -694,13 +715,13 @@ exports[`db mysql given is already connected .getTableDeleteScript should return
 exports[`db mysql given is already connected .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \`public\`.\`roles\` WHERE <condition>;"`;
 
 exports[`db mysql given is already connected .getTableInsertScript should return INSERT INTO table script 1`] = `
-"INSERT INTO \`users\` (\`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\`)
- VALUES (?, ?, ?, ?, ?, ?);"
+"INSERT INTO \`users\` ()
+ VALUES ();"
 `;
 
 exports[`db mysql given is already connected .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
-"INSERT INTO \`public\`.\`users\` (\`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\`)
- VALUES (?, ?, ?, ?, ?, ?);"
+"INSERT INTO \`public\`.\`users\` ()
+ VALUES ();"
 `;
 
 exports[`db mysql given is already connected .getTableKeys should list all tables keys 1`] = `Array []`;
@@ -711,20 +732,33 @@ Array [
 ]
 `;
 
-exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script 1`] = `"SELECT \`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\` FROM \`users\`;"`;
+exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script 1`] = `"SELECT  FROM \`users\`;"`;
 
-exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script with schema if defined 1`] = `"SELECT \`id\`, \`username\`, \`email\`, \`password\`, \`role_id\`, \`createdat\` FROM \`public\`.\`users\`;"`;
+exports[`db mysql given is already connected .getTableSelectScript should return SELECT table script with schema if defined 1`] = `"SELECT  FROM \`public\`.\`users\`;"`;
 
 exports[`db mysql given is already connected .getTableUpdateScript should return UPDATE table script 1`] = `
 "UPDATE \`users\`
- SET \`id\`=?, \`username\`=?, \`email\`=?, \`password\`=?, \`role_id\`=?, \`createdat\`=?
+ SET 
  WHERE <condition>;"
 `;
 
 exports[`db mysql given is already connected .getTableUpdateScript should return UPDATE table script with schema if defined 1`] = `
 "UPDATE \`public\`.\`users\`
- SET \`id\`=?, \`username\`=?, \`email\`=?, \`password\`=?, \`role_id\`=?, \`createdat\`=?
+ SET 
  WHERE <condition>;"
+`;
+
+exports[`db mysql given is already connected .getTableValues should list all tables keys 1`] = `
+Array [
+  RowDataPacket {
+    "createdat": "2016-10-25 00:00:00",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+]
 `;
 
 exports[`db mysql given is already connected .getViewCreateScript should return CREATE VIEW script 1`] = `"CREATE ALGORITHM=UNDEFINED DEFINER=\`root\`@\`localhost\` SQL SECURITY DEFINER VIEW \`email_view\` AS select \`users\`.\`email\` AS \`email\`,\`users\`.\`password\` AS \`password\` from \`users\`"`;
@@ -749,6 +783,77 @@ Array [
 `;
 
 exports[`db mysql given is already connected .listSchemas should list all schema 1`] = `Array []`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 1`] = `
+Array [
+  Object {
+    "columnName": "id",
+    "dataType": "int",
+  },
+  Object {
+    "columnName": "username",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "email",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "password",
+    "dataType": "varchar",
+  },
+  Object {
+    "columnName": "role_id",
+    "dataType": "int",
+  },
+  Object {
+    "columnName": "createdat",
+    "dataType": "datetime",
+  },
+]
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 2`] = `
+Object {
+  "columnName": "id",
+  "dataType": "int",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 3`] = `
+Object {
+  "columnName": "username",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 4`] = `
+Object {
+  "columnName": "email",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 5`] = `
+Object {
+  "columnName": "password",
+  "dataType": "varchar",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 6`] = `
+Object {
+  "columnName": "role_id",
+  "dataType": "int",
+}
+`;
+
+exports[`db mysql given is already connected .listTableColumns should list all columns and their type from users table 7`] = `
+Object {
+  "columnName": "createdat",
+  "dataType": "datetime",
+}
+`;
 
 exports[`db mysql given is already connected .listTableTriggers should list all table related triggers 1`] = `
 Array [
@@ -814,14 +919,14 @@ Array [
 exports[`db sqlite given is already connected .executeQuery DELETE should execute multiple queries 1`] = `
 Array [
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "DELETE",
     "fields": Array [],
     "rowCount": undefined,
     "rows": Array [],
   },
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "DELETE",
     "fields": Array [],
     "rowCount": undefined,
@@ -886,12 +991,20 @@ Array [
         "name": "createdat",
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       Object {
         "createdat": "2016-10-25",
         "email": "maxcnunes@gmail.com",
         "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+      Object {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 2,
         "password": "123456",
         "role_id": 1,
         "username": "maxcnunes",
@@ -949,10 +1062,6 @@ Array [
 ]
 `;
 
-exports[`db sqlite given is already connected .executeQuery SELECT should execute an empty query 1`] = `undefined`;
-
-exports[`db sqlite given is already connected .executeQuery SELECT should execute an empty query 2`] = `Array []`;
-
 exports[`db sqlite given is already connected .executeQuery SELECT should execute an query with only comments 1`] = `Array []`;
 
 exports[`db sqlite given is already connected .executeQuery SELECT should execute multiple queries 1`] = `
@@ -980,12 +1089,20 @@ Array [
         "name": "createdat",
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       Object {
         "createdat": "2016-10-25",
         "email": "maxcnunes@gmail.com",
         "id": 1,
+        "password": "123456",
+        "role_id": 1,
+        "username": "maxcnunes",
+      },
+      Object {
+        "createdat": "2016-10-25",
+        "email": "maxcnunes@gmail.com",
+        "id": 2,
         "password": "123456",
         "role_id": 1,
         "username": "maxcnunes",
@@ -1003,10 +1120,14 @@ Array [
         "name": "name",
       },
     ],
-    "rowCount": 1,
+    "rowCount": 2,
     "rows": Array [
       Object {
         "id": 1,
+        "name": "developer",
+      },
+      Object {
+        "id": 2,
         "name": "developer",
       },
     ],
@@ -1029,14 +1150,14 @@ Array [
 exports[`db sqlite given is already connected .executeQuery UPDATE should execute multiple queries 1`] = `
 Array [
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "UPDATE",
     "fields": Array [],
     "rowCount": undefined,
     "rows": Array [],
   },
   Object {
-    "affectedRows": 1,
+    "affectedRows": 2,
     "command": "UPDATE",
     "fields": Array [],
     "rowCount": undefined,
@@ -1102,6 +1223,21 @@ exports[`db sqlite given is already connected .getTableUpdateScript should retur
  SET \\"id\\"=?, \\"username\\"=?, \\"email\\"=?, \\"password\\"=?, \\"role_id\\"=?, \\"createdat\\"=?
  WHERE <condition>;"
 `;
+
+exports[`db sqlite given is already connected .getTableValues should list all tables keys 1`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+]
+`;
+
+exports[`db sqlite given is already connected .getVersion should get version of database 1`] = `"3.15.0"`;
 
 exports[`db sqlite given is already connected .getViewCreateScript should return CREATE VIEW script 1`] = `
 "CREATE VIEW email_view AS

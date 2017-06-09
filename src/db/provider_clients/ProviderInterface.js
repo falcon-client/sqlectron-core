@@ -20,7 +20,7 @@ export type databaseType = {
   database: string,
   connection: {
     getQuerySelectTop: (table: string, limit: number, schema: string) => void,
-    listTableColumns: (database: string, table: string, schema: string) => Array<Object>,
+    listTableColumns: (table: string) => Array<Object>,
     wrapIdentifier: (item: any) => any,
     disconnect: () => void
   } | null,
@@ -79,10 +79,10 @@ export interface ProviderInterface {
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
   listTableTriggers: (table: string) => Promise<Array<string>>,
-  listTableIndexes: (db: string, table: string) => Promise<Array<string>>,
+  listTableIndexes: (database: string, table: string) => Promise<Array<string>>,
   listSchemas: () => Promise<Array<string>>,
   listDatabases: () => Promise<Array<string>>,
-  listTableColumns: (db: string, table: string) => Promise<Array<{
+  listTableColumns: (table: string) => Promise<Array<{
     columnName: string,
     dataType: string
   }>>,
@@ -90,9 +90,11 @@ export interface ProviderInterface {
   /**
    * Retrival operations
    */
+  getVersion: () => Promise<string>,
+  getConnectionType: () => Promise<'local' | 'ssh' | 'insecure'>,
   getTableReferences: (table: string) => Promise<Array<string>>,
-  getTableValues: (db: string, table: string) => Promise<Array<Object>>,
-  getTableKeys: (database: string, table: string) => Promise<Array<{
+  getTableValues: (table: string) => Promise<Array<Object>>,
+  getTableKeys: (table: string) => Promise<Array<{
     constraintName: string,
     columnName: string,
     referencedTable: string,
@@ -112,7 +114,7 @@ export interface ProviderInterface {
   /**
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
    */
-  query: (queryText: string) => Promise<queryResponseType>,
+  query: (queryText: string) => Promise<{ execute: () => Promise<any>, cancel: () => void }>,
   executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
   driverExecuteQuery: (queryArgs: queryArgsType) => Promise<{data: Array<Object>}>,
 
@@ -135,14 +137,14 @@ export interface ProviderInterface {
     *        If returns a string currently, manually create a promise out of it
     */
   getQuerySelectTop: (table: string, limit: number) => (Promise<string> | string),
-  getTableCreateScript: (table: string, schema: string) => (Promise<string> | string),
-  getTableSelectScript: (table: string, schema: string) => (Promise<string> | string),
-  getTableInsertScript: (table: string, schema: string) => (Promise<string> | string),
-  getTableUpdateScript: (table: string, schema: string) => (Promise<string> | string),
-  getTableDeleteScript: (table: string, scheme: string) => (Promise<string> | string),
+  getTableCreateScript: (table: string, schema?: string) => (Promise<string> | string),
+  getTableSelectScript: (table: string, schema?: string) => (Promise<string> | string),
+  getTableInsertScript: (table: string, schema?: string) => (Promise<string> | string),
+  getTableUpdateScript: (table: string, schema?: string) => (Promise<string> | string),
+  getTableDeleteScript: (table: string, scheme?: string) => (Promise<string> | string),
   getViewCreateScript: (view: string) => (Promise<string> | string),
-  getRoutineCreateScript: (routine: string) => (Promise<string> | string),
-  truncateAllTables: (database: string) => (Promise<string> | string)
+  getRoutineCreateScript: (routine: string, schema: string) => (Promise<string> | string),
+  truncateAllTables: () => (Promise<string> | string)
 }
 
 export type FactoryType = Promise<ProviderInterface>;
