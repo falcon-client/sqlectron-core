@@ -119,7 +119,14 @@ describe('db', () => {
         describe('.listDatabases', () => {
           it('should list all databases', async () => {
             const databases = await dbConn.listDatabases();
-            expect(databases).toMatchSnapshot();
+
+            if (dbClient === 'sqlite') {
+              // The database of sqlite is the absolute path to the database file
+              // This differs between machines. Instead, we just test the filename substring
+              expect(databases[0]).toContain('sqlectron.db');
+            } else {
+              expect(databases).toMatchSnapshot();
+            }
           });
         });
 
