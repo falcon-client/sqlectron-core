@@ -35,6 +35,9 @@
     "type": "git",
     "url": "https://github.com/falcon-client/falcon-core"
   },
+  "files":[
+    "lib"
+  ],
   "engines": {
     "node": ">=6",
     "npm": ">=3"
