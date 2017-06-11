@@ -161,7 +161,40 @@ export interface ProviderInterface {
   getTableDeleteScript: (table: string, scheme?: string) => (Promise<string> | string),
   getViewCreateScript: (view: string) => (Promise<string> | string),
   getRoutineCreateScript: (routine: string, schema: string) => (Promise<string> | string),
-  truncateAllTables: () => (Promise<string> | string)
+  truncateAllTables: () => (Promise<string> | string),
+
+  /**
+   * All the supported features of each database
+   */
+  getSupportedFeatures: {
+    views: bool,
+    procedures: bool,
+    tables: bool,
+    functions: bool,
+
+    /**
+     * A list of generic types that all databases will either have or not have. The actual
+     * types of each database might have a different name. For example, sqlite supports
+     * "BIGINT" types so here, we would mark integer as true
+     */
+    types: {
+      integer: bool,
+      float: bool,
+      string: bool,
+      varchar: bool,
+      boolean: bool,
+      enum: bool,
+      binary: bool,
+    }
+  },
+
+  /**
+   * Map a type to its actual name:
+   * Ex: 'integer': 'BIGINT'
+   */
+  genericTypeMappings: {
+    [string: 'integer' | 'float' | 'string' | 'varchar' | 'boolean' | 'enum' | 'binary']: string
+  }
 }
 
 export type FactoryType = Promise<ProviderInterface>;

@@ -6,8 +6,8 @@ node_js:
 cache: yarn
 
 before_install:
-  - yarn -V
   - node -v
+  - yarn -V
   # postgres
   - createdb sqlectron
   - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
@@ -24,3 +24,6 @@ script:
 
 after_script:
   - npm run coveralls
+
+notifications:
+  email: false
