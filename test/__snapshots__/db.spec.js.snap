@@ -25,6 +25,11 @@ Array [
 ]
 `;
 
+exports[`db sqlite given is already connected Export CSV should export single table 1`] = `
+"\\"id\\",\\"username\\",\\"email\\",\\"password\\",\\"role_id\\",\\"createdat\\"
+1,\\"maxcnunes\\",\\"maxcnunes@gmail.com\\",\\"123456\\",1,\\"2016-10-25\\""
+`;
+
 exports[`db sqlite given is already connected Export CSV should fail on exporting multiple tables 1`] = `"Exporting multiple tables to csv is currently not supported"`;
 
 exports[`db sqlite given is already connected Export CSV should get csv string 1`] = `

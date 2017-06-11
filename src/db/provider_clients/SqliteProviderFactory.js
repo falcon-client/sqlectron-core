@@ -1,10 +1,6 @@
 // @flow
 import sqlite3 from 'sqlite3';
-import { writeFile } from 'fs';
-import { promisify } from 'util';
-import json2csv from 'json2csv';
 import { identify } from 'sql-query-identifier';
-import SqliteJsonExport from 'sqlite-json-export';
 import createLogger from '../../Logger';
 import BaseProvider from './BaseProvider';
 import type {
@@ -30,8 +26,6 @@ type connectionType = {
   run: (queryText: string, args?: Array<string>, cb?: () => void) => void,
   all: (queryText: string, args?: Array<string>, cb?: () => void) => void,
 };
-
-const writeFilePromise = promisify(writeFile);
 
 class SqliteProvider extends BaseProvider implements ProviderInterface {
   connection: connectionType
@@ -412,68 +406,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     if (hasUnsupported) {
       throw new Error(`Unsupported properties passed: ${JSON.stringify(exportOptions)}`);
     }
-  }
-
-  async getJsonString(exportOptions: exportOptionsType) {
-    const exporter = new SqliteJsonExport(this.connection.dbConfig.database);
-    this.checkUnsupported(exportOptions);
-
-    if (
-      'tables' in exportOptions &&
-      'table' in exportOptions
-    ) {
-      throw new Error('You cannot give both "tables" and "table". Choose one');
-    }
-
-    const getSingleTable = (tableName: string): Promise<string> =>
-      new Promise((resolve, reject) => {
-        const options = {
-          table: tableName
-        };
-        exporter.json(options, (err: Error, json: string) => {
-          if (err) return reject(err);
-          return resolve(json);
-        });
-      });
-
-    // Multiple tables
-    if ('tables' in exportOptions) {
-      const results = await Promise.all(
-          exportOptions.tables.map(tableName => getSingleTable(tableName))
-        )
-        .then(tableJsonStrings => tableJsonStrings.join(','));
-
-      return ['[', ...results, ']'].join('');
-    }
-
-    // Single table
-    return getSingleTable(exportOptions.table);
-  }
-
-  async getCsvString(exportOptions: exportOptionsType) {
-    if ('tables' in exportOptions) {
-      throw new Error('Exporting multiple tables to csv is currently not supported');
-    }
-
-    const jsonString = await this.getJsonString(exportOptions);
-    const parsedJson = JSON.parse(jsonString);
-
-    return json2csv({
-      data: parsedJson,
-      fields: Object.keys(parsedJson[0])
-    });
-  }
-
-  async exportJson(exportOptions: exportOptionsType, filename: string) {
-    const jsonString = await this.getJsonString(exportOptions);
-    await writeFilePromise(filename, jsonString);
-    return jsonString;
-  }
-
-  async exportCsv(exportOptions: exportOptionsType, filename: string) {
-    const csvString = await this.getCsvString(exportOptions);
-    await writeFilePromise(filename, csvString);
-    return csvString;
   }
 }
 
