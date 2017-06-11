@@ -412,9 +412,9 @@ describe('db', () => {
 
             it('should export json file to filepath', async () => {
               const filepath = path.join(__dirname, 'fixtures', '.tmp.export.json');
-              await dbConn.exportJson({
+              await dbConn.exportJson(filepath, {
                 tables: ['users', 'roles']
-              }, filepath);
+              });
               const jsonExportedFile = (await readFileAsync(filepath)).toString();
               expect(jsonExportedFile).toMatchSnapshot();
             });
@@ -430,9 +430,9 @@ describe('db', () => {
 
             it('should fail on exporting multiple tables', async () => {
               const filepath = path.join(__dirname, 'fixtures', '.tmp.export.csv');
-              await dbConn.exportCsv({
+              await dbConn.exportCsv(filepath, {
                 tables: ['users', 'roles']
-              }, filepath)
+              })
               .catch(res => {
                 expect(() => { throw res; }).toThrowErrorMatchingSnapshot();
               });
@@ -440,9 +440,9 @@ describe('db', () => {
 
             it('should export single table', async () => {
               const filepath = path.join(__dirname, 'fixtures', '.tmp.export.csv');
-              await dbConn.exportCsv({
+              await dbConn.exportCsv(filepath, {
                 table: 'users'
-              }, filepath);
+              });
               const csvExportedFile = (await readFileAsync(filepath)).toString();
               expect(csvExportedFile).toMatchSnapshot();
             });

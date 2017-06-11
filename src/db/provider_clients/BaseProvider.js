@@ -301,13 +301,13 @@ export default class BaseProvider {
     });
   }
 
-  async exportJson(exportOptions: exportOptionsType, filename: string) {
+  async exportJson(filename: string, exportOptions: exportOptionsType) {
     const jsonString = await this.getJsonString(exportOptions);
     await writeFilePromise(filename, jsonString);
     return jsonString;
   }
 
-  async exportCsv(exportOptions: exportOptionsType, filename: string) {
+  async exportCsv(filename: string, exportOptions: exportOptionsType) {
     const csvString = await this.getCsvString(exportOptions);
     await writeFilePromise(filename, csvString);
     return csvString;

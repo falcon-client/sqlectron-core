@@ -48,11 +48,18 @@ async function main() {
     const serverSession = db.createServer(serverInfo);
     const connection = await serverSession.createConnection('demo.sqlite');
     await connection.connect(serverInfo);
+
+    // Connection APIs
     console.log(await connection.getTableSelectScript('albums'));
     console.log(await connection.listTables());
     console.log(await connection.listDatabases());
     console.log(await connection.getTableKeys('albums'));
     console.log(await connection.getTableValues('albums'));
+
+    // Export API's
+    console.log(await connection.exportJson('/.tmp.json', {
+      table: 'users'
+    }));
 }
 
 main();

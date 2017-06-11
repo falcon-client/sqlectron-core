@@ -132,8 +132,8 @@ export interface ProviderInterface {
    */
   getJsonString: (exportOptions: exportOptionsType) => Promise<string>,
   getCsvString: (exportOptions: exportOptionsType) => Promise<string>,
-  exportJson: (exportOptions: exportOptionsType, absolutePath: string) => Promise<string>,
-  exportCsv: (exportOptions: exportOptionsType, absolutePath: string) => Promise<string>,
+  exportJson: (absolutePath: string, exportOptions: exportOptionsType) => Promise<string>,
+  exportCsv: (absolutePath: string, exportOptions: exportOptionsType) => Promise<string>,
 
   /**
    * Run a query inside of an existing connection pool

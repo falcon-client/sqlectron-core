@@ -6,7 +6,7 @@ node_js:
 cache: yarn
 
 before_install:
-  - npm -v
+  - yarn -V
   - node -v
   # postgres
   - createdb sqlectron
