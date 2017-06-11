@@ -3,6 +3,8 @@ language: node_js
 node_js:
   - 8
 
+cache: yarn
+
 before_install:
   - npm -v
   - node -v
@@ -16,10 +18,6 @@ before_install:
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
-  - npm cache clean
-
-install:
-  - npm install
 
 script:
   - npm run coverage
