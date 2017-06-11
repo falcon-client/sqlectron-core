@@ -42,9 +42,14 @@
     "node": ">=6",
     "npm": ">=3"
   },
+  "devEngines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
   "dependencies": {
     "cassandra-driver": "^3.2.2",
     "debug": "^2.6.8",
+    "json2csv": "^3.7.3",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0",
     "pg": "git+https://github.com/maxcnunes/node-postgres.git#multiple-statements-v6.1.0",
@@ -54,7 +59,8 @@
     "sqlite3": "^3.1.8",
     "ssh2": "^0.5.5",
     "uuid": "^3.0.1",
-    "valida": "^2.4.0"
+    "valida": "^2.4.0",
+    "validator": "^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

@@ -1,5 +1,8 @@
 // @flow
 import sqlite3 from 'sqlite3';
+import { writeFile } from 'fs';
+import { promisify } from 'util';
+import json2csv from 'json2csv';
 import { identify } from 'sql-query-identifier';
 import SqliteJsonExport from 'sqlite-json-export';
 import createLogger from '../../Logger';
@@ -27,6 +30,8 @@ type connectionType = {
   run: (queryText: string, args?: Array<string>, cb?: () => void) => void,
   all: (queryText: string, args?: Array<string>, cb?: () => void) => void,
 };
+
+const writeFilePromise = promisify(writeFile);
 
 class SqliteProvider extends BaseProvider implements ProviderInterface {
   connection: connectionType
@@ -219,8 +224,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return result.data.map(row => row.file || ':memory:');
   }
 
+  // @TODO
   getTableReferences() {
-    return Promise.resolve([]); // TODO: not implemented yet
+    return Promise.resolve([]);
   }
 
   async getTableCreateScript(table: string) {
@@ -444,14 +450,31 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return getSingleTable(exportOptions.table);
   }
 
-  getCsvBuffer() {}
+  async getCsvString(exportOptions: exportOptionsType) {
+    if ('tables' in exportOptions) {
+      throw new Error('Exporting multiple tables to csv is currently not supported');
+    }
 
-  exportJson(exportOptions, filename) {
-    const exporter = new SqliteJsonExport(filename);
+    const jsonString = await this.getJsonString(exportOptions);
+    const parsedJson = JSON.parse(jsonString);
+
+    return json2csv({
+      data: parsedJson,
+      fields: Object.keys(parsedJson[0])
+    });
   }
 
-  // @TODO
-  // exportCsv(exportOptions, filename) {}
+  async exportJson(exportOptions: exportOptionsType, filename: string) {
+    const jsonString = await this.getJsonString(exportOptions);
+    await writeFilePromise(filename, jsonString);
+    return jsonString;
+  }
+
+  async exportCsv(exportOptions: exportOptionsType, filename: string) {
+    const csvString = await this.getCsvString(exportOptions);
+    await writeFilePromise(filename, csvString);
+    return csvString;
+  }
 }
 
 function configDatabase(server, database) {
