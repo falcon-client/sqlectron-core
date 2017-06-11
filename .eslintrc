@@ -1,6 +1,7 @@
 {
   "extends": "bliss",
   "rules": {
+    "class-methods-use-this": "off",
     "fp/no-arguments": "off",
     "fp/no-class": "off",
     "fp/no-delete": "off",
@@ -21,6 +22,8 @@
     "no-var": "off",
     "no-let": "off",
     "no-plusplus": "off",
-    "no-console": "off"
+    "no-use-before-define": "off",
+    "no-console": "off",
+    "promise/avoid-new": "off"
   }
 }

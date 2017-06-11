@@ -1,22 +1,25 @@
 {
   "name": "falcon-core",
-  "version": "0.0.1-1",
+  "version": "0.0.1-6",
   "description": "The cross-database ORM that powers falcon",
   "main": "lib/index.js",
   "author": "The Falcon Team",
   "scripts": {
-    "build": "cross-env NODE_ENV=production babel -d lib/ src/ --source-maps",
+    "build": "cross-env NODE_ENV=production rm -rf lib && babel -d lib/ src/ --source-maps",
     "flow": "flow",
     "flow-typed": "flow-typed install",
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
     "prepublish": "npm run build",
     "test": "cross-env NODE_ENV=test jest",
-    "test:mysql": "cross-env NODE_ENV=test DB_CLIENTS=mysql npm run test",
-    "test:sqlite": "cross-env NODE_ENV=test DB_CLIENTS=sqlite npm run test",
-    "test:sqlserver": "cross-env NODE_ENV=test DB_CLIENTS=sqlserver npm run test",
-    "test:postgresql": "cross-env NODE_ENV=test DB_CLIENTS=postgresql npm run test",
-    "test:cassandra": "cross-env NODE_ENV=test DB_CLIENTS=cassandra npm run test",
-    "watch": "cross-env NODE_ENV=development babel --watch -d lib/ src/ --source-maps"
+    "coverage": "npm run test:sqlite -- --coverage",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "test:mysql": "cross-env NODE_ENV=test DB_CLIENTS=mysql jest test/db.spec.js",
+    "test:sqlite": "cross-env NODE_ENV=test DB_CLIENTS=sqlite jest test/db.spec.js",
+    "test:sqlserver": "cross-env NODE_ENV=test DB_CLIENTS=sqlserver jest test/db.spec.js",
+    "test:postgresql": "cross-env NODE_ENV=test DB_CLIENTS=postgresql jest test/db.spec.js",
+    "test:cassandra": "cross-env NODE_ENV=test DB_CLIENTS=cassandra jest test/db.spec.js",
+    "test-all": "npm run lint && npm run flow && npm run test && npm run build",
+    "watch": "cross-env NODE_ENV=development babel --out-dir lib src --source-maps --watch"
   },
   "keywords": [
     "falcon",
@@ -27,26 +30,37 @@
     "sqlite",
     "sqlite3"
   ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/falcon-client/falcon-core"
   },
+  "files": [
+    "lib"
+  ],
   "engines": {
     "node": ">=6",
     "npm": ">=3"
   },
+  "devEngines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
   "dependencies": {
-    "cassandra-driver": "^3.2.1",
+    "cassandra-driver": "^3.2.2",
     "debug": "^2.6.8",
+    "json2csv": "^3.7.3",
     "mssql": "^4.0.4",
     "mysql": "^2.13.0",
     "pg": "git+https://github.com/maxcnunes/node-postgres.git#multiple-statements-v6.1.0",
     "portfinder": "^1.0.13",
     "sql-query-identifier": "^1.1.0",
+    "sqlite-json-export": "0.0.1-0",
     "sqlite3": "^3.1.8",
-    "ssh2": "^0.5.4",
+    "ssh2": "^0.5.5",
     "uuid": "^3.0.1",
-    "valida": "^2.4.0"
+    "valida": "^2.4.0",
+    "validator": "^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -59,12 +73,14 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
+    "coveralls": "^2.13.1",
     "cross-env": "^5.0.0",
     "dotenv": "^4.0.0",
     "eslint": "^3.19.0",
-    "eslint-config-bliss": "^1.0.7",
+    "eslint-config-bliss": "^1.0.8",
     "eslint-formatter-pretty": "^1.1.0",
     "flow-bin": "^0.47.0",
     "flow-runtime": "^0.12.0",
@@ -73,6 +89,9 @@
     "sinon": "^2.3.2"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/db/provider_clients/Sqlite*.js"
+    ]
   }
 }

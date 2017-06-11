@@ -1,15 +1,18 @@
+// @flow
 import uuid from 'uuid';
-import { validate, validateUniqueId } from './validators/server';
-import * as config from './config';
+import { validate, validateUniqueId } from './validators/Server';
+import * as config from './Config';
 
+type serverType = {
+  id: string
+};
 
 export async function getAll() {
   const result = await config.get();
   return result.servers;
 }
 
-
-export async function add(server) {
+export async function add(server: serverType) {
   const srv = { ...server };
   await validate(srv);
 
@@ -24,14 +27,13 @@ export async function add(server) {
   return srv;
 }
 
-
-export async function update(server) {
+export async function update(server: serverType) {
   await validate(server);
 
   const data = await config.get();
   validateUniqueId(data.servers, server.id);
 
-  const index = data.servers.findIndex((srv) => srv.id === server.id);
+  const index = await findServerIndexById(server.id);
   data.servers = [
     ...data.servers.slice(0, index),
     server,
@@ -43,22 +45,31 @@ export async function update(server) {
   return server;
 }
 
-
-export function addOrUpdate(server) {
+export function addOrUpdate(server: serverType) {
   const hasId = !!(server.id && String(server.id).length);
   // TODO: Add validation to check if the current id is a valid uuid
   return hasId ? update(server) : add(server);
 }
 
+async function findServerIndexById(id: string) {
+  const data = await config.get();
+  const index = data.servers.findIndex(srv => srv.id === id);
 
-export async function removeById(id) {
+  if (index < 0) {
+    throw new Error(`Server with id of "${id}" does not exist`);
+  }
+
+  return index;
+}
+
+export async function removeById(id: string) {
+  const index = await findServerIndexById(id);
   const data = await config.get();
 
-  const index = data.servers.findIndex((srv) => srv.id === id);
   data.servers = [
     ...data.servers.slice(0, index),
     ...data.servers.slice(index + 1)
   ];
 
-  await config.save(data);
+  return config.save(data);
 }

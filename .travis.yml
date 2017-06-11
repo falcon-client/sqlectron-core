@@ -1,11 +1,13 @@
 language: node_js
 
 node_js:
-  - 7
+  - 8
+
+cache: yarn
 
 before_install:
-  - npm -v
   - node -v
+  - yarn -V
   # postgres
   - createdb sqlectron
   - psql -d sqlectron -a -f test/databases/postgresql/schema/schema.sql
@@ -16,10 +18,12 @@ before_install:
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "CREATE DATABASE sqlectron" -d "master"
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -i test/databases/sqlserver/schema/schema.sql -d "sqlectron"
   # - sqlcmd -S localhost,1433 -U sa -P Password12! -Q "select table_name from information_schema.tables" -d "sqlectron"
-  - npm cache clean
-
-install:
-  - npm install
 
 script:
-  - npm test
+  - npm run coverage
+
+after_script:
+  - npm run coveralls
+
+notifications:
+  email: false

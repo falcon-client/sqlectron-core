@@ -1,8 +1,16 @@
+// @flow
 import Valida from 'valida';
 import { CLIENTS } from '../db';
 
+type validatorType =
+  | true
+  | void
+  | {
+      validator: string,
+      msg: string
+    };
 
-function serverAddressValidator(ctx) {
+function serverAddressValidator(ctx): validatorType {
   const { host, port, socketPath } = ctx.obj;
   if ((!host && !port && !socketPath) || ((host || port) && socketPath)) {
     return {
@@ -11,7 +19,9 @@ function serverAddressValidator(ctx) {
     };
   }
 
-  if (socketPath) { return undefined; }
+  if (socketPath) {
+    return undefined;
+  }
 
   if ((host && !port) || (!host && port)) {
     return {
@@ -19,30 +29,37 @@ function serverAddressValidator(ctx) {
       msg: 'Host and port are required fields.'
     };
   }
+
+  return true;
 }
 
-
-function clientValidator(ctx, options, value) {
-  if (typeof value === 'undefined' || value === null) { return undefined; }
-  if (!~CLIENTS.some((dbClient) => dbClient.key === ctx.obj.client)) {
+function clientValidator(ctx, options, value): validatorType {
+  if (typeof value === 'undefined' || value === null) {
+    return undefined;
+  }
+  if (!CLIENTS.some(dbClient => dbClient.key === ctx.obj.client)) {
     return {
       validator: 'clientValidator',
       msg: 'Invalid client type'
     };
   }
+
+  return true;
 }
 
-
-function boolValidator(ctx, options, value) {
-  if (typeof value === 'undefined' || value === null) { return undefined; }
+function boolValidator(ctx, options, value): validatorType {
+  if (typeof value === 'undefined' || value === null) {
+    return undefined;
+  }
   if (value !== true && value !== false) {
     return {
       validator: 'boolValidator',
       msg: 'Invalid boolean type.'
     };
   }
-}
 
+  return true;
+}
 
 const SSH_SCHEMA = {
   host: [
@@ -66,11 +83,8 @@ const SSH_SCHEMA = {
     { sanitizer: Valida.Sanitizer.trim },
     { validator: Valida.Validator.len, min: 1 }
   ],
-  privateKeyWithPassphrase: [
-    { validator: boolValidator }
-  ]
+  privateKeyWithPassphrase: [{ validator: boolValidator }]
 };
-
 
 const SERVER_SCHEMA = {
   name: [
@@ -83,9 +97,7 @@ const SERVER_SCHEMA = {
     { validator: Valida.Validator.required },
     { validator: clientValidator }
   ],
-  ssl: [
-    { validator: Valida.Validator.required }
-  ],
+  ssl: [{ validator: Valida.Validator.required }],
   host: [
     { sanitizer: Valida.Sanitizer.trim },
     { validator: Valida.Validator.len, min: 1 },
@@ -113,21 +125,18 @@ const SERVER_SCHEMA = {
     { sanitizer: Valida.Sanitizer.trim },
     { validator: Valida.Validator.len, min: 1 }
   ],
-  ssh: [
-    { validator: Valida.Validator.schema, schema: SSH_SCHEMA }
-  ]
+  ssh: [{ validator: Valida.Validator.schema, schema: SSH_SCHEMA }]
 };
 
-
 /**
- * validations applied on creating/updating a server
+ * Validations applied on creating/updating a server
  */
-export async function validate(server) {
+export async function validate(server: Object) {
   const serverSchema = { ...SERVER_SCHEMA };
 
-  const clientConfig = CLIENTS.find((dbClient) => dbClient.key === server.client);
+  const clientConfig = CLIENTS.find(dbClient => dbClient.key === server.client);
   if (clientConfig && clientConfig.disabledFeatures) {
-    clientConfig.disabledFeatures.forEach((item) => {
+    clientConfig.disabledFeatures.forEach(item => {
       const [region, field] = item.split(':');
       if (region === 'server') {
         delete serverSchema[field];
@@ -136,16 +145,23 @@ export async function validate(server) {
   }
 
   const validated = await Valida.process(server, serverSchema);
-  if (!validated.isValid()) { throw validated.invalidError(); }
+  if (!validated.isValid()) {
+    throw new Error(JSON.stringify(validated.errors()));
+  }
 }
 
+export function validateUniqueId(servers: Array<Object>, serverId: string) {
+  if (!serverId) {
+    return;
+  }
 
-export function validateUniqueId(servers, serverId) {
-  if (!serverId) { return; }
-
-  const server = servers.find((srv) => srv.id === serverId);
-  if (!server) { return; }
-  if (serverId && server.id === serverId) { return; }
+  const server = servers.find(srv => srv.id === serverId);
+  if (!server) {
+    return;
+  }
+  if (serverId && server.id === serverId) {
+    return;
+  }
 
   throw new Error('Already exist another server with same id');
 }

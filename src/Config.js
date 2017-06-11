@@ -1,17 +1,22 @@
 // @flow
 import uuid from 'uuid';
-import * as utils from './utils';
+import * as utils from './Utils';
 
 const EMPTY_CONFIG = { servers: [] };
 
 function sanitizeServers(data) {
-  return data.servers.map((server) => {
+  return data.servers.map(server => {
     const srv = { ...server };
+
     // ensure all server has an unique id
-    if (!srv.id) { srv.id = uuid.v4(); }
+    if (!('id' in srv)) {
+      srv.id = uuid.v4();
+    }
 
     // ensure all servers has the new fileld SSL
-    if (srv.ssl === undefined) { srv.ssl = false; }
+    if (srv.ssl === undefined) {
+      srv.ssl = false;
+    }
 
     return srv;
   });
@@ -33,7 +38,7 @@ export async function prepare() {
 
   await utils.writeJSONFile(filename, result);
 
-  // TODO: Validate whole configuration file
+  // @TODO: Validate whole configuration file
   // if (!configValidate(result)) {
   //   throw new Error('Invalid ~/.sqlectron.json file format');
   // }
@@ -73,8 +78,7 @@ export function getSync() {
   return utils.readJSONFileSync(filename);
 }
 
-
-export function save(data: string) {
+export function save(data: Object) {
   const filename = utils.getConfigPath();
   return utils.writeJSONFile(filename, data);
 }

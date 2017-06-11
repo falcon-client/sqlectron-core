@@ -1,10 +1,9 @@
 // @flow
-import mysql from './mysql';
-import postgresql from './postgresql';
-import sqlserver from './sqlserver';
-import sqlite from './sqlite';
-import cassandra from './cassandra';
-
+import cassandra from './CassandraProviderFactory';
+import sqlite from './SqliteProviderFactory';
+import mysql from './MysqlProviderFactory';
+import postgresql from './PostgresqlProviderFactory';
+// import sqlserver from './SqlserverProviderFactory';
 
 /**
  * List of supported database clients
@@ -14,19 +13,14 @@ export const CLIENTS = [
     key: 'mysql',
     name: 'MySQL',
     defaultPort: 3306,
-    disabledFeatures: [
-      'server:schema',
-      'server:domain'
-    ]
+    disabledFeatures: ['server:schema', 'server:domain']
   },
   {
     key: 'postgresql',
     name: 'PostgreSQL',
     defaultDatabase: 'postgres',
     defaultPort: 5432,
-    disabledFeatures: [
-      'server:domain'
-    ]
+    disabledFeatures: ['server:domain']
   },
   {
     key: 'sqlserver',
@@ -68,11 +62,10 @@ export const CLIENTS = [
   }
 ];
 
-
 export default {
-  mysql,
+  // sqlserver,
   postgresql,
-  sqlserver,
+  mysql,
   sqlite,
   cassandra
 };
