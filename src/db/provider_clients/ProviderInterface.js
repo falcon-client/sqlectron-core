@@ -16,6 +16,14 @@ export type serverType = {
   }
 };
 
+export type exportOptionsType = {
+  views?: Array<string>,
+  procedures?: Array<string>,
+  functions?: Array<string>,
+  rows?: Array<string>,
+} &
+({ tables: Array<string> } | { table: string });
+
 export type databaseType = {
   database: string,
   connection: {
@@ -94,6 +102,7 @@ export interface ProviderInterface {
   getConnectionType: () => Promise<'local' | 'ssh' | 'insecure'>,
   getTableReferences: (table: string) => Promise<Array<string>>,
   getTableValues: (table: string) => Promise<Array<Object>>,
+  getTableNames: () => Promise<Array<string>>,
   getTableKeys: (table: string) => Promise<Array<{
     constraintName: string,
     columnName: string,
@@ -117,6 +126,14 @@ export interface ProviderInterface {
   query: (queryText: string) => Promise<{ execute: () => Promise<any>, cancel: () => void }>,
   executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
   driverExecuteQuery: (queryArgs: queryArgsType) => Promise<{data: Array<Object>}>,
+
+  /**
+   * Create a JSON or CSV buffer to export the database to
+   */
+  getJsonString: (exportOptions: exportOptionsType) => Promise<string>,
+  getCsvString: (exportOptions: exportOptionsType) => Promise<string>,
+  exportJson: (exportOptions: exportOptionsType, absolutePath: string) => Promise<string>,
+  exportCsv: (exportOptions: exportOptionsType, absolutePath: string) => Promise<string>,
 
   /**
    * Run a query inside of an existing connection pool

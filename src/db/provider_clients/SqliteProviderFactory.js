@@ -1,12 +1,14 @@
 // @flow
 import sqlite3 from 'sqlite3';
 import { identify } from 'sql-query-identifier';
+import SqliteJsonExport from 'sqlite-json-export';
 import createLogger from '../../Logger';
 import BaseProvider from './BaseProvider';
 import type {
   ProviderInterface,
   FactoryType,
   serverType,
+  exportOptionsType,
   queryType,
   queryResponseType,
   databaseType
@@ -124,6 +126,16 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       FROM '${table}';
     `;
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  async getTableNames() {
+    const sql = `
+      SELECT name
+      FROM sqlite_master
+      WHERE type='table'
+    `;
+    return this.driverExecuteQuery({ query: sql })
+      .then(res => res.data.map(table => table.name));
   }
 
   async listTables() {
@@ -343,6 +355,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   runWithConnection(run: () => Promise<Array<Object>>) {
     return new Promise((resolve, reject) => {
+      sqlite3.verbose();
+
       const db = new sqlite3.Database(this.connection.dbConfig.database, async err => {
         if (err) {
           return reject(err);
@@ -373,6 +387,71 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         return 'all';
     }
   }
+
+  /**
+   * @private
+   */
+  checkUnsupported(exportOptions: exportOptionsType) {
+    const unsupportedOptions = [
+      'views',
+      'procedures',
+      'functions',
+      'rows'
+    ];
+    const hasUnsupported =
+      Object
+        .keys(exportOptions)
+        .some(option => unsupportedOptions.includes(option));
+
+    if (hasUnsupported) {
+      throw new Error(`Unsupported properties passed: ${JSON.stringify(exportOptions)}`);
+    }
+  }
+
+  async getJsonString(exportOptions: exportOptionsType) {
+    const exporter = new SqliteJsonExport(this.connection.dbConfig.database);
+    this.checkUnsupported(exportOptions);
+
+    if (
+      'tables' in exportOptions &&
+      'table' in exportOptions
+    ) {
+      throw new Error('You cannot give both "tables" and "table". Choose one');
+    }
+
+    const getSingleTable = (tableName: string): Promise<string> =>
+      new Promise((resolve, reject) => {
+        const options = {
+          table: tableName
+        };
+        exporter.json(options, (err: Error, json: string) => {
+          if (err) return reject(err);
+          return resolve(json);
+        });
+      });
+
+    // Multiple tables
+    if ('tables' in exportOptions) {
+      const results = await Promise.all(
+          exportOptions.tables.map(tableName => getSingleTable(tableName))
+        )
+        .then(tableJsonStrings => tableJsonStrings.join(','));
+
+      return ['[', ...results, ']'].join('');
+    }
+
+    // Single table
+    return getSingleTable(exportOptions.table);
+  }
+
+  getCsvBuffer() {}
+
+  exportJson(exportOptions, filename) {
+    const exporter = new SqliteJsonExport(filename);
+  }
+
+  // @TODO
+  // exportCsv(exportOptions, filename) {}
 }
 
 function configDatabase(server, database) {

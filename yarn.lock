@@ -768,9 +768,9 @@ babel-polyfill@^6.23.0, babel-polyfill@^6.6.1:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
 
-babel-preset-env@^1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/babel-preset-env/-/babel-preset-env-1.5.1.tgz#d2eca6af179edf27cdc305a84820f601b456dd0b"
+babel-preset-env@^1.5.2:
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/babel-preset-env/-/babel-preset-env-1.5.2.tgz#cd4ae90a6e94b709f97374b33e5f8b983556adef"
   dependencies:
     babel-plugin-check-es2015-constants "^6.22.0"
     babel-plugin-syntax-trailing-function-commas "^6.22.0"
@@ -1045,9 +1045,9 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-cassandra-driver@^3.2.1:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/cassandra-driver/-/cassandra-driver-3.2.1.tgz#c9764d9cb95a47a4a34569fcc11fe773363b9807"
+cassandra-driver@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/cassandra-driver/-/cassandra-driver-3.2.2.tgz#bcbae15169141df08b4e32d477fa58b99eac5040"
   dependencies:
     long "^2.2.0"
 
@@ -2592,14 +2592,14 @@ js-tokens@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.1.tgz#08e9f132484a2c45a30907e9dc4d5567b7f114d7"
 
-js-yaml@3.6.1:
+js-yaml@3.6.1, js-yaml@^3.5.1:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.6.1.tgz#6e5fe67d8b205ce4d22fad05b7781e8dadcc4b30"
   dependencies:
     argparse "^1.0.7"
     esprima "^2.6.0"
 
-js-yaml@^3.5.1, js-yaml@^3.7.0:
+js-yaml@^3.7.0:
   version "3.8.4"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.8.4.tgz#520b4564f86573ba96662af85a8cafa7b4b5a6f6"
   dependencies:
@@ -3475,7 +3475,7 @@ req-all@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/req-all/-/req-all-0.1.0.tgz#130051e2ace58a02eacbfc9d448577a736a9273a"
 
-request@2.79.0:
+request@2.79.0, request@^2.69.0:
   version "2.79.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.79.0.tgz#4dfe5bf6be8b8cdc37fcf93e04b65577722710de"
   dependencies:
@@ -3500,7 +3500,7 @@ request@2.79.0:
     tunnel-agent "~0.4.1"
     uuid "^3.0.0"
 
-request@^2.69.0, request@^2.79.0, request@^2.81.0:
+request@^2.79.0, request@^2.81.0:
   version "2.81.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.81.0.tgz#c6928946a0e06c5f8d6f8a9333469ffda46298a0"
   dependencies:
@@ -3749,6 +3749,13 @@ sprintf@0.1.5:
 sql-query-identifier@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/sql-query-identifier/-/sql-query-identifier-1.1.0.tgz#b5ff7904eb2d179ad71c92c176a827b86749add9"
+
+sqlite-json-export@0.0.1-0:
+  version "0.0.1-0"
+  resolved "https://registry.yarnpkg.com/sqlite-json-export/-/sqlite-json-export-0.0.1-0.tgz#b90a4fbd9737efaa26222ff7cffbb253846eaa45"
+  dependencies:
+    commander "^2.9.0"
+    mkdirp "^0.5.1"
 
 sqlite3@^3.1.8:
   version "3.1.8"

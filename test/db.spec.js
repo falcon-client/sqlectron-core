@@ -227,6 +227,13 @@ describe('db', () => {
           });
         });
 
+        describe('.getTablenames', () => {
+          it('should list all tables names', async () => {
+            const tableNames = await dbConn.getTableNames();
+            expect(tableNames).toMatchSnapshot();
+          });
+        });
+
         describe('.getTableCreateScript', () => {
           it('should return table create script', async () => {
             const [createScript] = await dbConn.getTableCreateScript('users');
@@ -333,6 +340,35 @@ describe('db', () => {
             });
           });
         }
+
+        describe('Export', () => {
+          it('shoud get database json string', async () => {
+            const sqliteDatabaseString = await dbConn.getJsonString({
+              table: 'users'
+            });
+            expect(sqliteDatabaseString).toMatchSnapshot();
+            expect(JSON.parse(sqliteDatabaseString)).toMatchSnapshot();
+          });
+
+          it('shoud get selected tables json string', async () => {
+            const sqliteDatabaseString = await dbConn.getJsonString({
+              tables: ['users', 'roles']
+            });
+            expect(sqliteDatabaseString).toMatchSnapshot();
+            expect(JSON.parse(sqliteDatabaseString)).toMatchSnapshot();
+          });
+
+          it('shoud fail on unsupported option', async () => {
+            // For the time being, our sqlite backend doesn't support views
+            await dbConn.getJsonString({
+              tables: ['users', 'roles'],
+              views: ['foo']
+            })
+            .catch(res => {
+              expect(() => { throw res; }).toThrowErrorMatchingSnapshot();
+            });
+          });
+        });
 
         describe('.executeQuery', () => {
           const includePrimaryKey = dbClient === 'cassandra';
