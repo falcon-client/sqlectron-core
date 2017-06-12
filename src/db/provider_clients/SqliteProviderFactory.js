@@ -163,11 +163,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async getTableColumnNames(table: string) {
     this.checkIsConnected();
-
-    if (!table) {
-      throw new Error('No table name provide');
-    }
-
     const columns = await this.listTableColumns(table);
     return columns.map(column => column.columnName);
   }
@@ -194,7 +189,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return data.map(row => row.name);
   }
 
-  async listTableIndexes(database: string, table: string) {
+  async listTableIndexes(table: string) {
     const sql = `PRAGMA INDEX_LIST('${table}')`;
     const { data } = await this.driverExecuteQuery({ query: sql });
 

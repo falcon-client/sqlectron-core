@@ -13,11 +13,11 @@
     "test": "cross-env NODE_ENV=test jest",
     "coverage": "npm run test:sqlite -- --coverage",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test:mysql": "cross-env NODE_ENV=test DB_CLIENTS=mysql jest test/db.spec.js",
-    "test:sqlite": "cross-env NODE_ENV=test DB_CLIENTS=sqlite jest test/db.spec.js",
-    "test:sqlserver": "cross-env NODE_ENV=test DB_CLIENTS=sqlserver jest test/db.spec.js",
-    "test:postgresql": "cross-env NODE_ENV=test DB_CLIENTS=postgresql jest test/db.spec.js",
-    "test:cassandra": "cross-env NODE_ENV=test DB_CLIENTS=cassandra jest test/db.spec.js",
+    "test:mysql": "cross-env NODE_ENV=test DB_CLIENTS=mysql jest test/Databases.spec.js",
+    "test:sqlite": "cross-env NODE_ENV=test DB_CLIENTS=sqlite jest test/Databases.spec.js",
+    "test:sqlserver": "cross-env NODE_ENV=test DB_CLIENTS=sqlserver jest test/Databases.spec.js",
+    "test:postgresql": "cross-env NODE_ENV=test DB_CLIENTS=postgresql jest test/Databases.spec.js",
+    "test:cassandra": "cross-env NODE_ENV=test DB_CLIENTS=cassandra jest test/Databases.spec.js",
     "test-all": "npm run lint && npm run flow && npm run test && npm run build",
     "watch": "cross-env NODE_ENV=development babel --out-dir lib src --source-maps --watch"
   },
@@ -58,13 +58,14 @@
     "sqlite-json-export": "0.0.1-0",
     "sqlite3": "^3.1.8",
     "ssh2": "^0.5.5",
+    "util.promisify": "^1.0.0",
     "uuid": "^3.0.1",
     "valida": "^2.4.0",
     "validator": "^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
+    "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-flow-runtime": "^0.11.1",
@@ -77,7 +78,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "coveralls": "^2.13.1",
-    "cross-env": "^5.0.0",
+    "cross-env": "^5.0.1",
     "dotenv": "^4.0.0",
     "eslint": "^3.19.0",
     "eslint-config-bliss": "^1.0.8",
@@ -85,13 +86,12 @@
     "flow-bin": "^0.47.0",
     "flow-runtime": "^0.12.0",
     "flow-typed": "^2.1.2",
-    "jest-cli": "^20.0.4",
-    "sinon": "^2.3.2"
+    "jest-cli": "^20.0.4"
   },
   "jest": {
     "testEnvironment": "node",
     "collectCoverageFrom": [
-      "src/db/provider_clients/Sqlite*.js"
+      "src/db/provider_clients/SqliteProviderFactory.js"
     ]
   }
 }

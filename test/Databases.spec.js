@@ -1,7 +1,6 @@
 // @flow
 import path from 'path';
-import { readFile } from 'fs';
-import { promisify } from 'util';
+import { readFileSync, unlinkSync } from 'fs';
 import { db } from '../src';
 import config from './databases/config';
 import setupSQLite from './databases/sqlite/setup';
@@ -9,8 +8,6 @@ import setupCassandra from './databases/cassandra/setup';
 
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-
-const readFileAsync = promisify(readFile);
 
 /**
  * List of supported DB clients.
@@ -37,8 +34,7 @@ const delay = (time: number) => new Promise((resolve) => setTimeout(resolve, tim
  */
 const dbsToTest = (process.env.DB_CLIENTS || '').split(',').filter((client) => !!client);
 
-
-describe('db', () => {
+describe('Database', () => {
   const dbClients = dbsToTest.length
     ? dbsToTest
     : SUPPORTED_DB_CLIENTS;
@@ -53,6 +49,19 @@ describe('db', () => {
     setupCassandra(config.cassandra);
   }
 
+  it('should fail on unsupported database', async () => {
+    const serverInfo = {
+      database: 'foo',
+      name: 'bar',
+      client: 'baz'
+    };
+
+    expect(() => {
+      db.createServer(serverInfo);
+    })
+    .toThrowErrorMatchingSnapshot();
+  });
+
   dbClients.forEach((dbClient) => {
     const dbSchema = dbSchemas[dbClient];
 
@@ -65,8 +74,22 @@ describe('db', () => {
             client: dbClient
           };
 
-          const serverSession = await db.createServer(serverInfo);
+          const serverSession = db.createServer(serverInfo);
           const dbConn = await serverSession.createConnection(serverInfo.database);
+          await dbConn.connect();
+        });
+
+        it('should fail to connect to non-existent database', async () => {
+          const serverInfo = {
+            ...config[dbClient],
+            database: 'foo',
+            name: dbClient,
+            client: dbClient
+          };
+
+          const serverSession = db.createServer(serverInfo);
+          const dbConn = await serverSession.createConnection(serverInfo.database);
+
           await dbConn.connect();
         });
 
@@ -78,7 +101,7 @@ describe('db', () => {
             client: dbClient
           };
 
-          const serverSession = await db.createServer(serverInfo);
+          const serverSession = db.createServer(serverInfo);
           const dbConn = await serverSession.createConnection(serverInfo.database);
 
           await dbConn.connect();
@@ -95,9 +118,9 @@ describe('db', () => {
         let dbConn;
 
         beforeEach(async () => {
-          serverSession = await db.createServer(serverInfo);
+          serverSession = db.createServer(serverInfo);
           dbConn = await serverSession.createConnection(serverInfo.database);
-          dbConn.connect();
+          await dbConn.connect();
 
           const includePrimaryKey = dbClient === 'cassandra';
 
@@ -190,7 +213,7 @@ describe('db', () => {
 
           describe('.listTableIndexes', () => {
             it('should list all indexes', async () => {
-              const indexes = await dbConn.listTableIndexes('users', dbSchema);
+              const indexes = await dbConn.listTableIndexes('users');
               expect(indexes).toMatchSnapshot();
             });
           });
@@ -371,7 +394,27 @@ describe('db', () => {
         // @TODO
         // describe('Import', () => {})
 
+        describe('Metadata', () => {
+          it('should check if database is online', async () => {
+            expect(await dbConn.isOnline()).toEqual(true);
+          });
+        });
+
+        describe('Helpers', () => {
+          it('should wrap * identifier', () => {
+            expect(dbConn.wrapIdentifier('*')).toEqual('*');
+          });
+        });
+
         describe('Export', () => {
+          const exportedJsonFilepath = path.join(__dirname, 'fixtures', '.tmp.export.json');
+          const exportedCsvFilepath = path.join(__dirname, 'fixtures', '.tmp.export.csv');
+
+          afterAll(() => {
+            unlinkSync(exportedCsvFilepath);
+            unlinkSync(exportedJsonFilepath);
+          });
+
           it('shoud fail on unsupported option', async () => {
             // For the time being, our sqlite backend doesn't support views
             await dbConn.getJsonString({
@@ -411,12 +454,11 @@ describe('db', () => {
             });
 
             it('should export json file to filepath', async () => {
-              const filepath = path.join(__dirname, 'fixtures', '.tmp.export.json');
-              await dbConn.exportJson(filepath, {
+              await dbConn.exportJson(exportedJsonFilepath, {
                 tables: ['users', 'roles']
               });
-              const jsonExportedFile = (await readFileAsync(filepath)).toString();
-              expect(jsonExportedFile).toMatchSnapshot();
+              const exportedJsonFile = readFileSync(exportedJsonFilepath).toString();
+              expect(exportedJsonFile).toMatchSnapshot();
             });
           });
 
@@ -439,12 +481,11 @@ describe('db', () => {
             });
 
             it('should export single table', async () => {
-              const filepath = path.join(__dirname, 'fixtures', '.tmp.export.csv');
-              await dbConn.exportCsv(filepath, {
+              await dbConn.exportCsv(exportedCsvFilepath, {
                 table: 'users'
               });
-              const csvExportedFile = (await readFileAsync(filepath)).toString();
-              expect(csvExportedFile).toMatchSnapshot();
+              const exportedCsvFile = readFileSync(exportedCsvFilepath).toString();
+              expect(exportedCsvFile).toMatchSnapshot();
             });
           });
         });
@@ -470,6 +511,10 @@ describe('db', () => {
             });
 
             describe('SELECT', () => {
+              it('should get query selector top', async () => {
+                expect(await dbConn.getQuerySelectTop('users', 10)).toMatchSnapshot();
+              });
+
               it('should execute an empty query', async () => {
                 const results = await dbConn.executeQuery('');
                 expect(results).toEqual([]);

@@ -1,5 +1,5 @@
 // @flow
-import { promisify } from 'util';
+import util from 'util';
 import { writeFile } from 'fs';
 import json2csv from 'json2csv';
 import SqliteJsonExport from 'sqlite-json-export';
@@ -10,8 +10,11 @@ import createLogger from '../../Logger';
 import type { sshTunnelType } from '../Tunnel';
 import type { serverType, databaseType } from './ProviderInterface';
 
+require('util.promisify').shim();
+const writeFileAsync = util.promisify(writeFile);
+// const writeFileAsync = promisify(writeFile);
+
 const logger = createLogger('db');
-const writeFilePromise = promisify(writeFile);
 
 export default class BaseProvider {
 
@@ -303,13 +306,13 @@ export default class BaseProvider {
 
   async exportJson(filename: string, exportOptions: exportOptionsType) {
     const jsonString = await this.getJsonString(exportOptions);
-    await writeFilePromise(filename, jsonString);
+    await writeFileAsync(filename, jsonString);
     return jsonString;
   }
 
   async exportCsv(filename: string, exportOptions: exportOptionsType) {
     const csvString = await this.getCsvString(exportOptions);
-    await writeFilePromise(filename, csvString);
+    await writeFileAsync(filename, csvString);
     return csvString;
   }
 }

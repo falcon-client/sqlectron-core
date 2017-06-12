@@ -63,11 +63,6 @@ export function prepareSync() {
   // }
 }
 
-export function path() {
-  const filename = utils.getConfigPath();
-  return utils.resolveHomePathToAbsolute(filename);
-}
-
 export function get() {
   const filename = utils.getConfigPath();
   return utils.readJSONFile(filename);
