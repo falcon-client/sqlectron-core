@@ -87,7 +87,7 @@ export interface ProviderInterface {
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
   listTableTriggers: (table: string) => Promise<Array<string>>,
-  listTableIndexes: (database: string, table: string) => Promise<Array<string>>,
+  listTableIndexes: (table: string) => Promise<Array<string>>,
   listSchemas: () => Promise<Array<string>>,
   listDatabases: () => Promise<Array<string>>,
   listTableColumns: (table: string) => Promise<Array<{
@@ -171,6 +171,8 @@ export interface ProviderInterface {
     procedures: bool,
     tables: bool,
     functions: bool,
+    triggers: bool,
+    events: bool,
 
     /**
      * A list of generic types that all databases will either have or not have. The actual
@@ -180,11 +182,16 @@ export interface ProviderInterface {
     types: {
       integer: bool,
       float: bool,
+      decimal: bool,
+      double: bool,
+      increments: bool,
       string: bool,
       varchar: bool,
       boolean: bool,
       enum: bool,
       binary: bool,
+      json: bool,
+      date: bool,
     }
   },
 
@@ -193,7 +200,7 @@ export interface ProviderInterface {
    * Ex: 'integer': 'BIGINT'
    */
   genericTypeMappings: {
-    [string: 'integer' | 'float' | 'string' | 'varchar' | 'boolean' | 'enum' | 'binary']: string
+    [genericType: 'integer' | 'float' | 'string' | 'varchar' | 'boolean' | 'enum' | 'binary' | 'json']: string
   }
 }
 

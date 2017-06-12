@@ -12,6 +12,8 @@ The cross-database ORM that powers [falcon](https://github.com/falcon-client/fal
 ### Release 1.0.0
   * Add documentation
   * Add support for sqlite
+  * Import databases as json, csv, and sqlite
+  * Export databases/tables/rows
   * Migrate to Typescript/Flow
   * Refactor to class/interface based architecture
   * Improve error messages

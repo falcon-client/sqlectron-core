@@ -8,6 +8,7 @@
     "app/main.prod.js": true,
     "app/main.prod.js.map": true,
     "bower_components": true,
+    "coverage": true,
     "dll": true,
     "lib": true,
     "flow-typed": true,
