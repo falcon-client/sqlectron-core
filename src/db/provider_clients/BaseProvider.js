@@ -3,16 +3,17 @@ import util from 'util';
 import { writeFile } from 'fs';
 import json2csv from 'json2csv';
 import SqliteJsonExport from 'sqlite-json-export';
+import promisify from 'util.promisify';
 import Tunnel from '../Tunnel';
 import clients from './';
 import * as config from '../../Config';
 import createLogger from '../../Logger';
 import type { sshTunnelType } from '../Tunnel';
-import type { serverType, databaseType } from './ProviderInterface';
+import type { serverType, databaseType, exportOptionsType } from './ProviderInterface';
 
-require('util.promisify').shim();
+promisify.shim();
+
 const writeFileAsync = util.promisify(writeFile);
-// const writeFileAsync = promisify(writeFile);
 
 const logger = createLogger('db');
 

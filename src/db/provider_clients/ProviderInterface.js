@@ -129,6 +129,9 @@ export interface ProviderInterface {
 
   /**
    * Create a JSON or CSV buffer to export the database to
+   * @TODO: Specify a `.supportExports` property. Each database has its own export
+   *        formats. For example, mysql has a `.sql` export format, which other DB's
+   *        don't support
    */
   getJsonString: (exportOptions: exportOptionsType) => Promise<string>,
   getCsvString: (exportOptions: exportOptionsType) => Promise<string>,

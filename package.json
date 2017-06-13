@@ -1,15 +1,16 @@
 {
   "name": "falcon-core",
-  "version": "0.0.1-6",
+  "version": "0.0.1-7",
   "description": "The cross-database ORM that powers falcon",
   "main": "lib/index.js",
   "author": "The Falcon Team",
   "scripts": {
     "build": "cross-env NODE_ENV=production rm -rf lib && babel -d lib/ src/ --source-maps",
     "flow": "flow",
+    "flow-prepublish": "flow-copy-source src lib",
     "flow-typed": "flow-typed install",
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
-    "prepublish": "npm run build",
+    "prepublish": "npm run build && npm run flow-prepublish",
     "test": "cross-env NODE_ENV=test jest",
     "coverage": "npm run test:sqlite -- --coverage",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
@@ -84,6 +85,7 @@
     "eslint-config-bliss": "^1.0.8",
     "eslint-formatter-pretty": "^1.1.0",
     "flow-bin": "^0.47.0",
+    "flow-copy-source": "^1.1.0",
     "flow-runtime": "^0.12.0",
     "flow-typed": "^2.1.2",
     "jest-cli": "^20.0.4"
