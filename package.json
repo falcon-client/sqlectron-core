@@ -1,6 +1,6 @@
 {
   "name": "falcon-core",
-  "version": "0.0.1-7",
+  "version": "0.0.1-8",
   "description": "The cross-database ORM that powers falcon",
   "main": "lib/index.js",
   "author": "The Falcon Team",
