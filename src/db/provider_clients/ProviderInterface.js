@@ -24,18 +24,22 @@ export type exportOptionsType = {
 } &
 ({ tables: Array<string> } | { table: string });
 
+/**
+ * Used to configure the database.
+ */
 export type databaseType = {
+  // The name of the database to connect to
   database: string,
+  // Wraps the existing connection in a tunnel. Only used for SSH
   connection: {
     getQuerySelectTop: (table: string, limit: number, schema: string) => void,
     listTableColumns: (table: string) => Array<Object>,
     wrapIdentifier: (item: any) => any,
     disconnect: () => void
   } | null,
+  // Boolean indicating if connection is active and successful
   connecting: bool
 };
-
-type listTablesType = Promise<Array<{name: string}>>;
 
 export type queryType = {
   execute: () => void,
@@ -83,7 +87,7 @@ export interface ProviderInterface {
   /**
    * List operations:
    */
-  listTables: () => listTablesType,
+  listTables: () => Promise<Array<{name: string}>>,
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
   listTableTriggers: (table: string) => Promise<Array<string>>,
@@ -115,17 +119,20 @@ export interface ProviderInterface {
    *        generate a query string from the given properties of the table. Perform
    *        any necessary bookkeeping and validation
    */
-  create: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
-  read: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
-  update: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
-  delete: (database: string, table: string, objectToInsert: Object) => Promise<bool>,
+  create: (table: string, objectToInsert: Object) => Promise<bool>,
+  read: (table: string, objectToInsert: Object) => Promise<bool>,
+  update: (table: string, objectToInsert: Object) => Promise<bool>,
+  delete: (table: string, objectToInsert: Object) => Promise<bool>,
 
   /**
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
    */
+  // Returns a query that can be canceled
   query: (queryText: string) => Promise<{ execute: () => Promise<any>, cancel: () => void }>,
-  executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
+  // Used to execute raw SQL statements
   driverExecuteQuery: (queryArgs: queryArgsType) => Promise<{data: Array<Object>}>,
+  // Builds on top of driverExecuteQuery(). Adds additional metadata
+  executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
 
   /**
    * Create a JSON or CSV buffer to export the database to
