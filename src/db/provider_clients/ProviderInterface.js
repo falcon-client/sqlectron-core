@@ -144,7 +144,7 @@ export interface ProviderInterface {
 
   // @TODO: What exactly should be returned here?
   delete: (table: string, keys: Array<string>) => Promise<bool>,
-  insert: (table: string) => Promise<bool>,
+  insert: (table: string, values?: { [string]: any }) => Promise<bool>,
   update: (table: string, records: Array<Object>) => Promise<bool>,
 
   /**

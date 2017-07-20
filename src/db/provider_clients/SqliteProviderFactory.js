@@ -116,9 +116,21 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   /**
    * Inserts an empty record into a table
    */
-  async insert(table: string): Promise<bool> {
-    const query = `
+  async insert(table: string, values?: { [string]: any }): Promise<bool> {
+    if (values === null || values === undefined) {
+      const query = `
       INSERT INTO ${table} DEFAULT VALUES;
+    `;
+      const results = await this.driverExecuteQuery({ query }).then(
+        res => res.data
+      );
+      return results;
+    }
+    const columns = Object.keys(values);
+    const rowData = columns.map(key => `'${values[key]}'`);
+    const query = `
+    INSERT INTO ${table} (${columns.join(', ')})
+    VALUES (${rowData.join(', ')});
     `;
     const results = await this.driverExecuteQuery({ query }).then(
       res => res.data
