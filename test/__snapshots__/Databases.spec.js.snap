@@ -112,12 +112,54 @@ exports[`Database sqlite given is already connected Get .getTableInsertScript sh
 
 exports[`Database sqlite given is already connected Get .getTableKeys should list all tables keys 1`] = `
 Array [
-  "id",
-  "username",
-  "email",
-  "password",
-  "role_id",
-  "createdat",
+  Object {
+    "cid": 0,
+    "dflt_value": null,
+    "name": "id",
+    "notnull": 1,
+    "pk": 1,
+    "type": "INTEGER",
+  },
+  Object {
+    "cid": 1,
+    "dflt_value": null,
+    "name": "username",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(45)",
+  },
+  Object {
+    "cid": 2,
+    "dflt_value": null,
+    "name": "email",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(150)",
+  },
+  Object {
+    "cid": 3,
+    "dflt_value": null,
+    "name": "password",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(45)",
+  },
+  Object {
+    "cid": 4,
+    "dflt_value": null,
+    "name": "role_id",
+    "notnull": 0,
+    "pk": 0,
+    "type": "INT",
+  },
+  Object {
+    "cid": 5,
+    "dflt_value": null,
+    "name": "createdat",
+    "notnull": 0,
+    "pk": 0,
+    "type": "DATETIME",
+  },
 ]
 `;
 

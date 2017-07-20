@@ -107,12 +107,25 @@ export interface ProviderInterface {
   getTableReferences: (table: string) => Promise<Array<string>>,
   getTableValues: (table: string) => Promise<Array<Object>>,
   getTableNames: () => Promise<Array<string>>,
+  /**
+   * Gets columns of a table
+   * @TODO: Can this be renamed getTableColumnData
+   */
   getTableKeys: (table: string) => Promise<Array<{
     constraintName: string,
     columnName: string,
     referencedTable: string,
     keyType: string
   }>>,
+  /**
+   * Gets the primary key of a table
+   */
+   getPrimaryKey: (table: string) => {
+    constraintName: string,
+    columnName: string,
+    referencedTable: string,
+    keyType: string
+  }
 
   /**
    * @TODO: Basic CRUD Operations. Given a database name, table name, dynamically
@@ -122,6 +135,7 @@ export interface ProviderInterface {
   create: (table: string, objectToInsert: Object) => Promise<bool>,
   read: (table: string, objectToInsert: Object) => Promise<bool>,
   update: (table: string, objectToInsert: Object) => Promise<bool>,
+  /** @TODO: Perhaps this method is supposed to drop tables? */
   delete: (table: string, objectToInsert: Object) => Promise<bool>,
 
   /**
@@ -168,6 +182,7 @@ export interface ProviderInterface {
   getTableSelectScript: (table: string, schema?: string) => (Promise<string> | string),
   getTableInsertScript: (table: string, schema?: string) => (Promise<string> | string),
   getTableUpdateScript: (table: string, schema?: string) => (Promise<string> | string),
+  /** Deletes existing records within a table */
   getTableDeleteScript: (table: string, scheme?: string) => (Promise<string> | string),
   getViewCreateScript: (view: string) => (Promise<string> | string),
   getRoutineCreateScript: (routine: string, schema: string) => (Promise<string> | string),

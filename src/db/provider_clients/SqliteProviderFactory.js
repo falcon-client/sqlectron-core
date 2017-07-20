@@ -24,11 +24,20 @@ type connectionType = {
     database: string
   },
   run: (queryText: string, args?: Array<string>, cb?: () => void) => void,
-  all: (queryText: string, args?: Array<string>, cb?: () => void) => void,
+  all: (queryText: string, args?: Array<string>, cb?: () => void) => void
+};
+
+type tableKeyType = {
+  cid: number,
+  name: string,
+  type: string,
+  notnull: 0 | 1,
+  dflt_value: string,
+  pk: 0 | 1
 };
 
 class SqliteProvider extends BaseProvider implements ProviderInterface {
-  connection: connectionType
+  connection: connectionType;
 
   sqliteErrors = {
     CANCELED: 'SQLITE_INTERRUPT'
@@ -104,19 +113,47 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return Promise.resolve('local');
   }
 
-  getVersion() {
-    return this
-      .driverExecuteQuery({ query: 'SELECT sqlite_version()' })
-      .then(res => res.data[0]['sqlite_version()']);
+  /**
+   * Deletes records from a table. Finds table's primary key then deletes
+   * specified keys
+   */
+  async delete(table: string, keys: Array<string>): Promise<bool> {
+    const primaryKey = await this.getPrimaryKey(table);
+    const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
+    const query = `
+      DELETE FROM ${table}
+      WHERE ${conditions.join(' OR ')}
+    `;
+    const results = await this.driverExecuteQuery({ query }).then(
+      res => res.data
+    );
+    return results;
   }
 
-  async getTableKeys(table: string, raw: bool = false) {
-    const sql = `PRAGMA table_info(${table})`;
-    const rawResults = this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  getVersion() {
+    return this.driverExecuteQuery({ query: 'SELECT sqlite_version()' }).then(
+      res => res.data[0]['sqlite_version()']
+    );
+  }
 
-    return raw
-      ? rawResults
-      : rawResults.then(res => res.map(column => column.name));
+  async getTableKeys(
+    table: string,
+    raw: bool = false
+  ): Promise<Array<tableKeyType>> {
+    const sql = `PRAGMA table_info(${table})`;
+    const rawResults = this.driverExecuteQuery({ query: sql }).then(
+      res => res.data
+    );
+    return raw ? rawResults : rawResults.then(res => res);
+  }
+
+  async getPrimaryKey(table: string): Promise<tableKeyType> {
+    const keys = await this.getTableKeys(table);
+    const primaryKey = keys.find(key => key.pk === 1);
+    if (!primaryKey) {
+      throw new Error(`No primary key exists in table ${table}`);
+    }
+    return primaryKey;
   }
 
   async getTableValues(table: string) {
@@ -133,8 +170,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       FROM sqlite_master
       WHERE type='table'
     `;
-    return this.driverExecuteQuery({ query: sql })
-      .then(res => res.data.map(table => table.name));
+    return this.driverExecuteQuery({ query: sql }).then(res =>
+      res.data.map(table => table.name)
+    );
   }
 
   async listTables() {
@@ -256,10 +294,11 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async truncateAllTables() {
     return this.runWithConnection(async () => {
-      const tables: Array<{name: string}> = await this.listTables();
+      const tables: Array<{ name: string }> = await this.listTables();
 
       const truncateAllQuery = tables
-        .map(table => `
+        .map(
+          table => `
           DELETE FROM ${table.name};
         `
         )
@@ -341,33 +380,34 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         : Promise.resolve(results[0]);
     };
 
-    return (
-      this.connection.connection
-        ? await identifyStatementsRunQuery(this.connection.connection)
-        : this.runWithConnection(identifyStatementsRunQuery)
-    );
+    return this.connection.connection
+      ? await identifyStatementsRunQuery(this.connection.connection)
+      : this.runWithConnection(identifyStatementsRunQuery);
   }
 
   runWithConnection(run: () => Promise<Array<Object>>) {
     return new Promise((resolve, reject) => {
       sqlite3.verbose();
 
-      const db = new sqlite3.Database(this.connection.dbConfig.database, async err => {
-        if (err) {
-          return reject(err);
-        }
+      const db = new sqlite3.Database(
+        this.connection.dbConfig.database,
+        async err => {
+          if (err) {
+            return reject(err);
+          }
 
-        try {
-          db.serialize();
-          return resolve(run(db));
-        } catch (runErr) {
-          reject(runErr);
-        } finally {
-          db.close();
-        }
+          try {
+            db.serialize();
+            return resolve(run(db));
+          } catch (runErr) {
+            reject(runErr);
+          } finally {
+            db.close();
+          }
 
-        return db;
-      });
+          return db;
+        }
+      );
     });
   }
 
@@ -387,19 +427,15 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
    * @private
    */
   checkUnsupported(exportOptions: exportOptionsType) {
-    const unsupportedOptions = [
-      'views',
-      'procedures',
-      'functions',
-      'rows'
-    ];
-    const hasUnsupported =
-      Object
-        .keys(exportOptions)
-        .some(option => unsupportedOptions.includes(option));
+    const unsupportedOptions = ['views', 'procedures', 'functions', 'rows'];
+    const hasUnsupported = Object.keys(exportOptions).some(option =>
+      unsupportedOptions.includes(option)
+    );
 
     if (hasUnsupported) {
-      throw new Error(`Unsupported properties passed: ${JSON.stringify(exportOptions)}`);
+      throw new Error(
+        `Unsupported properties passed: ${JSON.stringify(exportOptions)}`
+      );
     }
   }
 }
@@ -410,7 +446,10 @@ function configDatabase(server, database) {
   };
 }
 
-async function SqliteFactory(server: serverType, database: databaseType): FactoryType {
+async function SqliteFactory(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   const logger = createLogger('db:clients:sqlite');
   const dbConfig = configDatabase(server, database);
   const connection = { dbConfig };
