@@ -479,8 +479,9 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
       rows: data.rows,
       fields: data.fields,
       rowCount: isSelect ? data.rowCount : undefined,
-      affectedRows:
-        !isSelect && !isNaN(data.rowCount) ? data.rowCount : undefined
+      affectedRows: !isSelect && !isNaN(data.rowCount)
+        ? data.rowCount
+        : undefined
     };
   }
 

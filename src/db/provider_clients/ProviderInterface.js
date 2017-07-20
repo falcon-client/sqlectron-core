@@ -20,9 +20,8 @@ export type exportOptionsType = {
   views?: Array<string>,
   procedures?: Array<string>,
   functions?: Array<string>,
-  rows?: Array<string>,
-} &
-({ tables: Array<string> } | { table: string });
+  rows?: Array<string>
+} & ({ tables: Array<string> } | { table: string });
 
 /**
  * Used to configure the database.
@@ -43,7 +42,7 @@ export type databaseType = {
 
 export type queryType = {
   execute: () => void,
-  cancel: () => void,
+  cancel: () => void
 };
 
 export type queryArgsType = {
@@ -57,7 +56,7 @@ export type queryResponseType = {
   rows: Array<Object>,
   fields: Array<Object>,
   rowCount: number,
-  affectedRows: number,
+  affectedRows: number
 };
 
 /**
@@ -87,17 +86,19 @@ export interface ProviderInterface {
   /**
    * List operations:
    */
-  listTables: () => Promise<Array<{name: string}>>,
+  listTables: () => Promise<Array<{ name: string }>>,
   listViews: () => Promise<Array<string>>,
   listRoutines: () => Promise<Array<string>>,
   listTableTriggers: (table: string) => Promise<Array<string>>,
   listTableIndexes: (table: string) => Promise<Array<string>>,
   listSchemas: () => Promise<Array<string>>,
   listDatabases: () => Promise<Array<string>>,
-  listTableColumns: (table: string) => Promise<Array<{
-    columnName: string,
-    dataType: string
-  }>>,
+  listTableColumns: (
+    table: string
+  ) => Promise<Array<{
+      columnName: string,
+      dataType: string
+    }>>,
 
   /**
    * Retrival operations
@@ -111,21 +112,25 @@ export interface ProviderInterface {
    * Gets columns of a table
    * @TODO: Can this be renamed getTableColumnData
    */
-  getTableKeys: (table: string) => Promise<Array<{
-    constraintName: string,
-    columnName: string,
-    referencedTable: string,
-    keyType: string
-  }>>,
+  getTableKeys: (
+    table: string
+  ) => Promise<Array<{
+      constraintName: string,
+      columnName: string,
+      referencedTable: string,
+      keyType: string
+    }>>,
   /**
    * Gets the primary key of a table
    */
-   getPrimaryKey: (table: string) => {
+  getPrimaryKey: (
+    table: string
+  ) => {
     constraintName: string,
     columnName: string,
     referencedTable: string,
     keyType: string
-  }
+  },
 
   /**
    * @TODO: Basic CRUD Operations. Given a database name, table name, dynamically
@@ -142,9 +147,13 @@ export interface ProviderInterface {
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
    */
   // Returns a query that can be canceled
-  query: (queryText: string) => Promise<{ execute: () => Promise<any>, cancel: () => void }>,
+  query: (
+    queryText: string
+  ) => Promise<{ execute: () => Promise<any>, cancel: () => void }>,
   // Used to execute raw SQL statements
-  driverExecuteQuery: (queryArgs: queryArgsType) => Promise<{data: Array<Object>}>,
+  driverExecuteQuery: (
+    queryArgs: queryArgsType
+  ) => Promise<{ data: Array<Object> }>,
   // Builds on top of driverExecuteQuery(). Adds additional metadata
   executeQuery: (queryText: string) => Promise<Array<queryResponseType>>,
 
@@ -156,8 +165,14 @@ export interface ProviderInterface {
    */
   getJsonString: (exportOptions: exportOptionsType) => Promise<string>,
   getCsvString: (exportOptions: exportOptionsType) => Promise<string>,
-  exportJson: (absolutePath: string, exportOptions: exportOptionsType) => Promise<string>,
-  exportCsv: (absolutePath: string, exportOptions: exportOptionsType) => Promise<string>,
+  exportJson: (
+    absolutePath: string,
+    exportOptions: exportOptionsType
+  ) => Promise<string>,
+  exportCsv: (
+    absolutePath: string,
+    exportOptions: exportOptionsType
+  ) => Promise<string>,
 
   /**
    * Run a query inside of an existing connection pool
@@ -170,23 +185,41 @@ export interface ProviderInterface {
    */
   isOnline: () => Promise<bool>,
 
-   /**
+  /**
     * The following methods return sql query statements that are specific to the
     * currently connected database
     *
     * @TODO: All the following API methods should return strings
     *        If returns a string currently, manually create a promise out of it
     */
-  getQuerySelectTop: (table: string, limit: number) => (Promise<string> | string),
-  getTableCreateScript: (table: string, schema?: string) => (Promise<string> | string),
-  getTableSelectScript: (table: string, schema?: string) => (Promise<string> | string),
-  getTableInsertScript: (table: string, schema?: string) => (Promise<string> | string),
-  getTableUpdateScript: (table: string, schema?: string) => (Promise<string> | string),
+  getQuerySelectTop: (table: string, limit: number) => Promise<string> | string,
+  getTableCreateScript: (
+    table: string,
+    schema?: string
+  ) => Promise<string> | string,
+  getTableSelectScript: (
+    table: string,
+    schema?: string
+  ) => Promise<string> | string,
+  getTableInsertScript: (
+    table: string,
+    schema?: string
+  ) => Promise<string> | string,
+  getTableUpdateScript: (
+    table: string,
+    schema?: string
+  ) => Promise<string> | string,
   /** Deletes existing records within a table */
-  getTableDeleteScript: (table: string, scheme?: string) => (Promise<string> | string),
-  getViewCreateScript: (view: string) => (Promise<string> | string),
-  getRoutineCreateScript: (routine: string, schema: string) => (Promise<string> | string),
-  truncateAllTables: () => (Promise<string> | string),
+  getTableDeleteScript: (
+    table: string,
+    scheme?: string
+  ) => Promise<string> | string,
+  getViewCreateScript: (view: string) => Promise<string> | string,
+  getRoutineCreateScript: (
+    routine: string,
+    schema: string
+  ) => Promise<string> | string,
+  truncateAllTables: () => Promise<string> | string,
 
   /**
    * All the supported features of each database
@@ -216,7 +249,7 @@ export interface ProviderInterface {
       enum: bool,
       binary: bool,
       json: bool,
-      date: bool,
+      date: bool
     }
   },
 
@@ -225,7 +258,14 @@ export interface ProviderInterface {
    * Ex: 'integer': 'BIGINT'
    */
   genericTypeMappings: {
-    [genericType: 'integer' | 'float' | 'string' | 'varchar' | 'boolean' | 'enum' | 'binary' | 'json']: string
+    [genericType: | 'integer'
+      | 'float'
+      | 'string'
+      | 'varchar'
+      | 'boolean'
+      | 'enum'
+      | 'binary'
+      | 'json']: string
   }
 }
 

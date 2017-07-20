@@ -101,8 +101,8 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
   getRealError(err: Error) {
     /* eslint no-underscore-dangle: 0 */
     return this.connection &&
-    this.connection._protocol &&
-    this.connection._protocol._fatalError
+      this.connection._protocol &&
+      this.connection._protocol._fatalError
       ? this.connection._protocol._fatalError
       : err;
   }

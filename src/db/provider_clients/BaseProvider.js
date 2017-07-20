@@ -179,10 +179,9 @@ export default class BaseProvider {
     let limitValue = limit;
 
     await this.loadConfigLimit();
-    limitValue =
-      BaseProvider.limitSelect === 'number'
-        ? BaseProvider.limitSelect
-        : BaseProvider.DEFAULT_LIMIT;
+    limitValue = BaseProvider.limitSelect === 'number'
+      ? BaseProvider.limitSelect
+      : BaseProvider.DEFAULT_LIMIT;
 
     return this.database.connection.getQuerySelectTop(
       table,

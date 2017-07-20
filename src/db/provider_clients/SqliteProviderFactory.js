@@ -15,7 +15,7 @@ import type {
 
 type queryArgsType = {
   query: string,
-  multiple?: boolean,
+  multiple?: bool,
   params?: Array<string>
 };
 
@@ -117,7 +117,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
    * Deletes records from a table. Finds table's primary key then deletes
    * specified keys
    */
-  async delete(table: string, keys: Array<string>): Promise<boolean> {
+  async delete(table: string, keys: Array<string>): Promise<bool> {
     const primaryKey = await this.getPrimaryKey(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
@@ -138,7 +138,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async getTableKeys(
     table: string,
-    raw: boolean = false
+    raw: bool = false
   ): Promise<Array<tableKeyType>> {
     const sql = `PRAGMA table_info(${table})`;
     const rawResults = this.driverExecuteQuery({ query: sql }).then(

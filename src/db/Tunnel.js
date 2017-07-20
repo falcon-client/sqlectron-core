@@ -19,7 +19,7 @@ export type tunnelConfigType = {
   passphrase?: string,
   privateKey?: string,
   ssl?: {
-    rejectUnauthorized: boolean
+    rejectUnauthorized: bool
   }
 };
 

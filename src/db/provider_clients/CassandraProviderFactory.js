@@ -196,8 +196,9 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
       rows: data.rows || [],
       fields: data.columns || [],
       rowCount: isSelect ? data.rowLength || 0 : undefined,
-      affectedRows:
-        !isSelect && !isNaN(data.rowLength) ? data.rowLength : undefined
+      affectedRows: !isSelect && !isNaN(data.rowLength)
+        ? data.rowLength
+        : undefined
     };
   }
 
