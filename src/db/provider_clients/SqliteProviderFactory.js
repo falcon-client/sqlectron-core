@@ -117,25 +117,19 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
    * Inserts an empty record into a table
    */
   async insert(table: string, values?: { [string]: any }): Promise<bool> {
-    if (values === null || values === undefined) {
+    if (!values) {
       const query = `
-      INSERT INTO ${table} DEFAULT VALUES;
-    `;
-      const results = await this.driverExecuteQuery({ query }).then(
-        res => res.data
-      );
-      return results;
+        INSERT INTO ${table} DEFAULT VALUES;
+      `;
+      return this.driverExecuteQuery({ query }).then(res => res.data);
     }
     const columns = Object.keys(values);
     const rowData = columns.map(key => `'${values[key]}'`);
     const query = `
-    INSERT INTO ${table} (${columns.join(', ')})
-    VALUES (${rowData.join(', ')});
+      INSERT INTO ${table} (${columns.join(', ')})
+      VALUES (${rowData.join(', ')});
     `;
-    const results = await this.driverExecuteQuery({ query }).then(
-      res => res.data
-    );
-    return results;
+    return this.driverExecuteQuery({ query }).then(res => res.data);
   }
 
   /**
@@ -157,15 +151,14 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         columnName => `${columnName} = '${record.changes[columnName]}'`
       );
       return `
-      UPDATE ${table}
-      SET ${edits.join(', ')}
-      WHERE ${tablePrimaryKey.name} = ${record.rowPrimaryKeyValue};
+        UPDATE ${table}
+        SET ${edits.join(', ')}
+        WHERE ${tablePrimaryKey.name} = ${record.rowPrimaryKeyValue};
     `;
     });
-    const results = Promise.all(
+    return Promise.all(
       queries.map(query => this.driverExecuteQuery({ query }))
     );
-    return results;
   }
 
   /**
