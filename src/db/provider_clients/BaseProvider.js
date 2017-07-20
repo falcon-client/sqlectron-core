@@ -9,7 +9,11 @@ import clients from './';
 import * as config from '../../Config';
 import createLogger from '../../Logger';
 import type { sshTunnelType } from '../Tunnel';
-import type { serverType, databaseType, exportOptionsType } from './ProviderInterface';
+import type {
+  serverType,
+  databaseType,
+  exportOptionsType
+} from './ProviderInterface';
 
 promisify.shim();
 
@@ -18,7 +22,6 @@ const writeFileAsync = util.promisify(writeFile);
 const logger = createLogger('db');
 
 export default class BaseProvider {
-
   server: serverType;
 
   database: databaseType;
@@ -102,7 +105,10 @@ export default class BaseProvider {
     });
   }
 
-  buildSchemaFilter({ schema }: Object = {}, schemaField: string = 'schema_name') {
+  buildSchemaFilter(
+    { schema }: Object = {},
+    schemaField: string = 'schema_name'
+  ) {
     if (!schema) {
       return null;
     }
@@ -173,11 +179,16 @@ export default class BaseProvider {
     let limitValue = limit;
 
     await this.loadConfigLimit();
-    limitValue = BaseProvider.limitSelect === 'number'
-      ? BaseProvider.limitSelect
-      : BaseProvider.DEFAULT_LIMIT;
+    limitValue =
+      BaseProvider.limitSelect === 'number'
+        ? BaseProvider.limitSelect
+        : BaseProvider.DEFAULT_LIMIT;
 
-    return this.database.connection.getQuerySelectTop(table, limitValue, schema);
+    return this.database.connection.getQuerySelectTop(
+      table,
+      limitValue,
+      schema
+    );
   }
 
   async getTableSelectScript(table: string, schema?: string) {
@@ -203,7 +214,7 @@ export default class BaseProvider {
     this.checkIsConnected();
     const columns = await this.database.connection.listTableColumns(
       this.database.database,
-      table,
+      table
     );
     return columns.map(column => column.columnName);
   }
@@ -259,10 +270,7 @@ export default class BaseProvider {
     const exporter = new SqliteJsonExport(this.connection.dbConfig.database);
     this.checkUnsupported(exportOptions);
 
-    if (
-      'tables' in exportOptions &&
-      'table' in exportOptions
-    ) {
+    if ('tables' in exportOptions && 'table' in exportOptions) {
       throw new Error('You cannot give both "tables" and "table". Choose one');
     }
 
@@ -280,9 +288,8 @@ export default class BaseProvider {
     // Multiple tables
     if ('tables' in exportOptions) {
       const results = await Promise.all(
-          exportOptions.tables.map(tableName => getSingleTable(tableName))
-        )
-        .then(tableJsonStrings => tableJsonStrings.join(','));
+        exportOptions.tables.map(tableName => getSingleTable(tableName))
+      ).then(tableJsonStrings => tableJsonStrings.join(','));
 
       return ['[', ...results, ']'].join('');
     }
@@ -293,7 +300,9 @@ export default class BaseProvider {
 
   async getCsvString(exportOptions: exportOptionsType) {
     if ('tables' in exportOptions) {
-      throw new Error('Exporting multiple tables to csv is currently not supported');
+      throw new Error(
+        'Exporting multiple tables to csv is currently not supported'
+      );
     }
 
     const jsonString = await this.getJsonString(exportOptions);

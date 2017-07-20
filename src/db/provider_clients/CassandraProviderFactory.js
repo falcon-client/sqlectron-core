@@ -146,7 +146,9 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
   }
 
   getQuerySelectTop(table: string, limit: number) {
-    return Promise.resolve(`SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`);
+    return Promise.resolve(
+      `SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`
+    );
   }
 
   getTableCreateScript() {
@@ -194,9 +196,8 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
       rows: data.rows || [],
       fields: data.columns || [],
       rowCount: isSelect ? data.rowLength || 0 : undefined,
-      affectedRows: !isSelect && !isNaN(data.rowLength)
-        ? data.rowLength
-        : undefined
+      affectedRows:
+        !isSelect && !isNaN(data.rowLength) ? data.rowLength : undefined
     };
   }
 
@@ -234,7 +235,10 @@ function configDatabase(server: Object, database: Object) {
  * Construct the CassandraProvider. Wait for the client to connect and then instantiate
  * the provider
  */
-async function CassandraFactory(server: serverType, database: databaseType): FactoryType {
+async function CassandraFactory(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   const dbConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:cassandra');
 

@@ -7,7 +7,9 @@ export default function run(config) {
   beforeAll(async () => {
     const db = new sqlite3.Database(config.database);
 
-    const script = fs.readFileSync(path.join(__dirname, 'schema/schema.sql'), { encoding: 'utf8' });
+    const script = fs.readFileSync(path.join(__dirname, 'schema/schema.sql'), {
+      encoding: 'utf8'
+    });
 
     await executeQuery(db, script);
 
@@ -15,10 +17,9 @@ export default function run(config) {
   });
 }
 
-
 function executeQuery(client, query) {
   return new Promise((resolve, reject) => {
-    client.exec(query, (err) => {
+    client.exec(query, err => {
       if (err) {
         return reject(err);
       }

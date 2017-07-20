@@ -4,7 +4,9 @@ import path from 'path';
 import pf from 'portfinder';
 
 export function homedir() {
-  return process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] || 'HOME';
+  return (
+    process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME'] || 'HOME'
+  );
 }
 
 export function getConfigPath() {
@@ -99,9 +101,9 @@ export function createCancelablePromise(error: Error, timeIdle: number = 100) {
       if (canceled) {
         const err = new Error(error.message || 'Promise canceled.');
 
-        Object
-          .getOwnPropertyNames(error)
-          .forEach(key => (err[key] = error[key]));
+        Object.getOwnPropertyNames(error).forEach(
+          key => (err[key] = error[key])
+        );
 
         throw new Error(err);
       }

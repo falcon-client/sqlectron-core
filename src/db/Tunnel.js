@@ -19,15 +19,15 @@ export type tunnelConfigType = {
   passphrase?: string,
   privateKey?: string,
   ssl?: {
-    rejectUnauthorized: bool
+    rejectUnauthorized: boolean
   }
 };
 
 export type sshTunnelType = {
-  address: () => ({
+  address: () => {
     address: string,
     port: number
-  }),
+  },
   on: (event: 'success' | 'error', () => void) => sshTunnelType
 };
 

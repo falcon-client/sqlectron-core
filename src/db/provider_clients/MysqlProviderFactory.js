@@ -25,7 +25,6 @@ type driverExecuteResponse = {
  *        is different
  */
 class MysqlProvider extends BaseProvider implements ProviderInterface {
-
   mysqlErrors = {
     EMPTY_QUERY: 'ER_EMPTY_QUERY',
     CONNECTION_LOST: 'PROTOCOL_CONNECTION_LOST'
@@ -53,7 +52,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
       end: () => void,
       getConnection: (cb: (errPool, connection) => void) => void
     }
-  }
+  };
 
   constructor(server: serverType, database: databaseType, connection) {
     super(server, database);
@@ -101,11 +100,9 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
 
   getRealError(err: Error) {
     /* eslint no-underscore-dangle: 0 */
-    return (
-      this.connection &&
-      this.connection._protocol &&
-      this.connection._protocol._fatalError
-    )
+    return this.connection &&
+    this.connection._protocol &&
+    this.connection._protocol._fatalError
       ? this.connection._protocol._fatalError
       : err;
   }
@@ -116,8 +113,10 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
         connection.query(
           queryArgs.query,
           queryArgs.params,
-          (err?: Error, data?: Array<{scheme: string}>, fields) => {
-            if (err && err.code === this.mysqlErrors.EMPTY_QUERY) return resolve({});
+          (err?: Error, data?: Array<{ scheme: string }>, fields) => {
+            if (err && err.code === this.mysqlErrors.EMPTY_QUERY) {
+              return resolve({});
+            }
             if (err) return reject(this.getRealError(connection, err));
 
             return resolve({ data, fields });
@@ -164,7 +163,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
     type res = {
       data: Array<{
         routine_type: string,
-        routine_name: string,
+        routine_name: string
       }>
     };
 
@@ -188,7 +187,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
     type res = {
       data: Array<{
         column_name: string,
-        data_type: string,
+        data_type: string
       }>
     };
 
@@ -289,7 +288,9 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async executeQuery(queryText: string) {
-    const { fields, data } = await this.driverExecuteQuery({ query: queryText });
+    const { fields, data } = await this.driverExecuteQuery({
+      query: queryText
+    });
     if (!data) {
       return [];
     }
@@ -317,7 +318,9 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
       execute() {
         return this.runWithConnection(async connection => {
           const connectionClient = { connection };
-          const { data: dataPid } = await this.driverExecuteQuery(connectionClient, {
+          const {
+            data: dataPid
+          } = await this.driverExecuteQuery(connectionClient, {
             query: 'SELECT connection_id() AS pid'
           });
 
@@ -415,9 +418,12 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
       const { data } = await this.driverExecuteQuery({ query: sql });
 
       const truncateAllQuery = data
-        .map(row => `
+        .map(
+          row => `
           SET FOREIGN_KEY_CHECKS = 0;
-          TRUNCATE TABLE ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(row.table_name)};
+          TRUNCATE TABLE ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(
+            row.table_name
+          )};
           SET FOREIGN_KEY_CHECKS = 1;
         `
         )
@@ -488,10 +494,16 @@ function configDatabase(server: serverType, database: databaseType) {
   return config;
 }
 
-async function MysqlProviderFactory(server: serverType, database: databaseType): FactoryType {
+async function MysqlProviderFactory(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   const databaseConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:mysql');
-  logger().debug('create driver client for mysql with config %j', databaseConfig);
+  logger().debug(
+    'create driver client for mysql with config %j',
+    databaseConfig
+  );
 
   const connection = {
     pool: mysql.createPool(databaseConfig)

@@ -10,6 +10,7 @@
     "flow-prepublish": "flow-copy-source src lib",
     "flow-typed": "flow-typed install",
     "lint": "eslint --cache --format=node_modules/eslint-formatter-pretty .",
+    "lint-fix": "prettier --single-quote --write \"{,!(flow-typed|lib)/**}/*.{js,jsx}\" && yarn lint -- --fix",
     "prepublish": "npm run build && npm run flow-prepublish",
     "test": "cross-env NODE_ENV=test jest",
     "coverage": "npm run test:sqlite -- --coverage",

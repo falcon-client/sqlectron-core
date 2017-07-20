@@ -3,7 +3,11 @@ import { config } from '../src';
 import { readJSONFile, writeJSONFile } from '../src/Utils';
 
 const FIXTURE_PATH = path.join(__dirname, 'fixtures', '.sqlectron.json');
-const TMP_FIXTURE_PATH = path.join(__dirname, 'fixtures', '.tmp.sqlectron.json');
+const TMP_FIXTURE_PATH = path.join(
+  __dirname,
+  'fixtures',
+  '.tmp.sqlectron.json'
+);
 
 function loadConfig() {
   return readJSONFile(TMP_FIXTURE_PATH);
@@ -18,7 +22,8 @@ describe('config', () => {
     });
 
     it('should include id for those servers without it', async () => {
-      const findItem = (data) => data.servers.find((srv) => srv.name === 'without-id');
+      const findItem = data =>
+        data.servers.find(srv => srv.name === 'without-id');
 
       const fixtureBefore = await loadConfig();
       await config.prepare();
