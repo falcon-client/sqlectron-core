@@ -172,6 +172,71 @@ describe('Database', () => {
               expect(usersValuesAfter.length).toEqual(0);
             });
           });
+
+          describe('.insert', () => {
+            it('should insert 2 empty records', async () => {
+              const usersValuesBefore = await dbConn.getTableValues('users');
+              expect(usersValuesBefore[0]).toEqual({
+                id: 1,
+                username: 'maxcnunes',
+                email: 'maxcnunes@gmail.com',
+                password: '123456',
+                role_id: 1,
+                createdat: '2016-10-25'
+              });
+              expect(usersValuesBefore.length).toEqual(1);
+              await dbConn.insert('users');
+              await dbConn.insert('users');
+              const usersValuesAfter = await dbConn.getTableValues('users');
+              expect(usersValuesAfter.length).toEqual(3);
+              expect(usersValuesAfter[2]).toEqual({
+                id: 3,
+                username: null,
+                email: null,
+                password: null,
+                role_id: null,
+                createdat: null
+              });
+            });
+          });
+
+          describe('.update', () => {
+            it('should insert an empty record then update it', async () => {
+              const usersValuesBefore = await dbConn.getTableValues('users');
+              expect(usersValuesBefore[0]).toEqual({
+                id: 1,
+                username: 'maxcnunes',
+                email: 'maxcnunes@gmail.com',
+                password: '123456',
+                role_id: 1,
+                createdat: '2016-10-25'
+              });
+              expect(usersValuesBefore.length).toEqual(1);
+              await dbConn.insert('users');
+              await dbConn.update('users', [
+                {
+                  rowPrimaryKeyValue: '2',
+                  changes: {
+                    username: 'jooohhn',
+                    email: 'jptran318@gmail.com',
+                    password: 'password123',
+                    role_id: 1,
+                    createdat: '2017-7-20'
+                  }
+                }
+              ]);
+              const usersValuesAfter = await dbConn.getTableValues('users');
+              expect(usersValuesAfter.length).toEqual(2);
+              expect(usersValuesAfter[1]).toEqual({
+                id: 2,
+                username: 'jooohhn',
+                email: 'jptran318@gmail.com',
+                password: 'password123',
+                role_id: 1,
+                createdat: '2017-7-20'
+              });
+            });
+          });
         });
 
         describe('List', () => {

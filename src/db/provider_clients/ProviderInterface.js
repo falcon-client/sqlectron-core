@@ -137,11 +137,15 @@ export interface ProviderInterface {
    *        generate a query string from the given properties of the table. Perform
    *        any necessary bookkeeping and validation
    */
-  create: (table: string, objectToInsert: Object) => Promise<bool>,
-  read: (table: string, objectToInsert: Object) => Promise<bool>,
-  update: (table: string, objectToInsert: Object) => Promise<bool>,
-  /** @TODO: Perhaps this method is supposed to drop tables? */
-  delete: (table: string, objectToInsert: Object) => Promise<bool>,
+  // create: (table: string, objectToInsert: Object) => Promise<bool>,
+  // read: (table: string, objectToInsert: Object) => Promise<bool>,
+  // update: (table: string, objectToInsert: Object) => Promise<bool>,
+  // delete: (table: string, objectToInsert: Object) => Promise<bool>,
+
+  // @TODO: What exactly should be returned here?
+  delete: (table: string, keys: Array<string>) => Promise<bool>,
+  insert: (table: string) => Promise<bool>,
+  update: (table: string, records: Array<Object>) => Promise<bool>,
 
   /**
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?

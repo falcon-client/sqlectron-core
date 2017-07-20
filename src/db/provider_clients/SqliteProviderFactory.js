@@ -114,6 +114,49 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
+   * Inserts an empty record into a table
+   */
+  async insert(table: string): Promise<bool> {
+    const query = `
+      INSERT INTO ${table} DEFAULT VALUES;
+    `;
+    const results = await this.driverExecuteQuery({ query }).then(
+      res => res.data
+    );
+    return results;
+  }
+
+  /**
+   * Each item in records will update new values in changes
+   * @param changes - Object contaning column:newValue pairs
+   * @param rowPrimaryKey - The row's (record's) identifier
+   */
+  async update(
+    table: string,
+    records: Array<{
+      rowPrimaryKeyValue: string,
+      changes: { [string]: any }
+    }>
+  ): Promise<bool> {
+    const tablePrimaryKey = await this.getPrimaryKey(table);
+    const queries = records.map(record => {
+      const columnNames = Object.keys(record.changes);
+      const edits = columnNames.map(
+        columnName => `${columnName} = '${record.changes[columnName]}'`
+      );
+      return `
+      UPDATE ${table}
+      SET ${edits.join(', ')}
+      WHERE ${tablePrimaryKey.name} = ${record.rowPrimaryKeyValue};
+    `;
+    });
+    const results = Promise.all(
+      queries.map(query => this.driverExecuteQuery({ query }))
+    );
+    return results;
+  }
+
+  /**
    * Deletes records from a table. Finds table's primary key then deletes
    * specified keys
    */
@@ -136,6 +179,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     );
   }
 
+  /**
+   * Gets data about columns (properties) in a table
+   */
   async getTableKeys(
     table: string,
     raw: bool = false
