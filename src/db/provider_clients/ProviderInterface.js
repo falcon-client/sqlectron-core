@@ -84,6 +84,15 @@ export interface ProviderInterface {
   disconnect: () => void,
 
   /**
+   * @TODO: Table creation methods
+   */
+  //  table: (tableName: string) => ({
+  //    delete: () => void,
+  //    create: () => void,
+  //    update: () => void,
+  //  })
+
+  /**
    * List operations:
    */
   listTables: () => Promise<Array<{ name: string }>>,
@@ -139,7 +148,7 @@ export interface ProviderInterface {
    */
   // @TODO: What exactly did sqlectron expected should be returned here?
   delete: (table: string, keys: Array<string>) => Promise<bool>,
-  insert: (table: string, values?: { [string]: any }) => Promise<bool>,
+  insert: (table: string, values: { [value: string]: any }) => Promise<bool>,
   update: (table: string, records: Array<Object>) => Promise<bool>,
 
   /**

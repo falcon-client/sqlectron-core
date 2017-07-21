@@ -135,11 +135,11 @@ describe('Database', () => {
           `);
           await dbConn.executeQuery(`
             INSERT INTO users (${includePrimaryKey
-              ? 'id,'
-              : ''} username, email, password, role_id, createdat)
+    ? 'id,'
+    : ''} username, email, password, role_id, createdat)
             VALUES (${includePrimaryKey
-              ? '1,'
-              : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
+    ? '1,'
+    : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
           `);
         });
 
@@ -158,9 +158,9 @@ describe('Database', () => {
             it('should add 2 then delete 3 rows in the table', async () => {
               const usersValuesBefore = await dbConn.getTableValues('users');
               expect(usersValuesBefore.length).toEqual(1);
-              await dbConn.insert('users');
-              await dbConn.insert('users');
+              expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               await dbConn.delete('users', ['1', '2', '3']);
+              expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               const usersValuesAfter = await dbConn.getTableValues('users');
               expect(usersValuesAfter.length).toEqual(0);
             });
@@ -644,11 +644,11 @@ describe('Database', () => {
 
               await dbConn.executeQuery(`
                 INSERT INTO users (${includePrimaryKey
-                  ? 'id,'
-                  : ''} username, email, password, role_id, createdat)
+    ? 'id,'
+    : ''} username, email, password, role_id, createdat)
                 VALUES (${includePrimaryKey
-                  ? '1,'
-                  : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
+    ? '1,'
+    : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
               `);
             });
 
@@ -719,11 +719,11 @@ describe('Database', () => {
               it('should execute a single query', async () => {
                 const results = await dbConn.executeQuery(`
                   insert into users (${includePrimaryKey
-                    ? 'id,'
-                    : ''} username, email, password)
+    ? 'id,'
+    : ''} username, email, password)
                   values (${includePrimaryKey
-                    ? '1,'
-                    : ''} 'user', 'user@hotmail.com', '123456')
+    ? '1,'
+    : ''} 'user', 'user@hotmail.com', '123456')
                 `);
                 expect(results).toMatchSnapshot();
               });
