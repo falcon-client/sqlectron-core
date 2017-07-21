@@ -69,3 +69,10 @@ main();
 
 ## Related
 * [falcon](https://github.com/falcon-client/falcon)
+
+
+## Pulishing
+```bash
+npm i -g np
+np
+```
