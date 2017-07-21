@@ -155,20 +155,13 @@ describe('Database', () => {
 
         describe('CRUD', () => {
           describe('.delete', () => {
-            it('should delete rows with primaryKey = 1', async () => {
+            it('should add 2 then delete 3 rows in the table', async () => {
               const usersValuesBefore = await dbConn.getTableValues('users');
-              expect(usersValuesBefore[0]).toEqual({
-                id: 1,
-                username: 'maxcnunes',
-                email: 'maxcnunes@gmail.com',
-                password: '123456',
-                role_id: 1,
-                createdat: '2016-10-25'
-              });
               expect(usersValuesBefore.length).toEqual(1);
-              await dbConn.delete('users', ['1']);
+              await dbConn.insert('users');
+              await dbConn.insert('users');
+              await dbConn.delete('users', ['1', '2', '3']);
               const usersValuesAfter = await dbConn.getTableValues('users');
-              expect(usersValuesAfter[0]).toEqual(undefined);
               expect(usersValuesAfter.length).toEqual(0);
             });
           });
