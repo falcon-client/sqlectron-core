@@ -21,6 +21,9 @@ const writeFileAsync = util.promisify(writeFile);
 
 const logger = createLogger('db');
 
+/**
+ * Common superclass of all other providers. Contains common functionalities
+ */
 export default class BaseProvider {
   server: serverType;
 
