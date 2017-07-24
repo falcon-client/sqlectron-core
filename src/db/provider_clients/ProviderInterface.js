@@ -147,7 +147,10 @@ export interface ProviderInterface {
    *        the table. Perform any necessary bookkeeping and validation
    */
   // @TODO: What exactly did sqlectron expected should be returned here?
-  delete: (table: string, keys: Array<string>) => Promise<bool>,
+  delete: (
+    table: string,
+    keys: Array<string> | Array<number>
+  ) => Promise<bool>,
   insert: (table: string, values: { [value: string]: any }) => Promise<bool>,
   update: (table: string, records: Array<Object>) => Promise<bool>,
 

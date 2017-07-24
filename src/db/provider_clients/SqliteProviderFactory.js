@@ -114,7 +114,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
-   * Inserts an empty record into a table
+   * Inserts a row into a table. If values is an empty object, will insert
+   * an empty row
    */
   async insert(table: string, values: { [string]: any }): Promise<bool> {
     const columns = Object.keys(values);
@@ -165,7 +166,10 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
    * Deletes records from a table. Finds table's primary key then deletes
    * specified keys
    */
-  async delete(table: string, keys: Array<string>): Promise<bool> {
+  async delete(
+    table: string,
+    keys: Array<string> | Array<number>
+  ): Promise<bool> {
     const primaryKey = await this.getPrimaryKey(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
