@@ -474,7 +474,7 @@ describe('Database', () => {
               expect(await query.execute()).toMatchSnapshot();
             });
 
-            it('should cancel query', async () => {
+            it.skip('should cancel query', async () => {
               const query = await dbConn.query(`
                 SELECT name
                 FROM sqlite_master
@@ -484,7 +484,7 @@ describe('Database', () => {
               expect(await query.cancel()).toMatchSnapshot();
             });
 
-            it('should be able to cancel the current query', async () => {
+            it.skip('should be able to cancel the current query', async () => {
               const sleepCommands = {
                 postgresql: 'SELECT pg_sleep(10);',
                 mysql: 'SELECT SLEEP(10000);',

@@ -27,6 +27,9 @@ type connectionType = {
   all: (queryText: string, args?: Array<string>, cb?: () => void) => void
 };
 
+/**
+ * Contains data about a column/property/key in a table
+ */
 type tableKeyType = {
   cid: number,
   name: string,
@@ -114,7 +117,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
-   * Inserts a row into a table. If values is an empty object, will insert
+   * Inserts a record into a table. If values is an empty object, will insert
    * an empty row
    */
   async insert(table: string, values: { [string]: any }): Promise<bool> {
