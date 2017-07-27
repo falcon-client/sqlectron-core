@@ -3,9 +3,16 @@ import CassandraProviderFactory from './provider_clients/CassandraProviderFactor
 import SqliteProviderFactory from './provider_clients/SqliteProviderFactory';
 import MysqlProviderFactory from './provider_clients/MysqlProviderFactory';
 import PostgresqlProviderFactory from './provider_clients/PostgresqlProviderFactory';
-import type { FactoryType, serverType, databaseType } from './provider_clients/ProviderInterface';
+import type {
+  FactoryType,
+  serverType,
+  databaseType
+} from './provider_clients/ProviderInterface';
 
-export default function Client(server: serverType, database: databaseType): FactoryType {
+export default function Client(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   switch (server.config.client) {
     case 'sqlite':
       return SqliteProviderFactory(server, database);
@@ -16,6 +23,8 @@ export default function Client(server: serverType, database: databaseType): Fact
     case 'postgresql':
       return PostgresqlProviderFactory(server, database);
     default:
-      throw new Error(`Database client type "${server.config.client}" not recognized`);
+      throw new Error(
+        `Database client type "${server.config.client}" not recognized`
+      );
   }
 }

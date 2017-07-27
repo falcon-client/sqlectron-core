@@ -50,7 +50,6 @@ export function createServer(serverConfig: serverConfigType) {
    * Server public API
    */
   return {
-
     /**
      * Retrieve the database connection pool if it exists
      * @TODO: Use use Map as dictionary instead of object literal

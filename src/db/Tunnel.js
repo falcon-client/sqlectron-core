@@ -24,10 +24,10 @@ export type tunnelConfigType = {
 };
 
 export type sshTunnelType = {
-  address: () => ({
+  address: () => {
     address: string,
     port: number
-  }),
+  },
   on: (event: 'success' | 'error', () => void) => sshTunnelType
 };
 

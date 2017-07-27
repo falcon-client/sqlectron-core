@@ -44,18 +44,24 @@ type connectionType = {
   pool: {
     end: () => void,
     connect: () => void,
-    getConnection: (cb: (errPool: Array<Error>, connection: connectionType) => void) => void
+    getConnection: (
+      cb: (errPool: Array<Error>, connection: connectionType) => void
+    ) => void
   }
 };
 
 class PostgresqlProvider extends BaseProvider implements ProviderInterface {
-  connection: connectionType
+  connection: connectionType;
 
   pgErrors = {
     CANCELED: '57014'
-  }
+  };
 
-  constructor(server: serverType, database: databaseType, connection: connectionType) {
+  constructor(
+    server: serverType,
+    database: databaseType,
+    connection: connectionType
+  ) {
     super(server, database);
     this.connection = connection;
   }
@@ -120,7 +126,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async listTableColumns(database, table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT column_name, data_type
       FROM information_schema.columns
@@ -137,7 +143,10 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
       }>
     };
 
-    const data: dataType = await this.driverExecuteQuery({ query: sql, params });
+    const data: dataType = await this.driverExecuteQuery({
+      query: sql,
+      params
+    });
 
     return data.rows.map(row => ({
       columnName: row.column_name,
@@ -146,7 +155,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async listTableTriggers(table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT trigger_name
       FROM information_schema.triggers
@@ -159,7 +168,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async listTableIndexes(table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT indexname as index_name
       FROM pg_indexes
@@ -186,7 +195,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getTableReferences(table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT ctu.table_name AS referenced_table_name
       FROM information_schema.table_constraints AS tc
@@ -202,7 +211,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getTableKeys(database, table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT
         tc.constraint_name,
@@ -324,14 +333,14 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getQuerySelectTop(table, limit, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     return `SELECT * FROM ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(
       table
     )} LIMIT ${limit}`;
   }
 
   async getTableCreateScript(table, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     // Reference http://stackoverflow.com/a/32885178
     const sql = `
       SELECT
@@ -389,7 +398,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getViewCreateScript(view, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const createViewSql = `CREATE OR REPLACE VIEW ${this.wrapIdentifier(
       schema
     )}.${view} AS`;
@@ -400,7 +409,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getRoutineCreateScript(routine, _, defaultSchema: string) {
-    const schema = defaultSchema || await this.getSchema();
+    const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT pg_get_functiondef(p.oid)
       FROM pg_proc p
@@ -449,8 +458,8 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
         .map(
           row => `
           TRUNCATE TABLE ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(
-              row.table_name
-            )}
+            row.table_name
+          )}
           RESTART IDENTITY CASCADE;
         `
         )
@@ -502,9 +511,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
       });
     };
 
-    return this.connection
-      ? runQuery()
-      : this.runWithConnection(runQuery);
+    return this.connection ? runQuery() : this.runWithConnection(runQuery);
   }
 
   async runWithConnection(run) {
@@ -540,7 +547,10 @@ function configDatabase(server: serverType, database: databaseType) {
   return config;
 }
 
-async function PostgresqlProviderFactory(server: serverType, database: databaseType): FactoryType {
+async function PostgresqlProviderFactory(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   const dbConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:postgresql');
   logger().debug('create driver client for postgres with config %j', dbConfig);

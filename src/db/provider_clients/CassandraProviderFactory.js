@@ -146,7 +146,9 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
   }
 
   getQuerySelectTop(table: string, limit: number) {
-    return Promise.resolve(`SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`);
+    return Promise.resolve(
+      `SELECT * FROM ${this.wrapIdentifier(table)} LIMIT ${limit}`
+    );
   }
 
   getTableCreateScript() {
@@ -234,7 +236,10 @@ function configDatabase(server: Object, database: Object) {
  * Construct the CassandraProvider. Wait for the client to connect and then instantiate
  * the provider
  */
-async function CassandraFactory(server: serverType, database: databaseType): FactoryType {
+async function CassandraFactory(
+  server: serverType,
+  database: databaseType
+): FactoryType {
   const dbConfig = configDatabase(server, database);
   const logger = createLogger('db:clients:cassandra');
 

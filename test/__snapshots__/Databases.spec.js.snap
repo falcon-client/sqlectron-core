@@ -25,6 +25,147 @@ Array [
 ]
 `;
 
+exports[`Database sqlite given is already connected CRUD .delete should add 2 then delete 3 rows in the table 1`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .delete should add 2 then delete 3 rows in the table 2`] = `Array []`;
+
+exports[`Database sqlite given is already connected CRUD .insert should insert 1 empty record and 1 filled record 1`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .insert should insert 1 empty record and 1 filled record 2`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+  Object {
+    "createdat": null,
+    "email": null,
+    "id": 2,
+    "password": null,
+    "role_id": null,
+    "username": null,
+  },
+  Object {
+    "createdat": "2017-7-20",
+    "email": "jptran318@gmail.com",
+    "id": 3,
+    "password": "password123",
+    "role_id": 1,
+    "username": "jooohhn",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .insert should insert 1 empty record and 1 filled record 3`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+  Object {
+    "createdat": null,
+    "email": null,
+    "id": 2,
+    "password": null,
+    "role_id": null,
+    "username": null,
+  },
+  Object {
+    "createdat": "2017-7-20",
+    "email": "jptran318@gmail.com",
+    "id": 3,
+    "password": "password123",
+    "role_id": 1,
+    "username": "jooohhn",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .update should insert an empty record then update it 1`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .update should insert an empty record then update it 2`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+  Object {
+    "createdat": "2017-7-20",
+    "email": "jptran318@gmail.com",
+    "id": 2,
+    "password": "password123",
+    "role_id": 1,
+    "username": "jooohhn",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected CRUD .update should insert an empty record then update it 3`] = `
+Array [
+  Object {
+    "createdat": "2016-10-25",
+    "email": "maxcnunes@gmail.com",
+    "id": 1,
+    "password": "123456",
+    "role_id": 1,
+    "username": "maxcnunes",
+  },
+  Object {
+    "createdat": "2017-7-20",
+    "email": "jptran318@gmail.com",
+    "id": 2,
+    "password": "password123",
+    "role_id": 1,
+    "username": "jooohhn",
+  },
+]
+`;
+
 exports[`Database sqlite given is already connected Export CSV should export single table 1`] = `
 "\\"id\\",\\"username\\",\\"email\\",\\"password\\",\\"role_id\\",\\"createdat\\"
 1,\\"maxcnunes\\",\\"maxcnunes@gmail.com\\",\\"123456\\",1,\\"2016-10-25\\""
@@ -112,12 +253,54 @@ exports[`Database sqlite given is already connected Get .getTableInsertScript sh
 
 exports[`Database sqlite given is already connected Get .getTableKeys should list all tables keys 1`] = `
 Array [
-  "id",
-  "username",
-  "email",
-  "password",
-  "role_id",
-  "createdat",
+  Object {
+    "cid": 0,
+    "dflt_value": null,
+    "name": "id",
+    "notnull": 1,
+    "pk": 1,
+    "type": "INTEGER",
+  },
+  Object {
+    "cid": 1,
+    "dflt_value": null,
+    "name": "username",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(45)",
+  },
+  Object {
+    "cid": 2,
+    "dflt_value": null,
+    "name": "email",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(150)",
+  },
+  Object {
+    "cid": 3,
+    "dflt_value": null,
+    "name": "password",
+    "notnull": 0,
+    "pk": 0,
+    "type": "VARCHAR(45)",
+  },
+  Object {
+    "cid": 4,
+    "dflt_value": null,
+    "name": "role_id",
+    "notnull": 0,
+    "pk": 0,
+    "type": "INT",
+  },
+  Object {
+    "cid": 5,
+    "dflt_value": null,
+    "name": "createdat",
+    "notnull": 0,
+    "pk": 0,
+    "type": "DATETIME",
+  },
 ]
 `;
 
