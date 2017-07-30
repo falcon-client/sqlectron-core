@@ -163,9 +163,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         WHERE ${tablePrimaryKey.name} = ${record.rowPrimaryKeyValue};
     `;
     });
-    return Promise.all(
-      queries.map(query => this.driverExecuteQuery({ query }))
-    );
+    const finalQuery = queries.join('\n');
+    return this.driverExecuteQuery({ query: finalQuery }).then(res => res.data);
   }
 
   /**
