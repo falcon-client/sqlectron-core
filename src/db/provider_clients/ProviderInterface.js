@@ -151,7 +151,10 @@ export interface ProviderInterface {
     table: string,
     keys: Array<string> | Array<number>
   ) => Promise<bool>,
-  insert: (table: string, values: { [value: string]: any }) => Promise<bool>,
+  insert: (
+    table: string,
+    values: Array<{ [value: string]: any }>
+  ) => Promise<bool>,
   update: (table: string, records: Array<Object>) => Promise<bool>,
 
   /**

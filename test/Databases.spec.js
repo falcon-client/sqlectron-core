@@ -179,14 +179,16 @@ describe('Database', () => {
                 role_id: 1,
                 createdat: '2016-10-25'
               });
-              await dbConn.insert('users', {});
-              await dbConn.insert('users', {
-                username: 'jooohhn',
-                email: 'jptran318@gmail.com',
-                password: 'password123',
-                role_id: 1,
-                createdat: '2017-7-20'
-              });
+              await dbConn.insert('users', [
+                {},
+                {
+                  username: 'jooohhn',
+                  email: 'jptran318@gmail.com',
+                  password: 'password123',
+                  role_id: 1,
+                  createdat: '2017-7-20'
+                }
+              ]);
               const usersValuesAfter = await dbConn.getTableValues('users');
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               expect(usersValuesAfter[1]).toEqual({
@@ -223,7 +225,7 @@ describe('Database', () => {
                 createdat: '2016-10-25'
               });
               expect(usersValuesBefore.length).toEqual(1);
-              await dbConn.insert('users', {});
+              await dbConn.insert('users', [{}]);
               await dbConn.update('users', [
                 {
                   rowPrimaryKeyValue: '2',

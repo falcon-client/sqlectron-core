@@ -126,7 +126,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   ): Promise<bool> {
     const tableKeys = await this.getTableColumnNames(table);
     const rowSqls = rows.map(row => {
-      const rowData = tableKeys.map(key => `'${row[key]}'` || 'NULL');
+      const rowData = tableKeys.map(
+        key => (row[key] ? `'${row[key]}'` : 'NULL')
+      );
       return `(${rowData.join(', ')})`;
     });
     const query = `
@@ -134,14 +136,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
      VALUES
      ${rowSqls.join(',\n')};
     `;
-    console.log(query);
     return this.driverExecuteQuery({ query }).then(res => res.data);
-
-    // INSERT INTO movies (id, name, release_year)
-    // VALUES
-    //   (5, "The Lion King", 1994),
-    //   (6, "Disney's Up", 2009),
-    //   (4, "Shrek 2", 2004);
   }
 
   /**
