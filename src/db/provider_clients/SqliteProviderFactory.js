@@ -120,20 +120,28 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
    * Inserts a record into a table. If values is an empty object, will insert
    * an empty row
    */
-  async insert(table: string, values: { [string]: any }): Promise<bool> {
-    const columns = Object.keys(values);
-    if (columns.length === 0) {
-      const query = `
-        INSERT INTO ${table} DEFAULT VALUES;
-      `;
-      return this.driverExecuteQuery({ query }).then(res => res.data);
-    }
-    const rowData = columns.map(key => `'${values[key]}'`);
+  async insert(
+    table: string,
+    rows: Array<{ [string]: any }>
+  ): Promise<bool> {
+    const tableKeys = await this.getTableColumnNames(table);
+    const rowSqls = rows.map(row => {
+      const rowData = tableKeys.map(key => `'${row[key]}'` || 'NULL');
+      return `(${rowData.join(', ')})`;
+    });
     const query = `
-      INSERT INTO ${table} (${columns.join(', ')})
-      VALUES (${rowData.join(', ')});
+     INSERT INTO ${table} (${tableKeys.join(', ')})
+     VALUES
+     ${rowSqls.join(',\n')};
     `;
+    console.log(query);
     return this.driverExecuteQuery({ query }).then(res => res.data);
+
+    // INSERT INTO movies (id, name, release_year)
+    // VALUES
+    //   (5, "The Lion King", 1994),
+    //   (6, "Disney's Up", 2009),
+    //   (4, "Shrek 2", 2004);
   }
 
   /**
