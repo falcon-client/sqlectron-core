@@ -397,12 +397,20 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
+   * Various methods use driverExecutQuery to execute sql statements.
+   * 1. driverExecuteQuery creates identifyStatementsRunQuery() which uses
+   * runQuery()
+   * 2. driverExecuteQuery calls runWithConnection(identifyStatementsRunQuery)
+   * 3. runWithConnection creates a node-sqlite3 db which is identifyStatementsRunQuery
+   * to executes the sql statement and runQuery is given to node-sqlite3 to
+   * return the results of the query
    * @private
    */
   async driverExecuteQuery(queryArgs: queryArgsType): Promise<Object> {
     const runQuery = (connection: connectionType, { executionType, text }) =>
       new Promise((resolve, reject) => {
         const method = this.resolveExecutionType(executionType);
+        // Callback used by node-sqlite3 to return results of query
         const fn = function queryCallback(err?: Error, data?: Object) {
           if (err) {
             return reject(err);
