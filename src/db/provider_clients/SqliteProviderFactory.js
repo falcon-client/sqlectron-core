@@ -39,6 +39,8 @@ type tableKeyType = {
   pk: 0 | 1
 };
 
+// @TODO: Why does logging in constructor vs logging in driver execute
+// return two different things
 class SqliteProvider extends BaseProvider implements ProviderInterface {
   connection: connectionType;
 
@@ -123,7 +125,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   async insert(
     table: string,
     rows: Array<{ [string]: any }>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const tableKeys = await this.getTableColumnNames(table);
     const rowSqls = rows.map(row => {
       const rowData = tableKeys.map(
@@ -136,7 +138,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
      VALUES
      ${rowSqls.join(',\n')};
     `;
-    return this.driverExecuteQuery({ query }).then(res => res.data);
+    const foo = this.driverExecuteQuery({ query }).then(res => res.data);
+    return foo;
   }
 
   /**
@@ -150,7 +153,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       rowPrimaryKeyValue: string,
       changes: { [string]: any }
     }>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const tablePrimaryKey = await this.getPrimaryKey(table);
     const queries = records.map(record => {
       const columnNames = Object.keys(record.changes);
@@ -174,7 +177,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   async delete(
     table: string,
     keys: Array<string> | Array<number>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const primaryKey = await this.getPrimaryKey(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
@@ -404,7 +407,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           if (err) {
             return reject(err);
           }
-
           return resolve({
             data,
             lastID: this.lastID,
@@ -455,6 +457,11 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           if (err) {
             return reject(err);
           }
+
+          db.on('profile', (sql, ms) => {
+            console.log(sql);
+            console.log(ms);
+          });
 
           try {
             db.serialize();
