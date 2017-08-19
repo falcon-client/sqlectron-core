@@ -2,14 +2,15 @@
   "presets": [
     ["env", {
       "targets": {
-        "node": 6
+        "node": 8
       }
-    }],
-    "stage-0"
+    }]
   ],
   "plugins": [
     "syntax-flow",
-    "transform-decorators-legacy",
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    // "transform-decorators-legacy",
     // "flow-runtime",
     "transform-flow-strip-types"
   ]
