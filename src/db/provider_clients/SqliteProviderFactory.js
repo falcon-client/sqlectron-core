@@ -397,11 +397,11 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
-   * Various methods use driverExecutQuery to execute sql statements.
-   * 1. driverExecuteQuery creates identifyStatementsRunQuery() which uses
-   * runQuery()
-   * 2. driverExecuteQuery calls runWithConnection(identifyStatementsRunQuery)
-   * 3. runWithConnection creates a node-sqlite3 db which is identifyStatementsRunQuery
+   * 1. Various methods use driverExecutQuery to execute sql statements.
+   * 2. driverExecuteQuery creates identifyStatementsRunQuery() which uses
+   * the also created runQuery()
+   * 3. driverExecuteQuery calls runWithConnection(identifyStatementsRunQuery)
+   * 4. runWithConnection creates a node-sqlite3 db object which uses identifyStatementsRunQuery
    * to executes the sql statement and runQuery is given to node-sqlite3 to
    * return the results of the query
    * @private
@@ -411,7 +411,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       new Promise((resolve, reject) => {
         const method = this.resolveExecutionType(executionType);
         // Callback used by node-sqlite3 to return results of query
-        const fn = function queryCallback(err?: Error, data?: Object) {
+        function queryCallback(err?: Error, data?: Object) {
           if (err) {
             return reject(err);
           }
@@ -420,14 +420,14 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
             lastID: this.lastID,
             changes: this.changes
           });
-        };
+        }
 
         switch (method) {
           case 'run': {
-            return connection.run(text, queryArgs.params || [], fn);
+            return connection.run(text, queryArgs.params || [], queryCallback);
           }
           case 'all': {
-            return connection.all(text, queryArgs.params || [], fn);
+            return connection.all(text, queryArgs.params || [], queryCallback);
           }
           default: {
             throw new Error(`Unknown connection method "${method}"`);
@@ -435,9 +435,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         }
       });
 
+    // Called in runWithConnection. connection is the node-sqlite3 db object
     const identifyStatementsRunQuery = async (connection: connectionType) => {
       const statements = this.identifyCommands(queryArgs.query);
-
       const results = statements.map(statement =>
         runQuery(connection, statement).then(result => ({
           ...result,
@@ -466,10 +466,13 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
             return reject(err);
           }
 
-          db.on('profile', (sql, ms) => {
-            console.log(sql);
-            console.log(ms);
-          });
+          const profile = new Promise(_resolve =>
+            db.on('profile', (sql, ms) => {
+              console.dir(db);
+              console.log(sql, ms);
+              return _resolve({ sql, ms });
+            })
+          );
 
           try {
             db.serialize();
@@ -479,7 +482,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           } finally {
             db.close();
           }
-
           return db;
         }
       );
