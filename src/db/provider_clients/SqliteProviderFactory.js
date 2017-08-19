@@ -39,6 +39,8 @@ type tableKeyType = {
   pk: 0 | 1
 };
 
+// @TODO: Why does logging in constructor vs logging in driver execute
+// return two different things
 class SqliteProvider extends BaseProvider implements ProviderInterface {
   connection: connectionType;
 
@@ -123,7 +125,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   async insert(
     table: string,
     rows: Array<{ [string]: any }>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const tableKeys = await this.getTableColumnNames(table);
     const rowSqls = rows.map(row => {
       const rowData = tableKeys.map(
@@ -136,7 +138,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
      VALUES
      ${rowSqls.join(',\n')};
     `;
-    return this.driverExecuteQuery({ query }).then(res => res.data);
+    const foo = this.driverExecuteQuery({ query }).then(res => res.data);
+    return foo;
   }
 
   /**
@@ -150,7 +153,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       rowPrimaryKeyValue: string,
       changes: { [string]: any }
     }>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const tablePrimaryKey = await this.getPrimaryKey(table);
     const queries = records.map(record => {
       const columnNames = Object.keys(record.changes);
@@ -174,7 +177,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   async delete(
     table: string,
     keys: Array<string> | Array<number>
-  ): Promise<bool> {
+  ): Promise<{ timing: number }> {
     const primaryKey = await this.getPrimaryKey(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
@@ -394,30 +397,37 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
+   * 1. Various methods use driverExecutQuery to execute sql statements.
+   * 2. driverExecuteQuery creates identifyStatementsRunQuery() which uses
+   * the also created runQuery()
+   * 3. driverExecuteQuery calls runWithConnection(identifyStatementsRunQuery)
+   * 4. runWithConnection creates a node-sqlite3 db object which uses identifyStatementsRunQuery
+   * to executes the sql statement and runQuery is given to node-sqlite3 to
+   * return the results of the query
    * @private
    */
   async driverExecuteQuery(queryArgs: queryArgsType): Promise<Object> {
     const runQuery = (connection: connectionType, { executionType, text }) =>
       new Promise((resolve, reject) => {
         const method = this.resolveExecutionType(executionType);
-        const fn = function queryCallback(err?: Error, data?: Object) {
+        // Callback used by node-sqlite3 to return results of query
+        function queryCallback(err?: Error, data?: Object) {
           if (err) {
             return reject(err);
           }
-
           return resolve({
             data,
             lastID: this.lastID,
             changes: this.changes
           });
-        };
+        }
 
         switch (method) {
           case 'run': {
-            return connection.run(text, queryArgs.params || [], fn);
+            return connection.run(text, queryArgs.params || [], queryCallback);
           }
           case 'all': {
-            return connection.all(text, queryArgs.params || [], fn);
+            return connection.all(text, queryArgs.params || [], queryCallback);
           }
           default: {
             throw new Error(`Unknown connection method "${method}"`);
@@ -425,9 +435,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         }
       });
 
+    // Called in runWithConnection. connection is the node-sqlite3 db object
     const identifyStatementsRunQuery = async (connection: connectionType) => {
       const statements = this.identifyCommands(queryArgs.query);
-
       const results = statements.map(statement =>
         runQuery(connection, statement).then(result => ({
           ...result,
@@ -456,6 +466,14 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
             return reject(err);
           }
 
+          const profile = new Promise(_resolve =>
+            db.on('profile', (sql, ms) => {
+              console.dir(db);
+              console.log(sql, ms);
+              return _resolve({ sql, ms });
+            })
+          );
+
           try {
             db.serialize();
             return resolve(run(db));
@@ -464,7 +482,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           } finally {
             db.close();
           }
-
           return db;
         }
       );

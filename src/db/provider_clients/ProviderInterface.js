@@ -150,12 +150,15 @@ export interface ProviderInterface {
   delete: (
     table: string,
     keys: Array<string> | Array<number>
-  ) => Promise<bool>,
+  ) => Promise<{ timing: number }>,
   insert: (
     table: string,
     values: Array<{ [value: string]: any }>
-  ) => Promise<bool>,
-  update: (table: string, records: Array<Object>) => Promise<bool>,
+  ) => Promise<{ timing: number }>,
+  update: (
+    table: string,
+    records: Array<Object>
+  ) => Promise<{ timing: number }>,
 
   /**
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
