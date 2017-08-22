@@ -238,6 +238,42 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     );
   }
 
+  // OK
+  async renameTable(oldTableName: string, newTableName: string) {
+    const sql = `
+      ALTER TABLE ${oldTableName}
+        RENAME TO ${newTableName};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  // OK
+  async dropTable(table: string) {
+    const sql = `
+      DROP TABLE ${table};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+
+  // @TODO: Have some check to make sure columnType is a valid SQLite type
+  // OK
+  async addTableColumn(table: string, columnName: string, columnType: string) {
+    const sql = `
+      ALTER TABLE ${table}
+        ADD ${columnName} ${columnType};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  async renameTableColumn(table: string, oldName: string, newName: string) {
+
+  }
+
+  async dropTableColumn(table: string, column: string) {
+
+  }
+
   async listTables() {
     const sql = `
       SELECT name
@@ -268,6 +304,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return columns.map(column => column.columnName);
   }
 
+  // @TODO: Find out how this is different from getTableKeys(table)
   async listTableColumns(table: string) {
     const sql = `PRAGMA table_info(${table})`;
     const { data } = await this.driverExecuteQuery({ query: sql });
@@ -466,13 +503,13 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
             return reject(err);
           }
 
-          const profile = new Promise(_resolve =>
-            db.on('profile', (sql, ms) => {
-              console.dir(db);
-              console.log(sql, ms);
-              return _resolve({ sql, ms });
-            })
-          );
+          // const profile = new Promise(_resolve =>
+          //   db.on('profile', (sql, ms) => {
+          //     console.dir(db);
+          //     console.log(sql, ms);
+          //     return _resolve({ sql, ms });
+          //   })
+          // );
 
           try {
             db.serialize();
