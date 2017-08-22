@@ -846,6 +846,44 @@ describe('Database', () => {
             }
           });
         });
+
+        describe('Schema Alteration', () => {
+          it('Add a table column', async () => {
+            expect(await dbConn.getTableKeys('roles')).toEqual([
+              {
+                cid: 0,
+                dflt_value: null,
+                name: 'id',
+                notnull: 1,
+                pk: 1,
+                type: 'INTEGER'
+              },
+              {
+                cid: 1,
+                dflt_value: null,
+                name: 'name',
+                notnull: 0,
+                pk: 0,
+                type: 'VARCHAR(100)'
+              }
+            ]);
+            await dbConn.addTableColumn('roles', 'foobarColumn', 'INTEGER');
+            const newTableColumns = await dbConn.getTableKeys('roles');
+            const newColumn = newTableColumns[2];
+            expect(newColumn.name).toEqual('foobarColumn');
+            expect(newColumn.type).toEqual('INTEGER');
+          });
+        });
+
+        describe('Table Alteration', () => {
+          it('rename then drop table', async () => {
+            expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
+            await dbConn.renameTable('roles', 'foo');
+            expect(await dbConn.getTableNames()).toEqual(['foo', 'users']);
+            await dbConn.dropTable('foo');
+            expect(await dbConn.getTableNames()).toEqual(['users']);
+          });
+        });
       });
     });
   });

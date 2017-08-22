@@ -255,7 +255,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-
   // @TODO: Have some check to make sure columnType is a valid SQLite type
   // OK
   async addTableColumn(table: string, columnName: string, columnType: string) {
@@ -266,13 +265,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-  async renameTableColumn(table: string, oldName: string, newName: string) {
+  async renameTableColumn(table: string, oldName: string, newName: string) {}
 
-  }
-
-  async dropTableColumn(table: string, column: string) {
-
-  }
+  async dropTableColumn(table: string, column: string) {}
 
   async listTables() {
     const sql = `
