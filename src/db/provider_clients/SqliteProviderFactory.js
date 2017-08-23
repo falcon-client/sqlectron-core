@@ -219,6 +219,17 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return primaryKey;
   }
 
+  /**
+   * Returns the sql statement to generate this table
+   */
+  getTableSchemaSql(table: string): Promise<string> {
+    const sql = `SELECT sql FROM sqlite_master WHERE name='${table}';`;
+
+    return this.driverExecuteQuery({ query: sql }).then(res =>
+      res.data[0].sql.trim()
+    );
+  }
+
   async getTableValues(table: string) {
     const sql = `
       SELECT *
@@ -267,7 +278,42 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   async renameTableColumn(table: string, oldName: string, newName: string) {}
 
-  async dropTableColumn(table: string, column: string) {}
+  async dropTableColumns(table: string, columns: Array<string>) {
+    const temp = await this.getTableColumnNames(table);
+    const permittedColumns = temp.filter(e => !columns.includes(e));
+    // Create an sql statement that creates a new table excluding dropped columns
+    const tableCreationSqlArr = await this.getTableSchemaSql(table);
+    // Wrap the columns with '[ ]' to prevent unwanted deletion
+    const wrappedColumns = columns.map(column => `[${column}]`);
+
+    const tableCreationSql = tableCreationSqlArr
+      .split('\r\n')
+      .filter(line => {
+        const wrappedColumnName = line.substring(
+          line.indexOf('['),
+          line.indexOf(']') + 1
+        );
+        return !wrappedColumns.includes(wrappedColumnName);
+      })
+      .join(' ');
+
+    const sql = `
+    PRAGMA foreign_keys=off;
+    BEGIN TRANSACTION;
+    ALTER TABLE ${table} RENAME TO ${table}_temp;
+
+    ${tableCreationSql};
+
+    INSERT INTO ${table} (${permittedColumns.join(', ')})
+      SELECT ${permittedColumns.join(', ')}
+      FROM ${table}_temp;
+
+    DROP TABLE ${table}_temp;
+
+    COMMIT;
+    PRAGMA foreign_keys=on;`;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
 
   async listTables() {
     const sql = `
