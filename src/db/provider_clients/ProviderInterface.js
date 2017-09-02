@@ -121,7 +121,7 @@ export interface ProviderInterface {
    * Gets columns of a table
    * @TODO: Can this be renamed getTableColumnData
    */
-  getTableKeys: (
+  getTableColumns: (
     table: string
   ) => Promise<Array<{
       constraintName: string,
@@ -132,7 +132,7 @@ export interface ProviderInterface {
   /**
    * Gets the primary key of a table
    */
-  getPrimaryKey: (
+  getPrimaryKeyColumnColumn: (
     table: string
   ) => {
     constraintName: string,

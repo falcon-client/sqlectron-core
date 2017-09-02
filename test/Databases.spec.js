@@ -349,9 +349,9 @@ describe('Database', () => {
             });
           });
 
-          describe('.getTableKeys', () => {
+          describe('.getTableColumns', () => {
             it('should list all tables keys', async () => {
-              const tableKeys = await dbConn.getTableKeys('users');
+              const tableKeys = await dbConn.getTableColumns('users');
               expect(tableKeys).toMatchSnapshot();
             });
           });
@@ -847,24 +847,23 @@ describe('Database', () => {
           });
         });
 
-        describe('Table Alteration', () => {
-          it('rename then drop table foo', async () => {
+        describe('Table/Schema Alteration', () => {
+          it('rename then drop table foo, then add fooColumn to roles then drop fooColumn', async () => {
             expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
             await dbConn.renameTable('users', 'foo');
             expect(await dbConn.getTableNames()).toEqual(['roles', 'foo']);
             await dbConn.dropTable('foo');
             expect(await dbConn.getTableNames()).toEqual(['roles']);
-          });
-        });
-
-        describe('Schema Alteration', async () => {
-          it.skip('Add then drop a table column foobarColumn', async () => {
-            await dbConn.addTableColumn('roles', 'foobarColumn', 'INTEGER');
+            await dbConn.addTableColumn('roles', 'fooColumn', 'INTEGER');
+            await await delay(1000);
             const tableColumns = await dbConn.getTableColumnNames('roles');
-            expect(tableColumns).toEqual(['id', 'name', 'foobarColumn']);
-            await dbConn.dropTableColumns('roles', ['foobarColumn']);
-
-            expect(await dbConn.getTableColumnNames('roles')).toEqual(['id', 'name']);
+            expect(tableColumns).toEqual(['id', 'name', 'fooColumn']);
+            await dbConn.dropTableColumns('roles', ['fooColumn']);
+            await delay(3000);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'id',
+              'name'
+            ]);
           });
         });
       });

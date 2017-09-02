@@ -238,7 +238,7 @@ class MysqlProvider extends BaseProvider implements ProviderInterface {
     return data.map(row => row.referenced_table_name);
   }
 
-  async getTableKeys(database: string, table: string) {
+  async getTableColumns(database: string, table: string) {
     const sql = `
       SELECT constraint_name, column_name, referenced_table_name,
         CASE WHEN (referenced_table_name IS NOT NULL) THEN 'FOREIGN'
