@@ -238,7 +238,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     );
   }
 
-  // OK
+  /**
+   * Renames a table in the database
+   */
   async renameTable(oldTableName: string, newTableName: string) {
     const sql = `
       ALTER TABLE ${oldTableName}
@@ -247,7 +249,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-  // OK
+  /**
+   * Drops a table from the database
+   */
   async dropTable(table: string) {
     const sql = `
       DROP TABLE ${table};
@@ -255,8 +259,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-  // @TODO: Have some check to make sure columnType is a valid SQLite type
-  // Liek dro table, create a new table then import old data
+  /**
+   * Adds a column to the table
+   */
   async addTableColumn(table: string, columnName: string, columnType: string) {
     const sql = `
     ALTER TABLE ${table}
@@ -265,7 +270,43 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-  async renameTableColumn(table: string, oldName: string, newName: string) {}
+  async renameTableColumn(
+    table: string,
+    columns: Array<{ oldColumnName: string, newColumnName: string }>
+  ) {
+    // Used to make verify that each columns actually exist within the table
+    const originalColumns = await this.getTableColumnNames(table);
+    columns.forEach(column => {
+      if (!originalColumns.includes(column.oldColumnName)) {
+        throw new Error(`${column.oldColumnName} is not a column in ${table}`);
+      }
+    });
+
+    const propertiesArr = await this.getTablePropertiesSql(table);
+    let sql = `
+    PRAGMA foreign_keys=off;
+    BEGIN TRANSACTION;
+    ALTER TABLE ${table} RENAME TO ${table}_temp;
+
+
+    CREATE TABLE ${table} (${propertiesArr.join()}
+    );
+
+    INSERT INTO ${table} (${originalColumns.join(', ')})
+      SELECT ${originalColumns.join(', ')}
+      FROM ${table}_temp;
+
+    DROP TABLE ${table}_temp;
+
+    COMMIT;
+    PRAGMA foreign_keys=on;`;
+
+    // @TODO: Can probably make this more efficient
+    columns.forEach(column => {
+      sql = sql.replace(column.oldColumnName, column.newColumnName);
+    });
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
 
   /**
    * Drops columns from a table. Does this by creating a new table then
@@ -354,19 +395,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
               .replace(/\[|\]|"|'/g, '')
               .replace(/\[\w+\]|"\w+"|'\w+'|\w+/, '"$&"')}`
     );
-  }
-
-  /**
-   * Returns a table foreign key constraints
-   * @TODO: Hack. Parses create table sql statement for rows that contain
-   * 'FOREIGN KEY' and 'REFERENCES'. May be inconsistent depending on user's
-   * syntax
-   */
-  async getTableForeignKeyConstraints(table: string): Promise<Array<String>> {
-    const sql = `SELECT sql FROM sqlite_master WHERE name='${table}';`;
-
-    const { data } = await this.driverExecuteQuery({ query: sql });
-    // return data.map(row => row.sql).filter(row => row.includes('FOREIGN KEY') && row.includes('REFERENCES'));
   }
 
   async listTables() {

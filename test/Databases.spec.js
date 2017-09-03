@@ -848,21 +848,35 @@ describe('Database', () => {
         });
 
         describe('Table/Schema Alteration', () => {
-          it('rename then drop table foo, then add fooColumn to roles then drop fooColumn', async () => {
+          it('rename then drop table foo, then add fooColumn to roles then drop fooColumn, then renames columns', async () => {
             expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
             await dbConn.renameTable('users', 'foo');
             expect(await dbConn.getTableNames()).toEqual(['roles', 'foo']);
             await dbConn.dropTable('foo');
             expect(await dbConn.getTableNames()).toEqual(['roles']);
+
             await dbConn.addTableColumn('roles', 'fooColumn', 'INTEGER');
             await await delay(1000);
-            const tableColumns = await dbConn.getTableColumnNames('roles');
-            expect(tableColumns).toEqual(['id', 'name', 'fooColumn']);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'id',
+              'name',
+              'fooColumn'
+            ]);
             await dbConn.dropTableColumns('roles', ['fooColumn']);
-            await delay(3000);
+            await delay(2000);
             expect(await dbConn.getTableColumnNames('roles')).toEqual([
               'id',
               'name'
+            ]);
+
+            await dbConn.renameTableColumn('roles', [
+              { oldColumnName: 'name', newColumnName: 'NAME' },
+              { oldColumnName: 'id', newColumnName: 'ID' }
+            ]);
+            await delay(2000);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'ID',
+              'NAME'
             ]);
           });
         });
