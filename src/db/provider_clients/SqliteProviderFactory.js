@@ -138,8 +138,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
      VALUES
      ${rowSqls.join(',\n')};
     `;
-    const foo = this.driverExecuteQuery({ query }).then(res => res.data);
-    return foo;
+    return this.driverExecuteQuery({ query }).then(res => res.data);
   }
 
   /**
@@ -154,7 +153,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       changes: { [string]: any }
     }>
   ): Promise<{ timing: number }> {
-    const tablePrimaryKey = await this.getPrimaryKeyColumnColumn(table);
+    const tablePrimaryKey = await this.getPrimaryKeyColumn(table);
     const queries = records.map(record => {
       const columnNames = Object.keys(record.changes);
       const edits = columnNames.map(
@@ -178,7 +177,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     table: string,
     keys: Array<string> | Array<number>
   ): Promise<{ timing: number }> {
-    const primaryKey = await this.getPrimaryKeyColumnColumn(table);
+    const primaryKey = await this.getPrimaryKeyColumn(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
       DELETE FROM ${table}
@@ -210,7 +209,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return raw ? rawResults : rawResults.then(res => res);
   }
 
-  async getPrimaryKeyColumnColumn(table: string): Promise<tableKeyType> {
+  async getPrimaryKeyColumn(table: string): Promise<tableKeyType> {
     const columns = await this.getTableColumns(table);
     const primaryKeyColumn = columns.find(key => key.pk === 1);
     if (!primaryKeyColumn) {
@@ -270,7 +269,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return this.driverExecuteQuery({ query: sql }).then(res => res.data);
   }
 
-  async renameTableColumn(
+  async renameTableColumns(
     table: string,
     columns: Array<{ oldColumnName: string, newColumnName: string }>
   ) {
@@ -625,14 +624,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           if (err) {
             return reject(err);
           }
-
-          // const profile = new Promise(_resolve =>
-          //   db.on('profile', (sql, ms) => {
-          //     console.dir(db);
-          //     console.log(sql, ms);
-          //     return _resolve({ sql, ms });
-          //   })
-          // );
 
           try {
             db.serialize();
