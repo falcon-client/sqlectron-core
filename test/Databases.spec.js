@@ -334,7 +334,8 @@ describe('Database', () => {
           describe('.listSchemas', () => {
             it('should list all schema', async () => {
               // @TODO: passing schemas to listSchemas() is currently not supported by falcon
-              // const schemas = await dbConn.listSchemas({ schema: { only: [dbSchema, 'dummy_schema'] } });
+              // const schemas =
+              //   await dbConn.listSchemas({ schema: { only: [dbSchema, 'dummy_schema'] } });
               const schemas = await dbConn.listSchemas();
               expect(schemas).toMatchSnapshot();
             });
@@ -848,40 +849,37 @@ describe('Database', () => {
         });
 
         describe('Table/Schema Alteration', () => {
-          it(
-            'rename then drop table foo, then add fooColumn to roles then drop fooColumn, then renames columns',
-            async () => {
-              expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
-              await dbConn.renameTable('users', 'foo');
-              expect(await dbConn.getTableNames()).toEqual(['roles', 'foo']);
-              await dbConn.dropTable('foo');
-              expect(await dbConn.getTableNames()).toEqual(['roles']);
+          it('should rename and drop table, add and drop fooColumn, renames columns', async () => {
+            expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
+            await dbConn.renameTable('users', 'foo');
+            expect(await dbConn.getTableNames()).toEqual(['roles', 'foo']);
+            await dbConn.dropTable('foo');
+            expect(await dbConn.getTableNames()).toEqual(['roles']);
 
-              await dbConn.addTableColumn('roles', 'fooColumn', 'INTEGER');
-              await await delay(1000);
-              expect(await dbConn.getTableColumnNames('roles')).toEqual([
-                'id',
-                'name',
-                'fooColumn'
-              ]);
-              await dbConn.dropTableColumns('roles', ['fooColumn']);
-              await delay(2000);
-              expect(await dbConn.getTableColumnNames('roles')).toEqual([
-                'id',
-                'name'
-              ]);
+            await dbConn.addTableColumn('roles', 'fooColumn', 'INTEGER');
+            await await delay(1000);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'id',
+              'name',
+              'fooColumn'
+            ]);
+            await dbConn.dropTableColumns('roles', ['fooColumn']);
+            await delay(2000);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'id',
+              'name'
+            ]);
 
-              await dbConn.renameTableColumns('roles', [
-                { oldColumnName: 'name', newColumnName: 'NAME' },
-                { oldColumnName: 'id', newColumnName: 'ID' }
-              ]);
-              await delay(2000);
-              expect(await dbConn.getTableColumnNames('roles')).toEqual([
-                'ID',
-                'NAME'
-              ]);
-            }
-          );
+            await dbConn.renameTableColumns('roles', [
+              { oldColumnName: 'name', newColumnName: 'NAME' },
+              { oldColumnName: 'id', newColumnName: 'ID' }
+            ]);
+            await delay(2000);
+            expect(await dbConn.getTableColumnNames('roles')).toEqual([
+              'ID',
+              'NAME'
+            ]);
+          });
         });
       });
     });
