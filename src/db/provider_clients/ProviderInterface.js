@@ -121,7 +121,7 @@ export interface ProviderInterface {
    * Gets columns of a table
    * @TODO: Can this be renamed getTableColumnData
    */
-  getTableKeys: (
+  getTableColumns: (
     table: string
   ) => Promise<Array<{
       constraintName: string,
@@ -132,7 +132,7 @@ export interface ProviderInterface {
   /**
    * Gets the primary key of a table
    */
-  getPrimaryKey: (
+  getPrimaryKeyColumn: (
     table: string
   ) => {
     constraintName: string,
@@ -150,13 +150,36 @@ export interface ProviderInterface {
   delete: (
     table: string,
     keys: Array<string> | Array<number>
-  ) => Promise<bool>,
+  ) => Promise<{ timing: number }>,
   insert: (
     table: string,
     values: Array<{ [value: string]: any }>
-  ) => Promise<bool>,
-  update: (table: string, records: Array<Object>) => Promise<bool>,
+  ) => Promise<{ timing: number }>,
+  update: (
+    table: string,
+    records: Array<Object>
+  ) => Promise<{ timing: number }>,
 
+  /**
+   * Table schema CRUD operations
+   */
+  renameTable: (oldTableName: string, newTableName: string) => Promise<string>,
+  dropTable: (table: string) => Promise<string>,
+  addTableColumn: (
+    table: string,
+    columnName: string,
+    columnType: string
+  ) => Promise<string>,
+  renameTableColumns: (
+    table: string,
+    columns: Array<{ oldColumnName: string, newColumnName: string }>
+  ) => Promise<string>,
+  dropTableColumns: (
+    table: string,
+    columnsToDrop: Array<string>
+  ) => Promise<string>,
+  getCreateTableSql: (table: string) => Promise<string>,
+  getTablePropertiesSql: (table: string) => Promise<Array<String>>,
   /**
    * @TODO: What is the difference between query() driverExecuteQuery() and executeQuery()?
    */

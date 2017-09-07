@@ -224,34 +224,7 @@ exports[`Database sqlite given is already connected Export shoud fail when passi
 
 exports[`Database sqlite given is already connected Get .getRoutineCreateScript should return CREATE PROCEDURE/FUNCTION script 1`] = `undefined`;
 
-exports[`Database sqlite given is already connected Get .getTableCreateScript should return table create script 1`] = `
-"CREATE TABLE users (
-  id INTEGER NOT NULL,
-  username VARCHAR(45) NULL,
-  email VARCHAR(150) NULL,
-  password VARCHAR(45) NULL,
-  role_id INT,
-  createdat DATETIME NULL,
-  PRIMARY KEY (id),
-  FOREIGN KEY (role_id) REFERENCES roles (id)
-)"
-`;
-
-exports[`Database sqlite given is already connected Get .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \\"roles\\" WHERE <condition>;"`;
-
-exports[`Database sqlite given is already connected Get .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \\"public\\".\\"roles\\" WHERE <condition>;"`;
-
-exports[`Database sqlite given is already connected Get .getTableInsertScript should return INSERT INTO table script 1`] = `
-"INSERT INTO \\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
- VALUES (?, ?, ?, ?, ?, ?);"
-`;
-
-exports[`Database sqlite given is already connected Get .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
-"INSERT INTO \\"public\\".\\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
- VALUES (?, ?, ?, ?, ?, ?);"
-`;
-
-exports[`Database sqlite given is already connected Get .getTableKeys should list all tables keys 1`] = `
+exports[`Database sqlite given is already connected Get .getTableColumns should list all tables keys 1`] = `
 Array [
   Object {
     "cid": 0,
@@ -302,6 +275,33 @@ Array [
     "type": "DATETIME",
   },
 ]
+`;
+
+exports[`Database sqlite given is already connected Get .getTableCreateScript should return table create script 1`] = `
+"CREATE TABLE users (
+  id INTEGER NOT NULL,
+  username VARCHAR(45) NULL,
+  email VARCHAR(150) NULL,
+  password VARCHAR(45) NULL,
+  role_id INT,
+  createdat DATETIME NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (role_id) REFERENCES roles (id)
+)"
+`;
+
+exports[`Database sqlite given is already connected Get .getTableDeleteScript should return table DELETE script 1`] = `"DELETE FROM \\"roles\\" WHERE <condition>;"`;
+
+exports[`Database sqlite given is already connected Get .getTableDeleteScript should return table DELETE script with schema if defined 1`] = `"DELETE FROM \\"public\\".\\"roles\\" WHERE <condition>;"`;
+
+exports[`Database sqlite given is already connected Get .getTableInsertScript should return INSERT INTO table script 1`] = `
+"INSERT INTO \\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
+`;
+
+exports[`Database sqlite given is already connected Get .getTableInsertScript should return INSERT INTO table script with schema if defined 1`] = `
+"INSERT INTO \\"public\\".\\"users\\" (\\"id\\", \\"username\\", \\"email\\", \\"password\\", \\"role_id\\", \\"createdat\\")
+ VALUES (?, ?, ?, ?, ?, ?);"
 `;
 
 exports[`Database sqlite given is already connected Get .getTableReferences should list all tables that selected table has references to 1`] = `Array []`;

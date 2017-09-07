@@ -93,7 +93,7 @@ export function createServer(serverConfig: serverConfigType) {
 
       // Add the connection to the 'connection pool'
       server.db[dbName] = Client(server, database);
-
+      // @TODO: Handles only sqlite/sqlite3/db files
       return server.db[dbName];
     }
   };

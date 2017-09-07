@@ -84,7 +84,7 @@ class CassandraProvider extends BaseProvider implements ProviderInterface {
     return Promise.resolve([]);
   }
 
-  getTableKeys(database: string, table: string) {
+  getTableColumns(database: string, table: string) {
     return new Promise((resolve, reject) => {
       const sql = `
         SELECT column_name

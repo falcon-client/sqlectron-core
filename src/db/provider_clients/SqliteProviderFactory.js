@@ -39,6 +39,8 @@ type tableKeyType = {
   pk: 0 | 1
 };
 
+// @TODO: Why does logging in constructor vs logging in driver execute
+// return two different things
 class SqliteProvider extends BaseProvider implements ProviderInterface {
   connection: connectionType;
 
@@ -123,16 +125,16 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   async insert(
     table: string,
     rows: Array<{ [string]: any }>
-  ): Promise<bool> {
-    const tableKeys = await this.getTableColumnNames(table);
+  ): Promise<{ timing: number }> {
+    const tableColumns = await this.getTableColumnNames(table);
     const rowSqls = rows.map(row => {
-      const rowData = tableKeys.map(
+      const rowData = tableColumns.map(
         key => (row[key] ? `'${row[key]}'` : 'NULL')
       );
       return `(${rowData.join(', ')})`;
     });
     const query = `
-     INSERT INTO ${table} (${tableKeys.join(', ')})
+     INSERT INTO ${table} (${tableColumns.join(', ')})
      VALUES
      ${rowSqls.join(',\n')};
     `;
@@ -150,8 +152,8 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
       rowPrimaryKeyValue: string,
       changes: { [string]: any }
     }>
-  ): Promise<bool> {
-    const tablePrimaryKey = await this.getPrimaryKey(table);
+  ): Promise<{ timing: number }> {
+    const tablePrimaryKey = await this.getPrimaryKeyColumn(table);
     const queries = records.map(record => {
       const columnNames = Object.keys(record.changes);
       const edits = columnNames.map(
@@ -169,13 +171,13 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
 
   /**
    * Deletes records from a table. Finds table's primary key then deletes
-   * specified keys
+   * specified columns
    */
   async delete(
     table: string,
     keys: Array<string> | Array<number>
-  ): Promise<bool> {
-    const primaryKey = await this.getPrimaryKey(table);
+  ): Promise<{ timing: number }> {
+    const primaryKey = await this.getPrimaryKeyColumn(table);
     const conditions = keys.map(key => `${primaryKey.name} = "${key}"`);
     const query = `
       DELETE FROM ${table}
@@ -196,7 +198,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   /**
    * Gets data about columns (properties) in a table
    */
-  async getTableKeys(
+  async getTableColumns(
     table: string,
     raw: bool = false
   ): Promise<Array<tableKeyType>> {
@@ -207,13 +209,13 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return raw ? rawResults : rawResults.then(res => res);
   }
 
-  async getPrimaryKey(table: string): Promise<tableKeyType> {
-    const keys = await this.getTableKeys(table);
-    const primaryKey = keys.find(key => key.pk === 1);
-    if (!primaryKey) {
+  async getPrimaryKeyColumn(table: string): Promise<tableKeyType> {
+    const columns = await this.getTableColumns(table);
+    const primaryKeyColumn = columns.find(key => key.pk === 1);
+    if (!primaryKeyColumn) {
       throw new Error(`No primary key exists in table ${table}`);
     }
-    return primaryKey;
+    return primaryKeyColumn;
   }
 
   async getTableValues(table: string) {
@@ -232,6 +234,165 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     `;
     return this.driverExecuteQuery({ query: sql }).then(res =>
       res.data.map(table => table.name)
+    );
+  }
+
+  /**
+   * Renames a table in the database
+   */
+  async renameTable(oldTableName: string, newTableName: string) {
+    const sql = `
+      ALTER TABLE ${oldTableName}
+        RENAME TO ${newTableName};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  /**
+   * Drops a table from the database
+   */
+  async dropTable(table: string) {
+    const sql = `
+      DROP TABLE ${table};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  /**
+   * Adds a column to the table
+   */
+  async addTableColumn(table: string, columnName: string, columnType: string) {
+    const sql = `
+    ALTER TABLE ${table}
+      ADD COLUMN "${columnName}" ${columnType};
+    `;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  async renameTableColumns(
+    table: string,
+    columns: Array<{ oldColumnName: string, newColumnName: string }>
+  ) {
+    // Used to make verify that each columns actually exist within the table
+    const originalColumns = await this.getTableColumnNames(table);
+    columns.forEach(column => {
+      if (!originalColumns.includes(column.oldColumnName)) {
+        throw new Error(`${column.oldColumnName} is not a column in ${table}`);
+      }
+    });
+
+    const propertiesArr = await this.getTablePropertiesSql(table);
+    let sql = `
+    PRAGMA foreign_keys=off;
+    BEGIN TRANSACTION;
+    ALTER TABLE ${table} RENAME TO ${table}_temp;
+
+
+    CREATE TABLE ${table} (${propertiesArr.join()}
+    );
+
+    INSERT INTO ${table} (${originalColumns.join(', ')})
+      SELECT ${originalColumns.join(', ')}
+      FROM ${table}_temp;
+
+    DROP TABLE ${table}_temp;
+
+    COMMIT;
+    PRAGMA foreign_keys=on;`;
+
+    // @TODO: Can probably make this more efficient
+    columns.forEach(column => {
+      sql = sql.replace(column.oldColumnName, column.newColumnName);
+    });
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  /**
+   * Drops columns from a table. Does this by creating a new table then
+   * importing the data from the original and ignorng columnsToDrop
+   * @param {*} table the table to drop columns from
+   * @param {*} columnsToDrop array of columns which client wants to drop
+   */
+  async dropTableColumns(table: string, columnsToDrop: Array<string>) {
+    const temp = await this.getTableColumnNames(table);
+
+    columnsToDrop.forEach(e => {
+      if (!temp.includes(e)) {
+        throw new Error(`${e} is not a column in ${table}`);
+      }
+    });
+
+    const permittedColumns = temp.filter(col => !columnsToDrop.includes(col));
+    // Create an sql statement that creates a new table excluding dropped columns
+    const propertiesArr = await this.getTablePropertiesSql(table);
+    const filteredPropertiesArr = propertiesArr.filter(
+      row =>
+        !columnsToDrop.includes(
+          row.substring(row.indexOf('"') + 1, row.lastIndexOf('"'))
+        )
+    );
+    const sql = `
+    PRAGMA foreign_keys=off;
+    BEGIN TRANSACTION;
+    ALTER TABLE ${table} RENAME TO ${table}_temp;
+
+
+    CREATE TABLE ${table} (${filteredPropertiesArr.join()}
+    );
+
+    INSERT INTO ${table} (${permittedColumns.join(', ')})
+      SELECT ${permittedColumns.join(', ')}
+      FROM ${table}_temp;
+
+    DROP TABLE ${table}_temp;
+
+    COMMIT;
+    PRAGMA foreign_keys=on;`;
+    return this.driverExecuteQuery({ query: sql }).then(res => res.data);
+  }
+
+  /**
+   * Returns the sql statement to generate this table. Returns it in a uniform
+   * format
+   * Format - after "(", each column creation and foreign key constraint
+   * will be in its own line
+   */
+  async getCreateTableSql(table: string): Promise<string> {
+    const createTableArgs = await this.getTablePropertiesSql(table);
+    return `
+    CREATE TABLE ${table} (${createTableArgs.join()}
+    )`;
+  }
+
+  /**
+   * Used to get the arguments within a CREATE TABLE table(...)
+   * in a format such that getCreateTableSql() and dropTable() can
+   */
+  async getTablePropertiesSql(table: string): Promise<Array<String>> {
+    const sql = `SELECT sql FROM sqlite_master WHERE name='${table}';`;
+    const creationScript = await this.driverExecuteQuery({
+      query: sql
+    }).then(res => res.data[0].sql.trim());
+
+    // Gets all the text between '(' and ')' of script
+    const betweenParaentheses = creationScript
+      .substring(creationScript.indexOf('(') + 1)
+      .replace(/\)$/, '')
+      .split(',');
+
+    // Formats each argument to start on a new line with no extra white space
+    // and wraps the column name in an "<identifier>" format. Does not
+    // wrap constraints
+    return betweenParaentheses.map(
+      row =>
+        `\n\t${row.includes('PRIMARY') || row.includes('FOREIGN')
+          ? row.trim().replace(/\r|\n|/g, '').replace(/\s{2,}/g, ' ')
+          : row
+              .trim()
+              .replace(/\r|\n|/g, '')
+              .replace(/\s{2,}/g, ' ')
+              .replace(/\[|\]|"|'/g, '')
+              .replace(/\[\w+\]|"\w+"|'\w+'|\w+/, '"$&"')}`
     );
   }
 
@@ -265,6 +426,7 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
     return columns.map(column => column.columnName);
   }
 
+  // @TODO: Find out how this is different from getTableColumns(table)
   async listTableColumns(table: string) {
     const sql = `PRAGMA table_info(${table})`;
     const { data } = await this.driverExecuteQuery({ query: sql });
@@ -394,30 +556,37 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   /**
+   * 1. Various methods use driverExecutQuery to execute sql statements.
+   * 2. driverExecuteQuery creates identifyStatementsRunQuery() which uses
+   * the also created runQuery()
+   * 3. driverExecuteQuery calls runWithConnection(identifyStatementsRunQuery)
+   * 4. runWithConnection creates a node-sqlite3 db object which uses identifyStatementsRunQuery
+   * to executes the sql statement and runQuery is given to node-sqlite3 to
+   * return the results of the query
    * @private
    */
   async driverExecuteQuery(queryArgs: queryArgsType): Promise<Object> {
     const runQuery = (connection: connectionType, { executionType, text }) =>
       new Promise((resolve, reject) => {
         const method = this.resolveExecutionType(executionType);
-        const fn = function queryCallback(err?: Error, data?: Object) {
+        // Callback used by node-sqlite3 to return results of query
+        function queryCallback(err?: Error, data?: Object) {
           if (err) {
             return reject(err);
           }
-
           return resolve({
             data,
             lastID: this.lastID,
             changes: this.changes
           });
-        };
+        }
 
         switch (method) {
           case 'run': {
-            return connection.run(text, queryArgs.params || [], fn);
+            return connection.run(text, queryArgs.params || [], queryCallback);
           }
           case 'all': {
-            return connection.all(text, queryArgs.params || [], fn);
+            return connection.all(text, queryArgs.params || [], queryCallback);
           }
           default: {
             throw new Error(`Unknown connection method "${method}"`);
@@ -425,9 +594,9 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
         }
       });
 
+    // Called in runWithConnection. connection is the node-sqlite3 db object
     const identifyStatementsRunQuery = async (connection: connectionType) => {
       const statements = this.identifyCommands(queryArgs.query);
-
       const results = statements.map(statement =>
         runQuery(connection, statement).then(result => ({
           ...result,
@@ -464,7 +633,6 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
           } finally {
             db.close();
           }
-
           return db;
         }
       );

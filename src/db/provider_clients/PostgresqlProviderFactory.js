@@ -210,7 +210,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
     return data.rows.map(row => row.referenced_table_name);
   }
 
-  async getTableKeys(database, table, defaultSchema: string) {
+  async getTableColumns(database, table, defaultSchema: string) {
     const schema = defaultSchema || (await this.getSchema());
     const sql = `
       SELECT

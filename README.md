@@ -55,7 +55,7 @@ async function main() {
     console.log(await connection.getTableSelectScript('albums'));
     console.log(await connection.listTables());
     console.log(await connection.listDatabases());
-    console.log(await connection.getTableKeys('albums'));
+    console.log(await connection.getTableColumns('albums'));
     console.log(await connection.getTableValues('albums'));
 
     // Export API's
