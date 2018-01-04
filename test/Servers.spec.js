@@ -46,9 +46,7 @@ describe('servers', () => {
       expect(createdServer).toEqual(newServer);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).toEqual(
-        configBefore.servers.length + 1
-      );
+      expect(configAfter.servers).toHaveLength(configBefore.servers.length + 1);
     });
 
     it('should add new server with ssh', async () => {
@@ -76,9 +74,7 @@ describe('servers', () => {
       expect(createdServer).toEqual(newServer);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).toEqual(
-        configBefore.servers.length + 1
-      );
+      expect(configAfter.servers).toHaveLength(configBefore.servers.length + 1);
     });
   });
 
@@ -101,10 +97,8 @@ describe('servers', () => {
       expect(updatedServer).toEqual(serverToUpdate);
 
       const configAfter = await loadConfig();
-      expect(configAfter.servers.length).toEqual(configBefore.servers.length);
-      expect(configAfter.servers.find(srv => srv.id === id)).toEqual(
-        serverToUpdate
-      );
+      expect(configAfter.servers).toHaveLength(configBefore.servers.length);
+      expect(configAfter.servers.find(srv => srv.id === id)).toEqual(serverToUpdate);
     });
   });
 
@@ -128,9 +122,7 @@ describe('servers', () => {
         expect(createdServer).toEqual(newServer);
 
         const configAfter = await loadConfig();
-        expect(configAfter.servers.length).toEqual(
-          configBefore.servers.length + 1
-        );
+        expect(configAfter.servers).toHaveLength(configBefore.servers.length + 1);
       });
     });
 
@@ -153,10 +145,8 @@ describe('servers', () => {
         expect(updatedServer).toEqual(serverToUpdate);
 
         const configAfter = await loadConfig();
-        expect(configAfter.servers.length).toEqual(configBefore.servers.length);
-        expect(configAfter.servers.find(srv => srv.id === id)).toEqual(
-          serverToUpdate
-        );
+        expect(configAfter.servers).toHaveLength(configBefore.servers.length);
+        expect(configAfter.servers.find(srv => srv.id === id)).toEqual(serverToUpdate);
       });
     });
   });
@@ -167,12 +157,8 @@ describe('servers', () => {
       await servers.removeById('c94cbafa-8977-4142-9f34-c84d382d8731');
       const configAfter = await loadConfig();
 
-      expect(configAfter.servers.length).toEqual(
-        configBefore.servers.length - 1
-      );
-      expect(configAfter.servers.find(srv => srv.name === 'pg-vm')).toEqual(
-        undefined
-      );
+      expect(configAfter.servers).toHaveLength(configBefore.servers.length - 1);
+      expect(configAfter.servers.find(srv => srv.name === 'pg-vm')).toEqual(undefined);
     });
   });
 });

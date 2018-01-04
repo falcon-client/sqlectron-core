@@ -61,7 +61,7 @@ describe('Database', () => {
     }).toThrowErrorMatchingSnapshot();
   });
 
-  dbClients.forEach(dbClient => {
+  dbClients.forEach((dbClient) => {
     const dbSchema = dbSchemas[dbClient];
 
     describe(dbClient, () => {
@@ -74,9 +74,7 @@ describe('Database', () => {
           };
 
           const serverSession = db.createServer(serverInfo);
-          const dbConn = await serverSession.createConnection(
-            serverInfo.database
-          );
+          const dbConn = await serverSession.createConnection(serverInfo.database);
           await dbConn.connect();
         });
 
@@ -89,9 +87,7 @@ describe('Database', () => {
           };
 
           const serverSession = db.createServer(serverInfo);
-          const dbConn = await serverSession.createConnection(
-            serverInfo.database
-          );
+          const dbConn = await serverSession.createConnection(serverInfo.database);
 
           await dbConn.connect();
         });
@@ -105,9 +101,7 @@ describe('Database', () => {
           };
 
           const serverSession = db.createServer(serverInfo);
-          const dbConn = await serverSession.createConnection(
-            serverInfo.database
-          );
+          const dbConn = await serverSession.createConnection(serverInfo.database);
 
           await dbConn.connect();
         });
@@ -135,11 +129,11 @@ describe('Database', () => {
           `);
           await dbConn.executeQuery(`
             INSERT INTO users (${includePrimaryKey
-              ? 'id,'
-              : ''} username, email, password, role_id, createdat)
+    ? 'id,'
+    : ''} username, email, password, role_id, createdat)
             VALUES (${includePrimaryKey
-              ? '1,'
-              : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
+    ? '1,'
+    : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
           `);
         });
 
@@ -157,19 +151,19 @@ describe('Database', () => {
           describe('.delete', () => {
             it('should add 2 then delete 3 rows in the table', async () => {
               const usersValuesBefore = await dbConn.getTableValues('users');
-              expect(usersValuesBefore.length).toEqual(1);
+              expect(usersValuesBefore).toHaveLength(1);
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               await dbConn.delete('users', ['1', '2', '3']);
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               const usersValuesAfter = await dbConn.getTableValues('users');
-              expect(usersValuesAfter.length).toEqual(0);
+              expect(usersValuesAfter).toHaveLength(0);
             });
           });
 
           describe('.insert', () => {
             it('should insert 1 empty record and 1 filled record', async () => {
               const usersValuesBefore = await dbConn.getTableValues('users');
-              expect(usersValuesBefore.length).toEqual(1);
+              expect(usersValuesBefore).toHaveLength(1);
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               expect(usersValuesBefore[0]).toEqual({
                 id: 1,
@@ -214,7 +208,7 @@ describe('Database', () => {
           describe('.update', () => {
             it('should insert an empty record then update it', async () => {
               const usersValuesBefore = await dbConn.getTableValues('users');
-              expect(usersValuesBefore.length).toEqual(1);
+              expect(usersValuesBefore).toHaveLength(1);
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               expect(usersValuesBefore[0]).toEqual({
                 id: 1,
@@ -224,7 +218,7 @@ describe('Database', () => {
                 role_id: 1,
                 createdat: '2016-10-25'
               });
-              expect(usersValuesBefore.length).toEqual(1);
+              expect(usersValuesBefore).toHaveLength(1);
               await dbConn.insert('users', [{}]);
               await dbConn.update('users', [
                 {
@@ -240,7 +234,7 @@ describe('Database', () => {
               ]);
               expect(await dbConn.getTableValues('users')).toMatchSnapshot();
               const usersValuesAfter = await dbConn.getTableValues('users');
-              expect(usersValuesAfter.length).toEqual(2);
+              expect(usersValuesAfter).toHaveLength(2);
               expect(usersValuesAfter[1]).toEqual({
                 id: 2,
                 username: 'jooohhn',
@@ -295,9 +289,7 @@ describe('Database', () => {
           describe('.getConnectionType', () => {
             it('should get connection type of database', async () => {
               const connectiontType = await dbConn.getConnectionType();
-              expect(['local', 'ssh', 'ssl', 'socket']).toContain(
-                connectiontType
-              );
+              expect(['local', 'ssh', 'ssl', 'socket']).toContain(connectiontType);
             });
           });
 
@@ -448,9 +440,7 @@ describe('Database', () => {
 
           describe('.getViewCreateScript', () => {
             it('should return CREATE VIEW script', async () => {
-              const [createScript] = await dbConn.getViewCreateScript(
-                'email_view'
-              );
+              const [createScript] = await dbConn.getViewCreateScript('email_view');
               expect(createScript).toMatchSnapshot();
             });
           });
@@ -558,7 +548,7 @@ describe('Database', () => {
                 tables: ['users', 'roles'],
                 views: ['foo']
               })
-              .catch(res => {
+              .catch((res) => {
                 expect(() => {
                   throw res;
                 }).toThrowErrorMatchingSnapshot();
@@ -571,7 +561,7 @@ describe('Database', () => {
                 tables: ['users', 'roles'],
                 table: 'foo'
               })
-              .catch(res => {
+              .catch((res) => {
                 expect(() => {
                   throw res;
                 }).toThrowErrorMatchingSnapshot();
@@ -599,9 +589,7 @@ describe('Database', () => {
               await dbConn.exportJson(exportedJsonFilepath, {
                 tables: ['users', 'roles']
               });
-              const exportedJsonFile = readFileSync(
-                exportedJsonFilepath
-              ).toString();
+              const exportedJsonFile = readFileSync(exportedJsonFilepath).toString();
               expect(exportedJsonFile).toMatchSnapshot();
             });
           });
@@ -624,7 +612,7 @@ describe('Database', () => {
                 .exportCsv(filepath, {
                   tables: ['users', 'roles']
                 })
-                .catch(res => {
+                .catch((res) => {
                   expect(() => {
                     throw res;
                   }).toThrowErrorMatchingSnapshot();
@@ -635,9 +623,7 @@ describe('Database', () => {
               await dbConn.exportCsv(exportedCsvFilepath, {
                 table: 'users'
               });
-              const exportedCsvFile = readFileSync(
-                exportedCsvFilepath
-              ).toString();
+              const exportedCsvFile = readFileSync(exportedCsvFilepath).toString();
               expect(exportedCsvFile).toMatchSnapshot();
             });
           });
@@ -655,11 +641,11 @@ describe('Database', () => {
 
               await dbConn.executeQuery(`
                 INSERT INTO users (${includePrimaryKey
-                  ? 'id,'
-                  : ''} username, email, password, role_id, createdat)
+    ? 'id,'
+    : ''} username, email, password, role_id, createdat)
                 VALUES (${includePrimaryKey
-                  ? '1,'
-                  : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
+    ? '1,'
+    : ''} 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')
               `);
             });
 
@@ -669,9 +655,7 @@ describe('Database', () => {
 
             describe('SELECT', () => {
               it('should get query selector top', async () => {
-                expect(
-                  await dbConn.getQuerySelectTop('users', 10)
-                ).toMatchSnapshot();
+                expect(await dbConn.getQuerySelectTop('users', 10)).toMatchSnapshot();
               });
 
               it('should execute an empty query', async () => {
@@ -685,16 +669,12 @@ describe('Database', () => {
               });
 
               it('should execute a single query with empty result', async () => {
-                const results = await dbConn.executeQuery(
-                  'select * from users where id = 0'
-                );
+                const results = await dbConn.executeQuery('select * from users where id = 0');
                 expect(results).toMatchSnapshot();
               });
 
               it('should execute a single query', async () => {
-                const results = await dbConn.executeQuery(
-                  'select * from users'
-                );
+                const results = await dbConn.executeQuery('select * from users');
                 expect(results).toMatchSnapshot();
                 const [result] = results;
                 const field = name =>
@@ -710,9 +690,7 @@ describe('Database', () => {
 
               if (dbClient === 'mysql' || dbClient === 'postgresql') {
                 it('should not cast DATE types to native JS Date objects', async () => {
-                  const results = await dbConn.executeQuery(
-                    'select createdat from users'
-                  );
+                  const results = await dbConn.executeQuery('select createdat from users');
                   expect(results).toMatchSnapshot();
                 });
               }
@@ -730,11 +708,11 @@ describe('Database', () => {
               it('should execute a single query', async () => {
                 const results = await dbConn.executeQuery(`
                   insert into users (${includePrimaryKey
-                    ? 'id,'
-                    : ''} username, email, password)
+    ? 'id,'
+    : ''} username, email, password)
                   values (${includePrimaryKey
-                    ? '1,'
-                    : ''} 'user', 'user@hotmail.com', '123456')
+    ? '1,'
+    : ''} 'user', 'user@hotmail.com', '123456')
                 `);
                 expect(results).toMatchSnapshot();
               });
@@ -792,18 +770,14 @@ describe('Database', () => {
                 describe('DATABASE', () => {
                   beforeEach(async () => {
                     try {
-                      await dbConn.executeQuery(
-                        'drop database db_test_create_database'
-                      );
+                      await dbConn.executeQuery('drop database db_test_create_database');
                     } catch (err) {
                       // just ignore
                     }
                   });
 
                   it('should execute a single query', async () => {
-                    const results = await dbConn.executeQuery(
-                      'create database db_test_create_database'
-                    );
+                    const results = await dbConn.executeQuery('create database db_test_create_database');
                     expect(results).toMatchSnapshot();
                   });
                 });
@@ -815,18 +789,14 @@ describe('Database', () => {
                 describe('DATABASE', () => {
                   beforeEach(async () => {
                     try {
-                      await dbConn.executeQuery(
-                        'create database db_test_create_database'
-                      );
+                      await dbConn.executeQuery('create database db_test_create_database');
                     } catch (err) {
                       // just ignore
                     }
                   });
 
                   it('should execute a single query', async () => {
-                    const results = await dbConn.executeQuery(
-                      'drop database db_test_create_database'
-                    );
+                    const results = await dbConn.executeQuery('drop database db_test_create_database');
                     expect(results).toHaveLength(1);
                     expect(results).toMatchSnapshot();
                   });
@@ -837,9 +807,7 @@ describe('Database', () => {
             if (dbClient === 'postgresql') {
               describe('EXPLAIN', () => {
                 it('should execute a single query', async () => {
-                  const results = await dbConn.executeQuery(
-                    'explain select * from users'
-                  );
+                  const results = await dbConn.executeQuery('explain select * from users');
                   expect(results).toHaveLength(1);
                   expect(results).toMatchSnapshot();
                 });

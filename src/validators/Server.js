@@ -136,7 +136,7 @@ export async function validate(server: Object) {
 
   const clientConfig = CLIENTS.find(dbClient => dbClient.key === server.client);
   if (clientConfig && clientConfig.disabledFeatures) {
-    clientConfig.disabledFeatures.forEach(item => {
+    clientConfig.disabledFeatures.forEach((item) => {
       const [region, field] = item.split(':');
       if (region === 'server') {
         delete serverSchema[field];

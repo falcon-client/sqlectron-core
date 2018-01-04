@@ -5,7 +5,7 @@ import * as utils from './Utils';
 const EMPTY_CONFIG = { servers: [] };
 
 function sanitizeServers(data) {
-  return data.servers.map(server => {
+  return data.servers.map((server) => {
     const srv = { ...server };
 
     // ensure all server has an unique id

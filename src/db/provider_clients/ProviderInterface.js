@@ -59,6 +59,13 @@ export type queryResponseType = {
   affectedRows: number
 };
 
+type logType = {
+  type: 'falcon' | 'user',
+  query: string,
+  duration: number,
+  time: Date
+};
+
 /**
  * @TODO: Add documentation for each of these methods
  */
@@ -82,6 +89,13 @@ export interface ProviderInterface {
    */
   connect: () => void,
   disconnect: () => void,
+
+  /**
+   * Log related types
+   */
+  logs: Array<logType>,
+  getLogs: () => Promise<logType>,
+  setLogs: () => Promise<void>,
 
   /**
    * @TODO: Table creation methods

@@ -19,7 +19,7 @@ export default function run(config) {
 
 function executeQuery(client, query) {
   return new Promise((resolve, reject) => {
-    client.exec(query, err => {
+    client.exec(query, (err) => {
       if (err) {
         return reject(err);
       }

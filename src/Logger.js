@@ -25,7 +25,7 @@ export default function createLogger(namespace?: string) {
  * Allow use a different logger
  */
 export function setLogger(customLogger) {
-  Object.keys(loggers).forEach(logger => {
+  Object.keys(loggers).forEach((logger) => {
     loggers[logger] = customLogger(logger);
   });
 }
