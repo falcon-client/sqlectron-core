@@ -817,14 +817,23 @@ describe('Database', () => {
         });
 
         describe('Timing', () => {
+          // This prevents snapshot tests from failing when profiles return with different
+          // timings
+          function standardizeQueryDuration(logs) {
+            return logs.map(log => ({
+              ...log,
+              duration: 1
+            }));
+          }
+
           it('should log traces', async () => {
             const logs = await dbConn.getLogs();
-            expect(logs).toMatchSnapshot();
+            expect(standardizeQueryDuration(logs)).toMatchSnapshot();
           });
 
           it('should log profiles', async () => {
             const logs = await dbConn.getLogs();
-            expect(logs).toMatchSnapshot();
+            expect(standardizeQueryDuration(logs)).toMatchSnapshot();
           });
         });
 
