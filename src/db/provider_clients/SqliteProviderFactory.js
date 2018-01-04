@@ -79,7 +79,10 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
   }
 
   async getLogs() {
-    return this.logs.map(log => log.replace(/(\r\n|\n|\r)/gm, ''));
+    return this.logs.map(log => ({
+      ...log,
+      query: log.query.replace(/(\r\n|\n|\r)/gm, '')
+    }));
   }
 
   async setLogs() {}
@@ -611,11 +614,19 @@ class SqliteProvider extends BaseProvider implements ProviderInterface {
             return reject(err);
           }
 
-          db.on('trace', (trace) => {
-            this.logs.push(trace);
+          db.on('trace', (query, duration) => {
+            this.logs.push({
+              query,
+              duration: duration || 0,
+              type: 'trace'
+            });
           });
-          db.on('profile', (profile) => {
-            this.logs.push(profile);
+          db.on('profile', (query, duration) => {
+            this.logs.push({
+              query,
+              duration: duration || 0,
+              type: 'profile'
+            });
           });
 
           try {

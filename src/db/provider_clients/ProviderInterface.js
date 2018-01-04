@@ -60,7 +60,7 @@ export type queryResponseType = {
 };
 
 type logType = {
-  type: 'falcon' | 'user',
+  type: 'falcon' | 'user' | 'profile' | 'trace',
   query: string,
   duration: number,
   time: Date

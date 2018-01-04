@@ -816,6 +816,18 @@ describe('Database', () => {
           });
         });
 
+        describe('Timing', () => {
+          it('should log traces', async () => {
+            const logs = await dbConn.getLogs();
+            expect(logs).toMatchSnapshot();
+          });
+
+          it('should log profiles', async () => {
+            const logs = await dbConn.getLogs();
+            expect(logs).toMatchSnapshot();
+          });
+        });
+
         describe('Table/Schema Alteration', () => {
           it('should rename and drop table, add and drop fooColumn, renames columns', async () => {
             expect(await dbConn.getTableNames()).toEqual(['roles', 'users']);
