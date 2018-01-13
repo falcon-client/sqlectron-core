@@ -68,7 +68,7 @@ export default function Tunnel(serverInfo: Object) {
     const connections = [];
 
     logger().debug('creating ssh tunnel server');
-    const server = net.createServer(async conn => {
+    const server = net.createServer(async (conn) => {
       conn.on('error', err => server.emit('error', err));
 
       logger().debug('creating ssh tunnel client');
@@ -116,7 +116,7 @@ export default function Tunnel(serverInfo: Object) {
     });
 
     logger().debug('connecting ssh tunnel server');
-    server.listen(config.localPort, config.localHost, undefined, err => {
+    server.listen(config.localPort, config.localHost, undefined, (err) => {
       if (err) return reject(err);
       logger().debug('connected ssh tunnel server');
       return resolve(server);

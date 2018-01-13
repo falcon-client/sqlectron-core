@@ -314,8 +314,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
     const commands = this.identifyCommands(queryText).map(item => item.type);
 
     return data.map((result, index) =>
-      this.parseRowQueryResult(result, commands[index])
-    );
+      this.parseRowQueryResult(result, commands[index]));
   }
 
   async listDatabases(filter) {
@@ -334,9 +333,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
 
   async getQuerySelectTop(table, limit, defaultSchema: string) {
     const schema = defaultSchema || (await this.getSchema());
-    return `SELECT * FROM ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(
-      table
-    )} LIMIT ${limit}`;
+    return `SELECT * FROM ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(table)} LIMIT ${limit}`;
   }
 
   async getTableCreateScript(table, defaultSchema: string) {
@@ -399,9 +396,7 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
 
   async getViewCreateScript(view, defaultSchema: string) {
     const schema = defaultSchema || (await this.getSchema());
-    const createViewSql = `CREATE OR REPLACE VIEW ${this.wrapIdentifier(
-      schema
-    )}.${view} AS`;
+    const createViewSql = `CREATE OR REPLACE VIEW ${this.wrapIdentifier(schema)}.${view} AS`;
     const sql = 'SELECT pg_get_viewdef($1::regclass, true)';
     const params = [view];
     const data = await this.driverExecuteQuery({ query: sql, params });
@@ -455,14 +450,10 @@ class PostgresqlProvider extends BaseProvider implements ProviderInterface {
       const data = await this.driverExecuteQuery({ query: sql, params });
 
       const truncateAll = data.rows
-        .map(
-          row => `
-          TRUNCATE TABLE ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(
-            row.table_name
-          )}
+        .map(row => `
+          TRUNCATE TABLE ${this.wrapIdentifier(schema)}.${this.wrapIdentifier(row.table_name)}
           RESTART IDENTITY CASCADE;
-        `
-        )
+        `)
         .join('');
 
       await this.driverExecuteQuery({

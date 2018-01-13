@@ -16,7 +16,7 @@ export function getConfigPath() {
 }
 
 export function fileExists(filename: string) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     fs.stat(filename, (err, stats) => {
       if (err) return resolve(false);
       return resolve(stats.isFile());
@@ -34,7 +34,7 @@ export function fileExistsSync(filename: string) {
 
 export function writeFile(filename: string, data: string) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filename, data, err => {
+    fs.writeFile(filename, data, (err) => {
       if (err) return reject(err);
       return resolve();
     });
@@ -101,9 +101,7 @@ export function createCancelablePromise(error: Error, timeIdle: number = 100) {
       if (canceled) {
         const err = new Error(error.message || 'Promise canceled.');
 
-        Object.getOwnPropertyNames(error).forEach(
-          key => (err[key] = error[key])
-        );
+        Object.getOwnPropertyNames(error).forEach(key => (err[key] = error[key]));
 
         throw new Error(err);
       }

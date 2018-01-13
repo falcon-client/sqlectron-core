@@ -719,3 +719,73 @@ Array [
   },
 ]
 `;
+
+exports[`Database sqlite given is already connected Timing should log profiles 1`] = `
+Array [
+  Object {
+    "duration": 1,
+    "query": "SELECT sqlite_version()",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "SELECT sqlite_version()",
+    "type": "profile",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO roles ( name)            VALUES ( 'developer')          ",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO roles ( name)            VALUES ( 'developer')          ",
+    "type": "profile",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO users ( username, email, password, role_id, createdat)            VALUES ( 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')          ",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "-- TRIGGER dummy_trigger",
+    "type": "trace",
+  },
+]
+`;
+
+exports[`Database sqlite given is already connected Timing should log traces 1`] = `
+Array [
+  Object {
+    "duration": 1,
+    "query": "SELECT sqlite_version()",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "SELECT sqlite_version()",
+    "type": "profile",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO roles ( name)            VALUES ( 'developer')          ",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO roles ( name)            VALUES ( 'developer')          ",
+    "type": "profile",
+  },
+  Object {
+    "duration": 1,
+    "query": "INSERT INTO users ( username, email, password, role_id, createdat)            VALUES ( 'maxcnunes', 'maxcnunes@gmail.com', '123456', 1,'2016-10-25')          ",
+    "type": "trace",
+  },
+  Object {
+    "duration": 1,
+    "query": "-- TRIGGER dummy_trigger",
+    "type": "trace",
+  },
+]
+`;
