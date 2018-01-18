@@ -1,4 +1,5 @@
-// @flow
+/* eslint-disable */
+// @TODO: Add flow annotation
 import mysql from 'mysql';
 import { identify } from 'sql-query-identifier';
 import BaseProvider from './BaseProvider';
