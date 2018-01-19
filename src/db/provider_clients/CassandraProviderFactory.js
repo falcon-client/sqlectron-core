@@ -1,4 +1,5 @@
-// @flow
+/* eslint-disable */
+// @TODO: Add flow annotation
 import { Client } from 'cassandra-driver';
 import { identify } from 'sql-query-identifier';
 import BaseProvider from './BaseProvider';
